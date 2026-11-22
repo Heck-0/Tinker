@@ -218,7 +218,19 @@ internal static class ExceptionalEffects
 
 	private static readonly ConditionalWeakTable<CardModel, StrongBox<int>> LifestealPending = new ConditionalWeakTable<CardModel, StrongBox<int>>();
 
+	/// <summary>The trait's name (translated to Chinese when the game is in Chinese).</summary>
 	public static string Name(ExceptionalDefinition d)
+	{
+		return Lang.Zh(NameText(d));
+	}
+
+	/// <summary>What the trait does (translated to Chinese when the game is in Chinese).</summary>
+	public static string Explain(ExceptionalDefinition d, int growth)
+	{
+		return Lang.Zh(ExplainText(d, growth));
+	}
+
+	private static string NameText(ExceptionalDefinition d)
 	{
 		bool spanish = Lines.Spanish;
 		switch (d.Id)
@@ -276,7 +288,7 @@ internal static class ExceptionalEffects
 		}
 	}
 
-	public static string Explain(ExceptionalDefinition d, int growth)
+	private static string ExplainText(ExceptionalDefinition d, int growth)
 	{
 		bool spanish = Lines.Spanish;
 		int value = 3;

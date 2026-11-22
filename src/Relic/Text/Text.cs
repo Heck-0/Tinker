@@ -34,7 +34,7 @@ public static class Text
 				["RELICUPGRADER_DESCRIPTION"] = "{original}\n\n{details}"
 			});
 			bool spanish = Spanish;
-			manager.GetTable("settings_ui").MergeWith(ConfigText.Values(spanish));
+			manager.GetTable("settings_ui").MergeWith(Lang.Zh(ConfigText.Values(spanish), manager.Language));
 		}
 	}
 
@@ -56,6 +56,8 @@ public static class Text
 		case "Energy":
 		case "GainEnergy":
 			return T("Energía", "Energy");
+		case "DamageThreshold":
+			return T("Daño mínimo por golpe", "Damage needed in one hit");
 		case "EnergyThreshold":
 			return T("Umbral de energía", "Energy threshold");
 		case "LoseEnergy":

@@ -5,7 +5,8 @@
 // Odds = maxChance · e^(−(weight · risk^curve + strain)), clamped to [minChance, maxChance]
 //   risk   = (earlier upgrades + units) · hits / max(value before upgrades, referenceFloor)
 //   strain = upgrades the card already has in OTHER values, each with its own family's parameters
-// Price in gold = gold per upgrade (setting) × 100 / odds%. More weight or curve = pricier.
+// Price in gold = gold per upgrade (setting) / odds, using odds WITHOUT the minChance floor, so prices have
+// no ceiling. minChance still limits the trait and boon chances. More weight or curve = pricier.
 {
   "version": 1,
   "minChance": 0.03,

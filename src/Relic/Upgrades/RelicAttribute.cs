@@ -50,7 +50,7 @@ public sealed record RelicAttribute(string Key, string Family, int Direction = 1
 	public int Limit(RelicModel relic)
 	{
 		decimal baseValue = relic.DynamicVars[Key].BaseValue;
-		// Combined build: no per-category bet limit (Catalog.MaxBet still stops at the minimum chance).
+
 		return (int)Math.Max(0m, (Direction < 0) ? (baseValue - 1m) : ((decimal)Maximum - baseValue));
 	}
 

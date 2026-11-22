@@ -559,12 +559,10 @@ internal sealed class WorkshopScreen
 		{
 			return;
 		}
-		List<(int Spend, int Units)> steps = CurrentSteps();
-		int index = Math.Max(0, steps.FindIndex(s => s.Units == _units));
-		int next = Math.Max(0, Math.Min(steps.Count - 1, index + delta));
-		if (next != index)
+		int next = Math.Max(1, Math.Min(MaxUnits(), _units + delta));
+		if (next != _units)
 		{
-			_spend = steps[next].Spend;
+			_units = next;
 			SfxCmd.Play("event:/sfx/ui/clicks/ui_click");
 			Refresh();
 		}
@@ -620,7 +618,7 @@ internal sealed class WorkshopScreen
 		_centerBig.Text = change;
 		_centerBig.AddThemeColorOverride("font_color", Ink);
 		_amountLabel.Text = ((sign < 0) ? "−" : "+") + _units;
-		_costLabel.Text = Lang.T($"{_spend} de oro", $"{_spend} gold");
+		_costLabel.Text = (_spend == int.MaxValue) ? Lang.T("Demasiado caro", "Too expensive") : Lang.T($"{_spend:N0} de oro", $"{_spend:N0} gold");
 		_costLabel.AddThemeColorOverride("font_color", affordable ? AffordableInk : UnaffordableInk);
 		if (affordable)
 		{
@@ -927,45 +925,16 @@ internal sealed class WorkshopScreen
 		_propertyDetail.Text = Lang.T("Máximo un bufo por reliquia.", "At most one boon per relic.");
 	}
 
-	/// <summary>
-	/// Workshop: the gold amounts worth choosing for the selected upgrade, each with the biggest upgrade it
-	/// buys. Amounts that would buy no more than the one before are left out. If even the smallest upgrade
-	/// costs more than the player has, the list holds just that one (shown in red).
-	/// </summary>
-	private List<(int Spend, int Units)> CurrentSteps()
+	/// <summary>The biggest size the bottom selector offers: what the value allows, at most 999. Gold doesn't limit it; unaffordable sizes show their price in red.</summary>
+	private int MaxUnits()
 	{
-		if (_relic != null)
-		{
-			Tinker.Relic.RelicAttribute attribute = _relicOptions[_attributeIndex];
-			return SpendSteps(Tinker.Relic.Catalog.MaxBet(_relic, attribute), _gold, (int u) => WorkshopOptions.RelicPrice(_player, _relic, attribute, u));
-		}
-		return SpendSteps(CardUnitCap(), _gold, (int u) => WorkshopOptions.CardPrice(_card, Attribute, u));
+		return Math.Max(1, (_relic != null) ? Tinker.Relic.Catalog.MaxBet(_relic, _relicOptions[_attributeIndex]) : CardUnitCap());
 	}
 
-	private static List<(int Spend, int Units)> SpendSteps(int cap, int owned, Func<int, int> price)
+	/// <summary>The gold price of the selected upgrade at this size.</summary>
+	private int Price(int units)
 	{
-		List<(int Spend, int Units)> steps = new List<(int, int)>();
-		for (int units = 1; units <= Math.Max(1, cap); units++)
-		{
-			int cost = price(units);
-			if (cost > owned)
-			{
-				if (steps.Count == 0)
-				{
-					steps.Add((cost, units));
-				}
-				break;
-			}
-			if (steps.Count > 0 && steps[steps.Count - 1].Spend == cost)
-			{
-				steps[steps.Count - 1] = (cost, units);
-			}
-			else
-			{
-				steps.Add((cost, units));
-			}
-		}
-		return steps;
+		return (_relic != null) ? WorkshopOptions.RelicPrice(_player, _relic, _relicOptions[_attributeIndex], units) : WorkshopOptions.CardPrice(_card, Attribute, units);
 	}
 
 	/// <summary>The most units the card's value allows (before any price limit).</summary>
@@ -975,17 +944,11 @@ internal sealed class WorkshopScreen
 		return Math.Min(999, (AttributeDirection.SignOf(Attribute) < 0) ? (current - CardAttributes.Minimum(_card, Attribute)) : (CardAttributes.Maximum(_card, Attribute) - current));
 	}
 
-	/// <summary>Sets the units for the chosen gold amount (the cheapest step if none is chosen yet).</summary>
+	/// <summary>Keeps the size within what the value allows and prices it.</summary>
 	private void ResolveSpend()
 	{
-		List<(int Spend, int Units)> steps = CurrentSteps();
-		(int Spend, int Units) step = steps.FindLast(s => s.Spend <= _spend);
-		if (step.Units == 0)
-		{
-			step = steps[0];
-		}
-		_spend = step.Spend;
-		_units = step.Units;
+		_units = Math.Max(1, Math.Min(MaxUnits(), _units));
+		_spend = Price(_units);
 	}
 
 	private double? WorkshopChance()

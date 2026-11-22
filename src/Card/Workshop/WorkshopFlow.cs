@@ -189,7 +189,7 @@ internal static class WorkshopFlow
         string attribute = attributes[purchase.Attribute];
         int units = purchase.Units;
         int percent = WorkshopOptions.CardPercent(card, attribute, units);
-        int price = WorkshopPrice.Gold(percent, WorkshopOptions.Rate);
+        int price = WorkshopOptions.CardPrice(card, attribute, units);
         int goldBefore = player.Gold;
         if (!await Pay(player, price, remote))
         {
@@ -235,7 +235,7 @@ internal static class WorkshopFlow
         }
         double rawChance = Catalog.Chance(relic, attribute, units);
         int percent = Rules.Percent(rawChance);
-        int price = WorkshopPrice.Gold(percent, WorkshopOptions.Rate);
+        int price = WorkshopOptions.RelicPrice(player, relic, attribute, units);
         int goldBefore = player.Gold;
         if (!await Pay(player, price, remote))
         {

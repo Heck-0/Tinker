@@ -1231,7 +1231,7 @@ internal static class ExpandedEffectPatches
 					if (bidirectionalEffect != null)
 					{
 						string text3 = ((!(card is TrueGrit) || card.IsUpgraded) ? (Lines.Spanish ? bidirectionalEffect.Spanish : bidirectionalEffect.English) : (Lines.Spanish ? "Agotamientos aleatorios" : "Random Exhausts"));
-						text = text + "\n" + text3 + ": " + CardAttributes.CurrentValue(card, item.Attribute) + (Lines.Spanish ? " (ajustado)." : " (adjusted).");
+						text = text + "\n" + Lang.Zh(text3) + ": " + CardAttributes.CurrentValue(card, item.Attribute) + Lang.T(" (ajustado).", " (adjusted).");
 						continue;
 					}
 					string format = ((!(item.Card == "Eidolon")) ? ((item.Card == "Tracking" && TrackingUsesPercent) ? (Lines.Spanish ? "El bonus de daño contra Débil aumenta en {0} puntos porcentuales." : "The damage bonus against Weak increases by {0} percentage points.") : (Lines.Spanish ? item.ExtraSpanish : item.ExtraEnglish)) : ((!EidolonUsesAutoPlay) ? (Lines.Spanish ? "Obtén {0} Intangible adicional si cumples el requisito." : "Gain {0} additional Intangible when the requirement is met.") : (Lines.Spanish ? "Cada carta automática se juega {0} veces adicionales." : "Each automatic card is played {0} additional times.")));
@@ -1247,6 +1247,7 @@ internal static class ExpandedEffectPatches
 					{
 						format = (Lines.Spanish ? "El daño potenciado se multiplica por {0}." : "Boosted damage is multiplied by {0}.");
 					}
+					format = Lang.Zh(format);
 					int num3 = ((item.Attribute == "extra:blockGrowth") ? (num * 10) : ((item.Attribute == "extra:sharedForge") ? (CardAttributes.CurrentValue(card, item.Attribute) * 25) : ((item.Attribute == "extra:shadowMultiplier") ? CardAttributes.CurrentValue(card, item.Attribute) : ((item.Kind == "chooseGenerated") ? Math.Max(0, unchecked(num2 - Native(card, item))) : Math.Abs(num)))));
 					text = text + "\n" + string.Format(format, num3);
 				}

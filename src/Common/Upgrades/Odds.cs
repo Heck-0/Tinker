@@ -8,6 +8,17 @@ public static class Odds
 {
 	public static double SuccessChance(UpgradeRequest request, BalanceConfig config)
 	{
+		return RiskCurve.Chance(config.MaxChance, config.MinChance, Exponent(request, config));
+	}
+
+	/// <summary>The chance the Workshop prices from: like <see cref="SuccessChance"/>, without the minimum.</summary>
+	public static double PriceChance(UpgradeRequest request, BalanceConfig config)
+	{
+		return RiskCurve.Unclamped(config.MaxChance, Exponent(request, config));
+	}
+
+	private static double Exponent(UpgradeRequest request, BalanceConfig config)
+	{
 		if (request.Units <= 0)
 		{
 			throw new ArgumentOutOfRangeException("request", "Units debe ser > 0");
@@ -19,7 +30,7 @@ public static class Odds
 		AttributeBalance attributeBalance = config.For(request.Attribute, request.RiskFamily);
 		double num2 = request.Units;
 		double risk = RiskCurve.Risk(attributeBalance, request.Multiplier * ((double)request.ExistingGain + num2), (double)request.ReferenceValue);
-		return RiskCurve.Chance(config.MaxChance, config.MinChance, risk + request.OtherStrain);
+		return risk + request.OtherStrain;
 	}
 
 	public static double Strain(CardMachineState state, string attribute, Func<string, int> referenceOf, Func<string, double> multiplierOf, BalanceConfig config, Func<string, string> familyOf = null, Func<string, string> axisOf = null)

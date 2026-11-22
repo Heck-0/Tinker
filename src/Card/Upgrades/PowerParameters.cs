@@ -56,13 +56,13 @@ internal static class PowerParameters
 			{
 				if (__instance.GetType().Name == "DoubleDamagePower" && pair.Key == "extra:shadowMultiplier" && Value(__instance, "shadow:boostTurns", 0) > 0)
 				{
-					list.Add((Lines.Spanish ? "Multiplicador de daño" : "Damage multiplier") + ": " + FinalCardEffects.DisplayValue(pair.Key, pair.Value) + ".");
+					list.Add(Lang.T("Multiplicador de daño", "Damage multiplier") + ": " + FinalCardEffects.DisplayValue(pair.Key, pair.Value) + ".");
 					continue;
 				}
 				ExpandedEffect expandedEffect = ExpandedEffects.Entries.FirstOrDefault((ExpandedEffect e) => e.Target == __instance.GetType().Name && e.Attribute == pair.Key);
 				if (expandedEffect != null && pair.Value != ((!(__instance.GetType().Name == "DemesnePower")) ? expandedEffect.Native : 0))
 				{
-					list.Add((Lines.Spanish ? expandedEffect.Spanish : expandedEffect.English) + ": " + FinalCardEffects.DisplayValue(pair.Key, pair.Value) + ".");
+					list.Add((Lines.Spanish ? expandedEffect.Spanish : Lang.Zh(expandedEffect.English)) + ": " + FinalCardEffects.DisplayValue(pair.Key, pair.Value) + ".");
 				}
 			}
 			if (list.Count != 0)

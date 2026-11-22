@@ -25,12 +25,18 @@ id and copy number, cards by deck position.
 
 ## Price
 
-    gold = max(1, round(rate × 100 / chance%))
+    gold = max(1, round(rate / chance))      chance = maxChance × e^(−exponent)
 
-*chance%* is what the odds engine gives that exact upgrade (same strain from earlier upgrades, same
+*exponent* is the odds engine's for that exact upgrade (same strain from earlier upgrades, same
 difficulty); *rate* is the *Gold per upgrade* setting (default 25). So the smallest
 upgrade on a fresh card costs about 25 gold, while big upgrades, and upgrades on cards or relics that are
 already upgraded, cost more.
+
+The price ignores the engine's minimum chance (`minChance`, 3 %), so it has **no ceiling**. With the
+minimum, every upgrade past a point cost the same 833 gold, so +999 cost as much as +1 and was the only
+size offered. Now prices grow exponentially: a value pushed to several times its base gets very expensive
+(Strength 2 → 10: the next +1 costs about 23,600 gold). The minimum still applies to the trait and boon
+chances.
 
 ## Support items: removed
 

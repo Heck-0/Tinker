@@ -34,7 +34,13 @@ internal static class FixedEffectPatches
 		return false;
 	}
 
+	/// <summary>The upgrade's name in the Workshop (translated to Chinese when the game is in Chinese).</summary>
 	internal static string AttributeName(CardModel card, string attribute)
+	{
+		return Lang.Zh(AttributeNameText(card, attribute));
+	}
+
+	private static string AttributeNameText(CardModel card, string attribute)
 	{
 		BidirectionalEffect bidirectionalEffect = BidirectionalEffects.Find(card?.GetType().Name, attribute);
 		if (bidirectionalEffect != null)

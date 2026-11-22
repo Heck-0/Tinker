@@ -255,7 +255,7 @@ internal static class AdvancedEnchantmentUpgrades
 					continue;
 				}
 			}
-			string text3 = (Lines.Spanish ? item.Spanish : item.English);
+			string text3 = (Lines.Spanish ? item.Spanish : Lang.Zh(item.English));
 			text = text + "\n" + text3 + ": " + Value(card, item.Attribute) + ((item.Family == "percentage") ? "%" : "") + ".";
 		}
 		return text;

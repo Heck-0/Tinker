@@ -79,6 +79,9 @@ public static class Catalog
 		Group("Storyteller", "EndOfTurnAim", "power");
 		Group("ExerciseMat", "StretchPower", "power");
 		Group("Fertilizer", "StrengthPower", "scaling");
+		// Mighty Wings: a hit of at least DamageThreshold (30) damage gives StrengthPower (2) Strength.
+		Group("MightyWings", "DamageThreshold", "threshold", -1);
+		Group("MightyWings", "StrengthPower", "scaling");
 		Group("Twine", "Block", "block");
 		return result;
 		void Group(string names, string key, string family, int direction = 1, int maximum = 10000, string? labelKey = null)
@@ -91,28 +94,18 @@ public static class Catalog
 		}
 	}
 
+	/// <summary>The most units one purchase can add: the relic value's limit (at most 999). Gold limits the rest.</summary>
 	public static int MaxBet(RelicModel relic, RelicAttribute attribute)
 	{
-		int num = Math.Min(999, attribute.Limit(relic)); // Combined build: 999 only bounds this loop
-		int result = Math.Min(1, num);
-		int num2 = Rules.Percent((double)Math.Min(Settings.Active.MinChance, Settings.Active.MaxChance) / 100.0);
-		for (int i = 1; i <= num; i++)
-		{
-			result = i;
-			if (Rules.Percent(Chance(relic, attribute, i)) <= num2)
-			{
-				break;
-			}
-		}
-		return result;
+		return Math.Min(999, attribute.Limit(relic));
 	}
 
-	public static double Chance(RelicModel relic, RelicAttribute attribute, int units)
+	public static double Chance(RelicModel relic, RelicAttribute attribute, int units, bool forPrice = false)
 	{
 		RelicState relicState = Store.For(relic);
 
 		UpgradeLedger valueOrDefault = relicState.Upgrades.GetValueOrDefault(attribute.Key);
 		double otherStrain = 0.8 * relicState.Upgrades.Where<KeyValuePair<string, UpgradeLedger>>((KeyValuePair<string, UpgradeLedger> p) => p.Key != attribute.Key).Sum((KeyValuePair<string, UpgradeLedger> p) => Rules.Risk(p.Value.Family, p.Value.Reference, p.Value.Gain));
-		return Rules.Chance(attribute.Family, valueOrDefault?.Reference ?? attribute.Value(relic), valueOrDefault?.Gain ?? 0, units, otherStrain);
+		return Rules.Chance(attribute.Family, valueOrDefault?.Reference ?? attribute.Value(relic), valueOrDefault?.Gain ?? 0, units, otherStrain, forPrice);
 	}
 }

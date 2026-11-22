@@ -28,7 +28,7 @@ internal static class WorkshopOptions
     {
         try
         {
-            return WorkshopPrice.Gold(CardPercent(card, attribute, units), Rate);
+            return WorkshopPrice.Gold(Odds.PriceChance(CardOdds.BuildRequest(card, attribute, units), CardOdds.Balance), Rate);
         }
         catch (ArgumentOutOfRangeException)
         {
@@ -46,7 +46,7 @@ internal static class WorkshopOptions
     {
         try
         {
-            return WorkshopPrice.Gold(RelicPercent(relic, attribute, units), Rate);
+            return WorkshopPrice.Gold(Catalog.Chance(relic, attribute, units, forPrice: true), Rate);
         }
         catch (ArgumentOutOfRangeException)
         {

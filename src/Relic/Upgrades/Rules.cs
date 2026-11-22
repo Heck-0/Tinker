@@ -17,16 +17,18 @@ public static class Rules
 		return RiskCurve.Risk(Families[family], gained, (double)reference);
 	}
 
-	public static double Chance(string family, decimal reference, int gained, int units, double otherStrain = 0.0, ModSettings? settings = null)
+	/// <summary>The upgrade's chance (for boons); with <paramref name="forPrice"/>, without the minimum, for the Workshop price.</summary>
+	public static double Chance(string family, decimal reference, int gained, int units, double otherStrain = 0.0, bool forPrice = false)
 	{
 		if (units < 1 || gained < 0 || !double.IsFinite(otherStrain) || otherStrain < 0.0)
 		{
 			throw new ArgumentOutOfRangeException("units");
 		}
-		ModSettings modSettings = settings ?? Settings.Active;
+		ModSettings modSettings = Settings.Active;
 		double num = (double)modSettings.MaxChance / 100.0;
 		double min = Math.Min((double)modSettings.MinChance / 100.0, num);
-		return RiskCurve.Chance(num, min, (Risk(family, reference, gained + units) + otherStrain) * (double)modSettings.Difficulty / 100.0);
+		double exponent = (Risk(family, reference, gained + units) + otherStrain) * (double)modSettings.Difficulty / 100.0;
+		return forPrice ? RiskCurve.Unclamped(num, exponent) : RiskCurve.Chance(num, min, exponent);
 	}
 
 	public static int Percent(double chance)

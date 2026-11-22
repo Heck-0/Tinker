@@ -7,9 +7,10 @@ using MegaCrit.Sts2.Core.Localization;
 namespace Tinker.Common;
 
 /// <summary>
-/// The one text system for both roulettes:
+/// The mod's text system:
 /// - which language is active (Spanish / Simplified Chinese / English),
-/// - <see cref="T"/>: Spanish or English text, with Simplified Chinese looked up in <see cref="Chinese"/>,
+/// - <see cref="T"/>: Spanish or English text, with Simplified Chinese looked up in <see cref="Chinese"/>;
+///   <see cref="Zh"/> does the Chinese step for English text picked elsewhere (data tables, labels),
 /// - merging each half's translation tables into the game, and running them when the game loads or
 ///   changes language (see <see cref="LanguageHooks"/>). Each half registers its tables at startup.
 /// </summary>
@@ -47,9 +48,47 @@ public static class Lang
         return SimplifiedChinese ? Translate(english) : english;
     }
 
-    /// <summary>Simplified Chinese for an English string: an exact entry, then a "{0}" template; else the English.</summary>
+    /// <summary>English text, translated when the game is in Simplified Chinese. For text that isn't Spanish.</summary>
+    public static string Zh(string english)
+    {
+        return (english != null && SimplifiedChinese) ? Translate(english) : english;
+    }
+
+    /// <summary>A translation table's values (English) translated, when <paramref name="language"/> is Simplified Chinese.</summary>
+    public static Dictionary<string, Dictionary<string, string>> Zh(Dictionary<string, Dictionary<string, string>> tables, string language)
+    {
+        if (IsSimplifiedChinese(language))
+        {
+            foreach (Dictionary<string, string> table in tables.Values)
+            {
+                Zh(table, language);
+            }
+        }
+        return tables;
+    }
+
+    public static Dictionary<string, string> Zh(Dictionary<string, string> table, string language)
+    {
+        if (IsSimplifiedChinese(language))
+        {
+            foreach (string key in table.Keys.ToList())
+            {
+                table[key] = Translate(table[key]);
+            }
+        }
+        return table;
+    }
+
+    /// <summary>
+    /// Simplified Chinese for an English string: an exact entry, then a "{0}" template whose pieces are
+    /// translated in turn (so "{0} Total: +{1}." translates both the sentence and the number); else the English.
+    /// </summary>
     public static string Translate(string english)
     {
+        if (string.IsNullOrEmpty(english))
+        {
+            return english;
+        }
         if (Chinese.Exact.TryGetValue(english, out string exact))
         {
             return exact;
@@ -59,7 +98,11 @@ public static class Lang
             Match match = pattern.Match(english);
             if (match.Success)
             {
-                return Regex.Replace(zh, "\\{(\\d+)\\}", m => match.Groups[int.Parse(m.Groups[1].Value) + 1].Value);
+                return Regex.Replace(zh, "\\{(\\d+)\\}", m =>
+                {
+                    string part = match.Groups[int.Parse(m.Groups[1].Value) + 1].Value;
+                    return part.Length < english.Length ? Translate(part) : part;
+                });
             }
         }
         return english;

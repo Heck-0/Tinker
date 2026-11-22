@@ -110,7 +110,7 @@ public static class Loc
 		bool flag = Lines.IsSpanish(language);
 		Dictionary<string, Dictionary<string, string>> obj = (flag ? Spanish() : English());
 		FinalCardEffects.AddTexts(obj, flag);
-		return obj;
+		return Lang.Zh(obj, language);
 	}
 
 	public static void Install()

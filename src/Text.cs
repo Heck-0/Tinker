@@ -31,8 +31,8 @@ internal static class Text
             {
                 Copy(card, "RULETA-", labels);
             }
-            Copy(Tinker.Relic.ConfigText.Values(Tinker.Relic.Text.Spanish), "RELICUPGRADER-", labels);
-            foreach (KeyValuePair<string, string> pair in Own(Lang.IsSpanish(manager.Language)))
+            Copy(Lang.Zh(Tinker.Relic.ConfigText.Values(Tinker.Relic.Text.Spanish), manager.Language), "RELICUPGRADER-", labels);
+            foreach (KeyValuePair<string, string> pair in Lang.Zh(Own(Lang.IsSpanish(manager.Language)), manager.Language))
             {
                 labels[Prefix + pair.Key] = pair.Value;
             }

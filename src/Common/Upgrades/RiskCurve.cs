@@ -32,6 +32,15 @@ public static class RiskCurve
 
     public static double Chance(double maxChance, double minChance, double exponent)
     {
-        return Math.Max(minChance, Math.Min(maxChance, maxChance * Math.Exp(0.0 - exponent)));
+        return Math.Max(minChance, Math.Min(maxChance, Unclamped(maxChance, exponent)));
+    }
+
+    /// <summary>
+    /// The same curve without the minimum: keeps falling as upgrades grow, so prices (which divide by it) keep
+    /// rising instead of stopping at a ceiling once the chance hits the minimum.
+    /// </summary>
+    public static double Unclamped(double maxChance, double exponent)
+    {
+        return maxChance * Math.Exp(0.0 - exponent);
     }
 }
