@@ -36,12 +36,6 @@ internal static class WorkshopOptions
         }
     }
 
-    /// <summary>The odds engine's chance for this relic upgrade, in percent.</summary>
-    public static int RelicPercent(RelicModel relic, RelicAttribute attribute, int units)
-    {
-        return Rules.Percent(Catalog.Chance(relic, attribute, units));
-    }
-
     public static int RelicPrice(Player player, RelicModel relic, RelicAttribute attribute, int units)
     {
         try

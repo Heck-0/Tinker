@@ -113,7 +113,7 @@ public static class Store
 	}
 
 	/// <summary>A Workshop purchase: raises (or lowers) the relic's value by <paramref name="units"/> and records it.</summary>
-	public static string Upgrade(RelicModel relic, RelicAttribute attribute, int units)
+	public static void Upgrade(RelicModel relic, RelicAttribute attribute, int units)
 	{
 		if (!relic.IsMutable || !Catalog.For(relic).Contains(attribute) || units < 1 || units > attribute.Limit(relic))
 		{
@@ -132,6 +132,5 @@ public static class Store
 		}
 		value.Gain += units;
 		relic.DynamicVars[attribute.Key].BaseValue = value.Reference + (decimal)(value.Direction * value.Gain);
-		return Text.Improved(attribute.Label, attribute.Value(relic));
 	}
 }

@@ -126,9 +126,4 @@ public static class Text
 		}
 	}
 
-	public static string Improved(string attribute, decimal value)
-	{
-		return T($"Mejora permanente: {attribute} → {value}.", $"Permanent upgrade: {attribute} → {value}.");
-	}
-
 }

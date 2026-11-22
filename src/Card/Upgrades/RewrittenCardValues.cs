@@ -125,7 +125,7 @@ internal static class RewrittenCardValues
 		int num = cardMachineState?.RawDelta(AttributeKeys.Var(variable)) ?? 0;
 		checked
 		{
-			if (cardMachineState?.Property == ((variable == "Block") ? "Fortify" : "Bloodthirst") || (variable == "Damage" && cardMachineState?.Property == "Legacy"))
+			if (variable == "Damage" && cardMachineState?.Property == "Legacy")
 			{
 				num += cardMachineState.PropertyGrowth;
 			}

@@ -22,25 +22,6 @@ namespace Tinker.Card;
 
 internal static class ExceptionalEffects
 {
-	private sealed class CombatCounter
-	{
-		public WeakReference<object> Combat;
-
-		public int Permanent;
-	}
-
-	[HarmonyPatch(typeof(Hook), "AfterCardPlayed")]
-	internal static class GrowthPatch
-	{
-		private static void Postfix(ref Task __result, CardPlay cardPlay)
-		{
-			CardModel cardModel = cardPlay?.Card;
-			if (cardModel != null && GrowsOnPlay(CardStateStore.Get(cardModel)?.Property ?? ""))
-			{
-				__result = AfterPlayed(__result, cardModel);
-			}
-		}
-	}
 
 	[HarmonyPatch(typeof(Hook), "AfterDamageGiven")]
 	internal static class LegacyPatch
@@ -101,7 +82,7 @@ internal static class ExceptionalEffects
 	{
 		private static void Postfix(ref decimal __result, CardModel card)
 		{
-			if (card != null && !card.EnergyCost.CostsX && !(CardStateStore.Get(card)?.Property != "Awakening") && PlaysThisCombat(card) >= 3)
+			if (card != null && !card.EnergyCost.CostsX && !(CardStateStore.Get(card)?.Property != "Awakening") && PlaysThisCombat(card) >= ExceptionalCatalog.AwakeningPlays)
 			{
 				__result = default(decimal);
 			}
@@ -206,15 +187,7 @@ internal static class ExceptionalEffects
 		}
 	}
 
-	private const string DamageVar = "Damage";
-
-	private const string BlockVar = "Block";
-
-	private static readonly ConditionalWeakTable<CardModel, CombatCounter> Counters = new ConditionalWeakTable<CardModel, CombatCounter>();
-
 	private static readonly ConditionalWeakTable<CardModel, WeakReference<object>> LegacyPaid = new ConditionalWeakTable<CardModel, WeakReference<object>>();
-
-	private static readonly ConditionalWeakTable<CardModel, StrongBox<int>> VenomPending = new ConditionalWeakTable<CardModel, StrongBox<int>>();
 
 	private static readonly ConditionalWeakTable<CardModel, StrongBox<int>> LifestealPending = new ConditionalWeakTable<CardModel, StrongBox<int>>();
 
@@ -235,18 +208,7 @@ internal static class ExceptionalEffects
 		bool spanish = Lines.Spanish;
 		switch (d.Id)
 		{
-		case "Bloodthirst":
-			if (!spanish)
-			{
-				return "Bloodthirst";
-			}
-			return "Sed de sangre";
-		case "Fortify":
-			if (!spanish)
-			{
-				return "Fortify";
-			}
-			return "Fortificación";
+
 		case "Inexhaustible":
 			if (!spanish)
 			{
@@ -291,14 +253,10 @@ internal static class ExceptionalEffects
 	private static string ExplainText(ExceptionalDefinition d, int growth)
 	{
 		bool spanish = Lines.Spanish;
-		int value = 3;
 		string text = ((growth <= 0) ? "" : (spanish ? $" Llevas +{growth}." : $" Total: +{growth}."));
 		switch (d.Id)
 		{
-		case "Bloodthirst":
-			return (spanish ? $"Al jugarla, aumenta su daño en 1. Los {value} primeros aumentos de cada combate son permanentes." : $"When played, increase its damage by 1. The first {value} increases each combat are permanent.") + text;
-		case "Fortify":
-			return (spanish ? $"Al jugarla, aumenta su Bloqueo en 1. Los {value} primeros aumentos de cada combate son permanentes." : $"When played, increase its Block by 1. The first {value} increases each combat are permanent.") + text;
+
 		case "Inexhaustible":
 			if (!spanish)
 			{
@@ -314,17 +272,17 @@ internal static class ExceptionalEffects
 		case "Awakening":
 			if (spanish)
 			{
-				return $"Cuando la juegas {3} veces en un combate, cuesta 0 el resto del combate.";
+				return "Después de jugarla una vez en un combate, cuesta 0 el resto del combate.";
 			}
-			return $"After you play it {3} times in a combat, it costs 0 for the rest of that combat.";
+			return "After you play it once in a combat, it costs 0 for the rest of that combat.";
 		case "Legacy":
 			return (spanish ? $"Si mata a un élite o a un jefe, aumenta su daño en {5} de forma permanente. Una vez por combate." : $"If it kills an elite or boss, permanently increase its damage by {5}. Once per combat.") + text;
 		case "Venomous":
 			if (spanish)
 			{
-				return $"Cada golpe aplica Veneno igual al {25}\u00a0% del daño sin bloquear que haga.";
+				return "Cada golpe aplica 1 de Veneno.";
 			}
-			return $"Each hit applies Poison equal to {25}% of the unblocked damage it deals.";
+			return "Each hit applies 1 Poison.";
 		case "Lifesteal":
 			if (spanish)
 			{
@@ -348,10 +306,7 @@ internal static class ExceptionalEffects
 		{
 			hashSet.Add(ExceptionalRequirement.DealtDamage);
 		}
-		if (list.Contains(AttributeKeys.Var("Block")))
-		{
-			hashSet.Add(ExceptionalRequirement.Block);
-		}
+
 		// Combined build: Power cards no longer qualify for Inexhaustible (it made them return to the discard pile).
 		if (card.Keywords.Contains(CardKeyword.Exhaust) && card.Type != CardType.Power)
 		{
@@ -458,77 +413,11 @@ internal static class ExceptionalEffects
 		{
 		default:
 			return null;
-		case "Fortify":
-			return "Block";
-		case "Bloodthirst":
 		case "Legacy":
 			return "Damage";
 		}
 	}
 
-	private static bool GrowsOnPlay(string property)
-	{
-		if (!(property == "Bloodthirst"))
-		{
-			return property == "Fortify";
-		}
-		return true;
-	}
-
-	private static void Grow(CardModel played)
-	{
-		ExceptionalDefinition exceptionalDefinition = PropertyOf(played);
-		string text = ((exceptionalDefinition != null && GrowsOnPlay(exceptionalDefinition.Id)) ? VarFor(exceptionalDefinition.Id) : null);
-		if (text == null)
-		{
-			return;
-		}
-		if (!RewrittenCardValues.AddTemporaryGrowth(played, text, 1) && played.DynamicVars.TryGetValue(text, out DynamicVar value))
-		{
-			value.BaseValue += 1m;
-		}
-		CardModel deckVersion = played.DeckVersion;
-		if (deckVersion == null)
-		{
-			return;
-		}
-		CombatCounter value2 = Counters.GetValue(deckVersion, (CardModel _) => new CombatCounter());
-		object combatState = played.CombatState;
-		if (value2.Combat == null || !value2.Combat.TryGetTarget(out var target) || target != combatState)
-		{
-			value2.Combat = new WeakReference<object>(combatState);
-			value2.Permanent = 0;
-		}
-		if (value2.Permanent >= 3)
-		{
-			return;
-		}
-		CardMachineState cardMachineState = CardStateStore.Get(deckVersion);
-		if (!(cardMachineState?.Property != exceptionalDefinition.Id))
-		{
-			cardMachineState.AddPropertyGrowth(1);
-			if (!RewrittenCardValues.Owns(deckVersion, AttributeKeys.Var(text)) && deckVersion.DynamicVars.TryGetValue(text, out DynamicVar value3))
-			{
-				value3.BaseValue += 1m;
-			}
-			CardStateStore.Set(deckVersion, cardMachineState);
-			value2.Permanent++;
-			ModEntry.Info($"{exceptionalDefinition.Id}: {deckVersion.Id.Entry} crece para siempre (+{cardMachineState.PropertyGrowth}).");
-		}
-	}
-
-	private static async Task AfterPlayed(Task original, CardModel card)
-	{
-		await original;
-		try
-		{
-			Grow(card);
-		}
-		catch (Exception ex)
-		{
-			ModEntry.Error("No se pudo aplicar el crecimiento de la propiedad: " + ex);
-		}
-	}
 
 	internal static void TryLegacy(CardModel source, Creature target, DamageResult result)
 	{
@@ -598,17 +487,10 @@ internal static class ExceptionalEffects
 		await original;
 		try
 		{
-			int num = Dealt(result);
-			if (num > 0 && target != null && target.IsEnemy && !target.IsDead)
+			// Every hit on a living enemy applies 1 Poison, blocked or not.
+			if (result != null && target != null && target.IsEnemy && !target.IsDead)
 			{
-				StrongBox<int> value = VenomPending.GetValue(source, (CardModel _) => new StrongBox<int>());
-				value.Value += num * 25;
-				int num2 = value.Value / 100;
-				value.Value %= 100;
-				if (num2 > 0)
-				{
-					await PowerCmd.Apply<PoisonPower>(choiceContext, target, num2, source.Owner?.Creature, source);
-				}
+				await PowerCmd.Apply<PoisonPower>(choiceContext, target, 1, source.Owner?.Creature, source);
 			}
 		}
 		catch (Exception ex)

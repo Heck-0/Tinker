@@ -153,17 +153,16 @@ internal sealed class WorkshopScreen
 
 	/// <summary>Opens the Workshop page for <paramref name="player"/>, reselecting the last card or relic if it can still be upgraded.</summary>
 	/// <param name="gold">The player's gold (shown in the panel and checked against prices).</param>
-	/// <param name="note">A line about the last purchase, or null.</param>
-	public static WorkshopScreen Open(Player player, int gold, string note, CardModel preselect = null, RelicModel preselectRelic = null)
+	public static WorkshopScreen Open(Player player, int gold, CardModel preselect = null, RelicModel preselectRelic = null)
 	{
-		return new WorkshopScreen(player, gold, note)
+		return new WorkshopScreen(player, gold)
 		{
 			_preselect = preselect,
 			_preselectRelic = preselectRelic
 		};
 	}
 
-	private WorkshopScreen(Player player, int gold, string note)
+	private WorkshopScreen(Player player, int gold)
 	{
 		_player = player;
 		_gold = gold;
@@ -211,10 +210,7 @@ internal sealed class WorkshopScreen
 		PlaceCentered(_leftHint, LeftSlotCenter, new Vector2(SlotSize.X - 30f, 120f));
 		_rightHint = MakeLabel(40, Ink, "?");
 		PlaceCentered(_rightHint, RightSlotCenter, new Vector2(SlotSize.X - 30f, 120f));
-		if (!string.IsNullOrEmpty(note))
-		{
-			PlaceCentered(MakeLabel(17, GoldInk, note.Replace('\n', '·')), new Vector2(Middle.X, 226f), new Vector2(460f, 30f));
-		}
+
 		// Top: which upgrade. Middle: the value change. Bottom: how big, and its price.
 		_attributeLabel = MakeLabel(30, Ink, "");
 		_typeRow = new HBoxContainer

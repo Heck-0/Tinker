@@ -18,7 +18,6 @@ public sealed class ExceptionalDefinition
 public enum ExceptionalRequirement
 {
 	Damage,
-	Block,
 	NativeExhaust,
 	Playable,
 	PaidCost,
@@ -27,28 +26,14 @@ public enum ExceptionalRequirement
 
 public static class ExceptionalCatalog
 {
-	public const int PermanentGrowthPerCombat = 3;
-
-	public const int AwakeningPlays = 3;
+	public const int AwakeningPlays = 1;
 
 	public const int LegacyDamage = 5;
 
-	public const int VenomousPercent = 25;
-
 	public const int LifestealPercent = 25;
 
-	public static IReadOnlyList<ExceptionalDefinition> Default { get; } = new ExceptionalDefinition[8]
+	public static IReadOnlyList<ExceptionalDefinition> Default { get; } = new ExceptionalDefinition[6]
 	{
-		new ExceptionalDefinition
-		{
-			Id = "Bloodthirst",
-			Requires = ExceptionalRequirement.Damage
-		},
-		new ExceptionalDefinition
-		{
-			Id = "Fortify",
-			Requires = ExceptionalRequirement.Block
-		},
 		new ExceptionalDefinition
 		{
 			Id = "Inexhaustible",

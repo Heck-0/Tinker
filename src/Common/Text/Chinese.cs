@@ -11,7 +11,6 @@ public static class Chinese
 	{
 		["None of your relics can be upgraded."] = "你的遗物都无法强化。",
 		["Boons"] = "增益",
-		["Boon: "] = "增益：",
 		["Choose a card to add to your hand."] = "选择一张牌加入手牌。",
 		["Fierce"] = "狂怒",
 		["Agile"] = "灵巧",
@@ -139,14 +138,12 @@ public static class Chinese
 		["Value per"] = "每单位数值",
 		["Awakening"] = "觉醒",
 		["Base chance"] = "基础概率",
-		["Bloodthirst"] = "嗜血",
 		["Chance of a trait on each purchase. Pricier upgrades give a better chance."] = "每次购买获得特性的概率。越贵的强化概率越高。",
 		["Choose a card to [gold]Tinker[/gold] with."] = "选择一张牌进行[gold]改造[/gold]。",
 		["Choose up to {Amount} cards."] = "选择至多{Amount}张牌。",
 		["Choose {Amount} cards."] = "选择{Amount}张牌。",
 		["Click to open the [gold]Workshop[/gold]: buy upgrades for your cards and relics with gold. Not during combat."] = "点击打开[gold]工坊[/gold]：用金币为你的牌和遗物购买强化。战斗中不可用。",
 		["Echo"] = "回响",
-		["Fortify"] = "坚固",
 		["Highest trait chance on a single purchase."] = "单次购买获得特性的最高概率。",
 		["Inexhaustible"] = "不竭",
 		["Legacy"] = "传承",
@@ -160,14 +157,12 @@ public static class Chinese
 		["Traits on purchase"] = "购买时获得特性",
 		["Turn them off and buying an upgrade only changes the number."] = "关闭后，购买强化只会改变数值。",
 		["Venomous"] = "剧毒",
-		["After you play it 3 times in a combat, it costs 0 for the rest of that combat."] = "在一场战斗中打出3次后，本场战斗剩余时间其费用变为0。",
-		["Each hit applies Poison equal to 25% of the unblocked damage it deals."] = "每次攻击施加等同于其造成的未被格挡伤害25%的中毒。",
+		["After you play it once in a combat, it costs 0 for the rest of that combat."] = "在一场战斗中打出1次后，本场战斗剩余时间其费用变为0。",
+		["Each hit applies 1 Poison."] = "每次攻击施加1层中毒。",
 		["If it kills an elite or boss, permanently increase its damage by 5. Once per combat."] = "若其击杀精英或首领，永久使其伤害增加5。每场战斗一次。",
 		["No longer Exhausts. If it's a Power, it goes to your discard pile instead."] = "不再被消耗。若是能力牌，则改为进入弃牌堆。",
 		["The first time you play it each combat, play it twice."] = "每场战斗第一次打出时，打出两次。",
 		["When played, heal for 25% of the unblocked damage it deals."] = "打出时，回复其造成的未被格挡伤害的25%。",
-		["When played, increase its Block by 1. The first 3 increases each combat are permanent."] = "打出时，使其格挡增加1。每场战斗的前3次增加是永久的。",
-		["When played, increase its damage by 1. The first 3 increases each combat are permanent."] = "打出时，使其伤害增加1。每场战斗的前3次增加是永久的。",
 		["Discount"] = "折扣",
 		["Additional Focus"] = "额外集中",
 		["Additional draw"] = "额外抽牌",
@@ -406,18 +401,16 @@ public static class Chinese
 		["What the smallest upgrade on a fresh card or relic costs. Others cost proportionally more."] = "未强化过的牌或遗物上最小强化的价格。其他强化按比例更贵。",
 	};
 
-	public static readonly (string En, string Zh)[] Templates = new(string, string)[11]
+	public static readonly (string En, string Zh)[] Templates = new(string, string)[9]
 	{
 		("{0} Total: +{1}.", "{0}总计：+{1}。"),
 		("{0}% chance of one:", "获得一个的概率 {0}%："),
 		("Random boon: {0}%", "随机增益：{0}%"),
-		("New trait: {0}!", "新特性：{0}！"),
 		("Has {0}", "已拥有{0}"),
 		("{0} gold", "{0} 金币"),
 		("Shop prices are {0}% lower.", "商店价格降低{0}%。"),
 		("Already has the {0} boon; it cannot get another.", "已拥有增益「{0}」，无法再获得。"),
 		("Random boon: {0}", "随机增益：{0}"),
-		("Permanent upgrade: {0} → {1}.", "永久强化：{0} → {1}。"),
 		("gain {0} {1}.", "获得{0}层{1}。")
 	};
 }

@@ -68,10 +68,9 @@ internal static class WorkshopFlow
         {
             CardModel lastCard = null;
             RelicModel lastRelic = null;
-            string note = null;
             while (true)
             {
-                WorkshopScreen screen = WorkshopScreen.Open(player, player.Gold, note, lastCard, lastRelic);
+                WorkshopScreen screen = WorkshopScreen.Open(player, player.Gold, lastCard, lastRelic);
                 WorkshopChoice choice;
                 try
                 {
@@ -92,7 +91,7 @@ internal static class WorkshopFlow
                 }
                 lastCard = choice.Card;
                 lastRelic = choice.Relic;
-                note = await Apply(player, purchase, remote: false) ?? Lang.T("No se pudo comprar esa mejora.", "That upgrade couldn't be bought.");
+                await Apply(player, purchase, remote: false);
                 if (player.RunState.Players.Count > 1)
                 {
                     CustomMessageWrapper.Send(WorkshopMessage.For(player, purchase));
@@ -132,13 +131,14 @@ internal static class WorkshopFlow
         return (deckIndex < 0 || attributeIndex < 0) ? null : new WorkshopPurchase(OpCard, deckIndex, "", attributeIndex, choice.Request.Units, floor);
     }
 
-    private static Task<string> Apply(Player player, WorkshopPurchase purchase, bool remote)
+    /// <summary>Applies a purchase; false if it couldn't be (logged).</summary>
+    private static Task<bool> Apply(Player player, WorkshopPurchase purchase, bool remote)
     {
         return purchase.Op switch
         {
             OpCard => BuyCard(player, purchase, remote),
             OpRelic => BuyRelic(player, purchase, remote),
-            _ => Task.FromResult<string>(null),
+            _ => Task.FromResult(false),
         };
     }
 
@@ -171,20 +171,20 @@ internal static class WorkshopFlow
     /// <summary>Seed for the bonus trait / boon roll: the same on every co-op game (floor and gold are synced).</summary>
     private static ulong Seed(int floor, int goldBefore, int salt) => (ulong)(((long)floor * 1000003L + salt) ^ (7919L * goldBefore));
 
-    private static async Task<string> BuyCard(Player player, WorkshopPurchase purchase, bool remote)
+    private static async Task<bool> BuyCard(Player player, WorkshopPurchase purchase, bool remote)
     {
         IReadOnlyList<CardModel> cards = player.Deck.Cards;
         if (purchase.Index < 0 || purchase.Index >= cards.Count || purchase.Units < 1)
         {
             ModEntry.Error($"Compra del taller con carta {purchase.Index} fuera del mazo ({cards.Count}); se ignora.");
-            return null;
+            return false;
         }
         CardModel card = cards[purchase.Index];
         List<string> attributes = CardAttributes.SupportedFor(card).ToList();
         if (purchase.Attribute < 0 || purchase.Attribute >= attributes.Count)
         {
             ModEntry.Error($"Compra del taller con atributo {purchase.Attribute} inválido en {card.Id.Entry}; se ignora.");
-            return null;
+            return false;
         }
         string attribute = attributes[purchase.Attribute];
         int units = purchase.Units;
@@ -194,44 +194,37 @@ internal static class WorkshopFlow
         if (!await Pay(player, price, remote))
         {
             ModEntry.Error($"Compra del taller sin oro suficiente: {card.Id.Entry} {attribute} cuesta {price}, hay {player.Gold}.");
-            return null;
+            return false;
         }
         CardMachineState state = CardStateStore.GetOrCreate(card);
-        int before = CardAttributes.CurrentValue(card, attribute);
         CardAttributes.ApplyRaw(card, attribute, state.ApplySuccess(attribute, units));
-        int after = CardAttributes.CurrentValue(card, attribute);
-        string detail = $"{FixedEffectPatches.AttributeName(card, attribute)}: {ExpandedEffectPatches.DisplayValue(card, attribute, before)} → {ExpandedEffectPatches.DisplayValue(card, attribute, after)}";
         Rng rng = GameCompat.SeededRng(player, ModelDb.Relic<TinkerersDial>().Id, Seed(purchase.Floor, goldBefore, 17));
         ExceptionalDefinition trait = ExceptionalEffects.TryGrant(card, state, percent / 100.0, rng.NextDouble(), rng.NextDouble());
-        if (trait != null)
-        {
-            detail += "\n" + Lines.PropertyGained(ExceptionalEffects.Name(trait));
-        }
         CardStateStore.Set(card, state);
         ModEntry.Info($"Taller, planta {purchase.Floor}: {card.Id.Entry} {attribute} +{units} por {price} de oro ({percent} %){(trait == null ? "" : ", rasgo " + trait.Id)}.");
-        return detail;
+        return true;
     }
 
-    private static async Task<string> BuyRelic(Player player, WorkshopPurchase purchase, bool remote)
+    private static async Task<bool> BuyRelic(Player player, WorkshopPurchase purchase, bool remote)
     {
         RelicModel relic = FindRelic(player, purchase.RelicId, purchase.Index);
         if (relic == null)
         {
             ModEntry.Error($"Compra del taller con reliquia {purchase.RelicId} #{purchase.Index} no encontrada; se ignora.");
-            return null;
+            return false;
         }
         RelicAttribute[] attributes = Catalog.For(relic);
         if (purchase.Attribute < 0 || purchase.Attribute >= attributes.Length)
         {
             ModEntry.Error($"Compra del taller con atributo {purchase.Attribute} inválido en {relic.Id.Entry}; se ignora.");
-            return null;
+            return false;
         }
         RelicAttribute attribute = attributes[purchase.Attribute];
         int units = purchase.Units;
         if (units < 1 || units > Catalog.MaxBet(relic, attribute))
         {
             ModEntry.Error($"Compra del taller con {units} unidades fuera de rango en {relic.Id.Entry}; se ignora.");
-            return null;
+            return false;
         }
         double rawChance = Catalog.Chance(relic, attribute, units);
         int percent = Rules.Percent(rawChance);
@@ -240,16 +233,12 @@ internal static class WorkshopFlow
         if (!await Pay(player, price, remote))
         {
             ModEntry.Error($"Compra del taller sin oro suficiente: {relic.Id.Entry} {attribute.Key} cuesta {price}, hay {player.Gold}.");
-            return null;
+            return false;
         }
-        string detail = Store.Upgrade(relic, attribute, units);
+        Store.Upgrade(relic, attribute, units);
         Rng rng = new Rng(player, RelicRollId, Seed(purchase.Floor, goldBefore, 91));
         string boon = Boons.TryGrant(relic, rawChance, rng.NextDouble(), rng.NextDouble());
-        if (boon != null)
-        {
-            detail += "\n" + Tinker.Relic.Text.T("Bufo: ", "Boon: ") + Boons.Name(boon) + ".";
-        }
         ModEntry.Info($"Taller, planta {purchase.Floor}: {relic.Id.Entry} {attribute.Key} +{units} por {price} de oro ({percent} %){(boon == null ? "" : ", bufo " + boon)}.");
-        return relic.Title.GetFormattedText() + " · " + detail;
+        return true;
     }
 }

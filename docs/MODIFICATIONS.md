@@ -12,13 +12,11 @@ These don't depend on a card's own numbers. Traits can come with a Workshop purc
 |---:|---|---|---|
 | 650 | Trait: Echo (first play each combat plays twice) | Trait | playable cards |
 | 524 | Cost (lower) | Cost | cards costing 1 or more (not X) |
-| 524 | Trait: Awakening (costs 0 after 3 plays in a combat) | Trait | cards costing 1 or more |
-| 213 | Trait: Bloodthirst (+1 damage per play, partly permanent) | Trait | cards that deal damage |
+| 524 | Trait: Awakening (costs 0 after its first play in a combat) | Trait | non-Power cards costing 1 or more, without Exhaust |
 | 213 | Trait: Legacy (+5 damage on elite/boss kills) | Trait | cards that deal damage |
-| 213 | Trait: Venomous (Poison from unblocked damage) | Trait | cards that deal damage |
+| 213 | Trait: Venomous (1 Poison per hit) | Trait | cards that deal damage |
 | 213 | Trait: Lifesteal (heal from unblocked damage) | Trait | cards that deal damage |
 | 140 | Trait: Inexhaustible (no longer Exhausts) | Trait | cards that Exhaust, except Powers |
-| 86 | Trait: Fortify (+1 Block per play, partly permanent) | Trait | cards that gain Block |
 
 ## Card values on two or more cards
 

@@ -97,19 +97,6 @@ internal sealed class Config : SimpleModConfig
         set { Card.TraitMaxOnSuccess = value; Changed(); }
     }
 
-    [ConfigVisibleIf("TraitsEnabled", new object[] { })]
-    public static bool TraitBloodthirst
-    {
-        get => CardTrait("Bloodthirst");
-        set { SetCardTrait("Bloodthirst", value); Changed(); }
-    }
-
-    [ConfigVisibleIf("TraitsEnabled", new object[] { })]
-    public static bool TraitFortify
-    {
-        get => CardTrait("Fortify");
-        set { SetCardTrait("Fortify", value); Changed(); }
-    }
 
     [ConfigVisibleIf("TraitsEnabled", new object[] { })]
     public static bool TraitInexhaustible

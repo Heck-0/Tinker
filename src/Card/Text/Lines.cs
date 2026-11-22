@@ -243,9 +243,4 @@ public static class Lines
 		return T("Ya tiene " + name, "Has " + name);
 	}
 
-	public static string PropertyGained(string name)
-	{
-		return T("¡Nueva propiedad: " + name + "!", "New trait: " + name + "!");
-	}
-
 }
