@@ -1,0 +1,91 @@
+﻿using System.Collections.Generic;
+
+namespace Tinker.Common;
+
+// Simplified Chinese translations (from Relic Upgrader), used by Lang.T.
+
+public static class Chinese
+{
+	public static readonly Dictionary<string, string> Exact = new Dictionary<string, string>
+	{
+		["None of your relics can be upgraded."] = "你的遗物都无法强化。",
+		["Boons"] = "增益",
+		["Boon: "] = "增益：",
+		["Choose a card to add to your hand."] = "选择一张牌加入手牌。",
+		["Fierce"] = "狂怒",
+		["Agile"] = "灵巧",
+		["Protective"] = "守护",
+		["Vital"] = "生机",
+		["Energized"] = "充能",
+		["Inspiring"] = "启迪",
+		["At the start of each combat: gain 1 Strength."] = "每场战斗开始时：获得1点力量。",
+		["At the start of each combat: gain 1 Dexterity."] = "每场战斗开始时：获得1点敏捷。",
+		["At the start of each combat: gain 4 Block."] = "每场战斗开始时：获得4点格挡。",
+		["At the start of each combat: heal 2 HP."] = "每场战斗开始时：回复2点生命。",
+		["On your first turn: gain 1 Energy."] = "你的第一回合：获得1点能量。",
+		["On your first turn: draw 1 extra card."] = "你的第一回合：额外抽1张牌。",
+		["Vulnerable"] = "易伤",
+		["Weak"] = "虚弱",
+		["Frail"] = "脆弱",
+		["HP loss"] = "失去生命",
+		["Wound"] = "伤口",
+		["At the start of each combat: "] = "每场战斗开始时：",
+		["Healing"] = "回复",
+		["Block"] = "格挡",
+		["Damage"] = "伤害",
+		["Cards"] = "牌数",
+		["Energy"] = "能量",
+		["Energy threshold"] = "能量阈值",
+		["Energy lost"] = "失去的能量",
+		["Strength"] = "力量",
+		["Enemy strength"] = "敌人力量",
+		["Dexterity"] = "敏捷",
+		["Focus"] = "集中",
+		["Vigor"] = "活力",
+		["Thorns"] = "荆棘",
+		["Plating"] = "覆甲",
+		["Poison"] = "中毒",
+		["Gold"] = "金币",
+		["Max HP"] = "最大生命值",
+		["Stars"] = "星辰",
+		["Turns required"] = "所需回合",
+		["Orbs required"] = "所需充能球",
+		["Exhausts required"] = "所需消耗数",
+		["Discount (%)"] = "折扣（%）",
+		["HP threshold (%)"] = "生命阈值（%）",
+		["Damage reduction"] = "伤害减免",
+		["Lightning"] = "闪电",
+		["Shivs"] = "小刀",
+		["Orb slots"] = "充能球栏位",
+		["X bonus"] = "X加成",
+		["Summon"] = "召唤",
+		["Starting summon"] = "初始召唤",
+		["Cards lost"] = "少抽的牌",
+		["Price (%)"] = "价格（%）",
+		["Stars required"] = "所需星辰",
+		["Gold paid"] = "支付金币",
+		["Energy required"] = "所需能量",
+		["Cards required"] = "所需牌数",
+		["Self damage"] = "自伤",
+		["Duration (turns)"] = "持续（回合）",
+		["Normal"] = "普通",
+		["Easy"] = "简单",
+		["Hard"] = "困难",
+		["Custom"] = "自定义",
+		["Preset"] = "预设",
+		["Normal preserves the original rules. Easy and Hard change several settings. Editing a setting switches to Custom."] = "普通保持原始规则。简单和困难会调整多项设置。修改任一设置会切换为自定义。",
+		["Upgrade difficulty"] = "强化难度",
+		["Enable new boons"] = "启用新增益",
+		["Boon probability factor"] = "增益概率系数",
+		["General"] = "通用",
+	};
+
+	public static readonly (string En, string Zh)[] Templates = new(string, string)[5]
+	{
+		("Shop prices are {0}% lower.", "商店价格降低{0}%。"),
+		("Already has the {0} boon; it cannot get another.", "已拥有增益「{0}」，无法再获得。"),
+		("Random boon: {0}", "随机增益：{0}"),
+		("Permanent upgrade: {0} → {1}.", "永久强化：{0} → {1}。"),
+		("gain {0} {1}.", "获得{0}层{1}。")
+	};
+}

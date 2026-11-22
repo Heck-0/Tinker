@@ -1,0 +1,70 @@
+// Tinker's odds engine: how much each upgrade costs in the Workshop.
+// This file is built into the DLL as the defaults. The copy next to the installed DLL is read on top of
+// them, so you can tune that copy without rebuilding; it only needs the values you change.
+//
+// Odds = maxChance · e^(−(weight · risk^curve + strain)), clamped to [minChance, maxChance]
+//   risk   = (earlier upgrades + units) · hits / max(value before upgrades, referenceFloor)
+//   strain = upgrades the card already has in OTHER values, each with its own family's parameters
+// Price in gold = gold per upgrade (setting) × 100 / odds%. More weight or curve = pricier.
+{
+  "version": 1,
+  "minChance": 0.03,
+  "maxChance": 0.95,
+
+  // How much upgrades the card already has in other values raise the next price. 0 = none, 1 = in full.
+  "strainFactor": 0.8,
+
+  // Traits on purchase: chance = base · (1 − odds) / odds, capped at maxPerSuccess.
+  // Pricier (lower-odds) upgrades are more likely to give a trait.
+  "exceptional": {
+    "base": 0.20,
+    "maxPerSuccess": 0.80
+  },
+
+  "families": {
+    // Ampliación: separar acciones recurrentes y selección de los números planos.
+    // percentage usa puntos porcentuales. protection tiene un máximo de 90 % en ejecución;
+    // cambiar este JSON no puede eliminar ese tope.
+    "autoPlay": { "weight": 1.8, "curve": 1.2, "referenceFloor": 2 },
+    "generation": { "weight": 1.5, "curve": 1.2, "referenceFloor": 2 },
+    "selection": { "weight": 1.6, "curve": 1.2, "referenceFloor": 2 },
+    "groupResource": { "weight": 1.8, "curve": 1.2, "referenceFloor": 2 },
+    "persistentDraw": { "weight": 1.7, "curve": 1.2, "referenceFloor": 1 },
+    "persistentGeneration": { "weight": 1.8, "curve": 1.2, "referenceFloor": 1 },
+    "percentage": { "weight": 1.4, "curve": 1.2, "referenceFloor": 25 },
+    "persistentEnergy": { "weight": 2.0, "curve": 1.25, "referenceFloor": 1 },
+    "persistentOrb": { "weight": 2.0, "curve": 1.25, "referenceFloor": 1 },
+    "intangible": { "weight": 1.8, "curve": 1.3, "referenceFloor": 1 },
+    "persistentDefense": { "weight": 1.6, "curve": 1.3, "referenceFloor": 1 },
+    "protection": { "weight": 4.0, "curve": 1.6, "referenceFloor": 10 },
+    "persistentRepeat": { "weight": 2.0, "curve": 1.25, "referenceFloor": 1 },
+    "permanentGrowth": { "weight": 1.8, "curve": 1.25, "referenceFloor": 2 },
+    "threshold": { "weight": 1.8, "curve": 1.25, "referenceFloor": 2 },
+    "duration": { "weight": 1.5, "curve": 1.2, "referenceFloor": 1 },
+    "deckRemoval": { "weight": 2.8, "curve": 1.25, "referenceFloor": 1 },
+    // blockGrowth: cada unidad son +10 puntos porcentuales. sharedForge: +25.
+    "blockGrowth": { "weight": 0.8, "curve": 1.2, "referenceFloor": 5 },
+    "sharedForge": { "weight": 1.8, "curve": 1.25, "referenceFloor": 4 },
+    "shadowMultiplier": { "weight": 3.0, "curve": 1.3, "referenceFloor": 2 },
+    "permanentUpgrade": { "weight": 1.35, "curve": 1.3, "referenceFloor": 1 },
+    "generatedStats": { "weight": 1.4, "curve": 1.2, "referenceFloor": 5 },
+    "damage":   { "weight": 0.65,  "curve": 1.0, "referenceFloor": 5 },  // daño y daño de Osty
+    "block":    { "weight": 0.65,  "curve": 1.0, "referenceFloor": 5 },
+    "draw":     { "weight": 1.05,  "curve": 1.1, "referenceFloor": 3 },   // robo de cartas
+    "energy":   { "weight": 1.40,  "curve": 1.2, "referenceFloor": 2 },   // energía como efecto, al nivel del coste
+    "repeat":   { "weight": 1.30,  "curve": 1.1, "referenceFloor": 2 },   // repeticiones
+    "enchantRepeat": { "weight": 1.90, "curve": 1.25, "referenceFloor": 1 },
+    "enchantFirstRepeat": { "weight": 1.40, "curve": 1.20, "referenceFloor": 1 },
+    "enchantFirstDamage": { "weight": 0.50, "curve": 1.0, "referenceFloor": 5 },
+    "orb":      { "weight": 1.10,  "curve": 1.2, "referenceFloor": 2 },   // Rayo, Escarcha, Oscuridad
+    "plasma":   { "weight": 1.90,  "curve": 1.25, "referenceFloor": 1 },  // energía recurrente: riesgo mayor
+    "orbRepeat": { "weight": 1.40, "curve": 1.2, "referenceFloor": 2 },  // descargas adicionales del mismo orbe
+    "multiplier": { "weight": 1.40, "curve": 1.2, "referenceFloor": 1 },  // «por cada» / «igual a»: de ×1 a ×2 duplica la carta
+    "scaling":  { "weight": 1.30,  "curve": 1.1, "referenceFloor": 2 },   // Fuerza, Destreza, Foco
+    "power":    { "weight": 1.05,  "curve": 1.1, "referenceFloor": 3 },  // resto de poderes
+    "resource": { "weight": 1.05,  "curve": 1.1, "referenceFloor": 3 },  // oro, curación, PS máx., estrellas...
+    "drawback": { "weight": 1.30,  "curve": 1.2, "referenceFloor": 1 },  // números que mejoran bajando
+    "cost":     { "weight": 1.40,  "curve": 1.2, "referenceFloor": 1 },
+    "generic":  { "weight": 1.05,  "curve": 1.1, "referenceFloor": 3 }
+  }
+}

@@ -1,0 +1,63 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Tinker: Card Upgrader 0.9.2 + Relic Upgrader 0.5.1 built as one mod, from decompiled
+    source, with fixes for Slay the Spire 2 v0.113.0.
+
+    Needs only the .NET 8 SDK: it compiles against the game's own .NET 9 runtime assemblies.
+    Set StsDir / BaseLibDir if your paths differ.
+
+      dotnet build -c Release              build into bin\Release\
+      dotnet build -c Release -t:Install   build, then copy into <game>\mods\tinker\
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>tinker</AssemblyName>
+    <RootNamespace>Tinker</RootNamespace>
+    <LangVersion>12.0</LangVersion>
+    <Nullable>annotations</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoStdLib>true</NoStdLib>
+    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+    <GenerateRuntimeConfigurationFiles>false</GenerateRuntimeConfigurationFiles>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <DebugType>none</DebugType>
+    <Deterministic>true</Deterministic>
+    <!-- Decompiled code: silence style/nullability noise, keep real errors. -->
+    <WarningLevel>0</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <NoWarn>$(NoWarn);CS0168;CS0219;CS0162;CS0164;CS0649;CS0414;CS0169;CS1998;CS8632;CS0618;CS0612</NoWarn>
+
+    <StsDir Condition="'$(StsDir)' == ''">C:\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2</StsDir>
+    <StsData>$(StsDir)\data_sts2_windows_x86_64</StsData>
+    <BaseLibDir Condition="'$(BaseLibDir)' == ''">C:\Program Files (x86)\Steam\steamapps\workshop\content\2868840\3737335127\BaseLib</BaseLibDir>
+    <ModInstallDir>$(StsDir)\mods\tinker</ModInstallDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The game's .NET runtime (managed assemblies only). -->
+    <Reference Include="$(StsData)\System.*.dll" Exclude="$(StsData)\System.*Native*.dll" Private="false" />
+    <Reference Include="$(StsData)\netstandard.dll" Private="false" />
+    <Reference Include="$(StsData)\sts2.dll" Private="false" />
+    <Reference Include="$(StsData)\GodotSharp.dll" Private="false" />
+    <Reference Include="$(StsData)\0Harmony.dll" Private="false" />
+    <Reference Include="$(BaseLibDir)\BaseLib.dll" Private="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="tinker.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="content\**\*" Link="%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <!-- The built-in balance (BalanceConfig); the copy next to the DLL overrides it. -->
+    <EmbeddedResource Include="content/balance.jsonc" LogicalName="Tinker.balance.jsonc" />
+  </ItemGroup>
+
+  <Target Name="Install" DependsOnTargets="Build">
+    <ItemGroup>
+      <_ModFiles Include="$(OutDir)**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_ModFiles)" DestinationFolder="$(ModInstallDir)\%(RecursiveDir)" />
+    <Message Importance="high" Text="Installed to $(ModInstallDir)" />
+  </Target>
+</Project>
