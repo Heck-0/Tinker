@@ -4,7 +4,7 @@ using MegaCrit.Sts2.Core.Multiplayer.Serialization;
 namespace Tinker;
 
 /// <summary>
-/// Co-op: the host's settings, for either roulette. Replaces the two halves' separate messages.
+/// Co-op: the host's settings, for both the card and the relic side. Replaces the two halves' separate messages.
 ///
 /// The two halves still send at the same moments as before, each filling only its own part:
 /// - Relic part: sent in the lobby just before the run starts (Relic Upgrader then freezes it into the run).

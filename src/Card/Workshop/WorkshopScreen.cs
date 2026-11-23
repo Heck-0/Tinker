@@ -34,6 +34,12 @@ internal sealed class WorkshopChoice
 	public int RelicAttributeIndex { get; init; }
 
 	public int RelicUnits { get; init; }
+
+	/// <summary>Trait bought for <see cref="Card"/> (its id), instead of an upgrade.</summary>
+	public string Trait { get; init; }
+
+	/// <summary>Boon bought for <see cref="Relic"/> (its id), instead of an upgrade.</summary>
+	public string Boon { get; init; }
 }
 
 /// <summary>
@@ -91,7 +97,9 @@ internal sealed class WorkshopScreen
 
 	private readonly Label _costLabel;
 
-	private Label _propertyChance;
+	private Label _extrasHeading;
+
+	private Label _extrasLine;
 
 	private GridContainer _propertyList;
 
@@ -277,7 +285,7 @@ internal sealed class WorkshopScreen
 		SfxCmd.Play("event:/sfx/ui/map/map_open");
 	}
 
-	/// <summary>The right-hand panel: the player's gold like the top bar's counter, then the bonus trait / boon chance.</summary>
+	/// <summary>The right-hand panel: the player's gold like the top bar's counter, then the traits / boons for sale.</summary>
 	private void BuildPanel()
 	{
 		ColorRect panel = BluePanel(new Vector2(1452f, 64f), new Vector2(462f, 536f), 16f);
@@ -310,25 +318,25 @@ internal sealed class WorkshopScreen
 			Size = new Vector2(358f, 2f),
 			MouseFilter = Control.MouseFilterEnum.Ignore
 		}, forceReadableName: false, Node.InternalMode.Disabled);
-		Label heading = MakeLabel(28, GoldInk, Lang.T("Al comprar", "On purchase"));
-		heading.HorizontalAlignment = HorizontalAlignment.Center;
-		heading.Position = new Vector2(0f, 326f);
-		heading.Size = new Vector2(462f, 40f);
-		panel.AddChild(heading, forceReadableName: false, Node.InternalMode.Disabled);
-		_propertyChance = MakeLabel(18, Ink, "");
-		_propertyChance.HorizontalAlignment = HorizontalAlignment.Center;
-		_propertyChance.Position = new Vector2(30f, 364f);
-		_propertyChance.Size = new Vector2(402f, 28f);
-		panel.AddChild(_propertyChance, forceReadableName: false, Node.InternalMode.Disabled);
+		_extrasHeading = MakeLabel(28, GoldInk, "");
+		_extrasHeading.HorizontalAlignment = HorizontalAlignment.Center;
+		_extrasHeading.Position = new Vector2(0f, 326f);
+		_extrasHeading.Size = new Vector2(462f, 40f);
+		panel.AddChild(_extrasHeading, forceReadableName: false, Node.InternalMode.Disabled);
+		_extrasLine = MakeLabel(18, Ink, "");
+		_extrasLine.HorizontalAlignment = HorizontalAlignment.Center;
+		_extrasLine.Position = new Vector2(30f, 364f);
+		_extrasLine.Size = new Vector2(402f, 28f);
+		panel.AddChild(_extrasLine, forceReadableName: false, Node.InternalMode.Disabled);
 		_propertyList = new GridContainer
 		{
 			Columns = 2,
-			Position = new Vector2(56f, 396f),
-			Size = new Vector2(350f, 116f),
+			Position = new Vector2(46f, 396f),
+			Size = new Vector2(370f, 116f),
 			MouseFilter = Control.MouseFilterEnum.Ignore
 		};
-		_propertyList.AddThemeConstantOverride("h_separation", 24);
-		_propertyList.AddThemeConstantOverride("v_separation", 2);
+		_propertyList.AddThemeConstantOverride("h_separation", 10);
+		_propertyList.AddThemeConstantOverride("v_separation", 4);
 		panel.AddChild(_propertyList, forceReadableName: false, Node.InternalMode.Disabled);
 		_propertyDetail = MakeLabel(15, Ink, "");
 		_propertyDetail.AutowrapMode = TextServer.AutowrapMode.WordSmart;
@@ -574,7 +582,7 @@ internal sealed class WorkshopScreen
 		{
 			_confirm.Disable();
 			_centerBig.Text = "–";
-			RefreshProperties(null);
+			RefreshExtras();
 			return;
 		}
 		if (_relic != null)
@@ -590,7 +598,7 @@ internal sealed class WorkshopScreen
 		string change = ExpandedEffectPatches.DisplayValue(_card, Attribute, before) + " → " + ExpandedEffectPatches.DisplayValue(_card, Attribute, after);
 		ShowSpend(change, AttributeDirection.SignOf(Attribute));
 		UpdatePreview();
-		RefreshProperties(WorkshopChance());
+		RefreshExtras();
 	}
 
 	private void RefreshRelic()
@@ -604,7 +612,7 @@ internal sealed class WorkshopScreen
 		ShowSpend($"{before} → {after}", attribute.Direction);
 		ShowRelic(_relicBefore, _relic, null);
 		ShowRelic(_relicAfter, UpgradedPreview(_relic, attribute, after), null);
-		RefreshRelicProperties();
+		RefreshExtras();
 	}
 
 	/// <summary>Middle: the value change. Bottom: the upgrade size (+1, +3…) and its price, green if affordable, red if not.</summary>
@@ -902,8 +910,8 @@ internal sealed class WorkshopScreen
 		}
 	}
 
-	/// <summary>Workshop, relic selected: the boon chance instead of the trait list.</summary>
-	private void RefreshRelicProperties()
+	/// <summary>Right panel: the selected card's traits or relic's boons for sale (fixed price, one each).</summary>
+	private void RefreshExtras()
 	{
 		foreach (Node child in _propertyList.GetChildren())
 		{
@@ -913,18 +921,136 @@ internal sealed class WorkshopScreen
 			}
 			child.QueueFree();
 		}
-		Tinker.Relic.RelicAttribute attribute = _relicOptions[_attributeIndex];
-		string boon = Tinker.Relic.Store.For(_relic).Boon;
-		double chance = Tinker.Relic.Boons.Chance(_relic, Tinker.Relic.Catalog.Chance(_relic, attribute, _units)) * 100.0;
-		_propertyChance.Text = (boon != null) ? Lang.T("Ya tiene el bufo " + Tinker.Relic.Boons.Name(boon) + ".", "Already has the " + Tinker.Relic.Boons.Name(boon) + " boon.") : Lang.T($"Bufo aleatorio: {chance:0.#} %", $"Random boon: {chance:0.#}%");
-		_propertyChance.AddThemeColorOverride("font_color", Ink);
-		_propertyDetail.Text = Lang.T("Máximo un bufo por reliquia.", "At most one boon per relic.");
+		_propertyDetail.Text = "";
+		_extrasLine.AddThemeColorOverride("font_color", Ink);
+		if (_relic != null)
+		{
+			RefreshBoons();
+		}
+		else if (_card != null)
+		{
+			RefreshTraits();
+		}
+		else
+		{
+			_extrasHeading.Text = Lang.T("Propiedades y bufos", "Traits and boons");
+			_extrasLine.Text = Lang.T("Elige una carta o una reliquia", "Pick a card or a relic");
+		}
+	}
+
+	private void RefreshTraits()
+	{
+		_extrasHeading.Text = Lang.T("Propiedades", "Traits");
+		ExceptionalDefinition owned = ExceptionalEffects.PropertyOf(_card);
+		if (owned != null)
+		{
+			ShowOwned(Lines.PropertyAlready(ExceptionalEffects.Name(owned)), ExceptionalEffects.Explain(owned, CardStateStore.Get(_card)?.PropertyGrowth ?? 0));
+			return;
+		}
+		if (!Settings.Active.TraitsEnabled)
+		{
+			_extrasLine.Text = Lines.TraitsOff;
+			return;
+		}
+		List<ExceptionalDefinition> forSale = ExceptionalEffects.ApplicableTo(_card);
+		if (forSale.Count == 0)
+		{
+			_extrasLine.Text = Lines.PropertyNone;
+			return;
+		}
+		int price = WorkshopOptions.TraitPrice;
+		ShowEachPrice(price);
+		CardModel card = _card;
+		foreach (ExceptionalDefinition def in forSale)
+		{
+			AddForSale(ExceptionalEffects.Name(def), ExceptionalEffects.Explain(def, 0), price, new WorkshopChoice
+			{
+				Card = card,
+				Trait = def.Id
+			});
+		}
+	}
+
+	private void RefreshBoons()
+	{
+		_extrasHeading.Text = Lang.T("Bufos", "Boons");
+		string owned = Tinker.Relic.Store.For(_relic).Boon;
+		if (owned != null)
+		{
+			string name = Tinker.Relic.Boons.Name(owned);
+			ShowOwned(Lang.T("Tiene el bufo " + name + ".", "Has the " + name + " boon."), Tinker.Relic.Boons.Description(owned));
+			return;
+		}
+		string[] forSale = Tinker.Relic.Boons.ForSale(_relic);
+		if (forSale.Length == 0)
+		{
+			_extrasLine.Text = Lang.T("Bufos desactivados en los ajustes", "Boons are turned off in the settings");
+			return;
+		}
+		int price = WorkshopOptions.BoonPrice;
+		ShowEachPrice(price);
+		RelicModel relic = _relic;
+		foreach (string boon in forSale)
+		{
+			AddForSale(Tinker.Relic.Boons.Name(boon), Tinker.Relic.Boons.Description(boon), price, new WorkshopChoice
+			{
+				Relic = relic,
+				RelicAttributeIndex = -1,
+				Boon = boon
+			});
+		}
+	}
+
+	private void ShowOwned(string line, string detail)
+	{
+		_extrasLine.Text = line;
+		_extrasLine.AddThemeColorOverride("font_color", GoldInk);
+		_propertyDetail.Text = detail;
+	}
+
+	/// <summary>The price line above the buttons: green if the player can afford one, red if not.</summary>
+	private void ShowEachPrice(int price)
+	{
+		_extrasLine.Text = Lang.T($"{price:N0} de oro cada una", $"{price:N0} gold each");
+		_extrasLine.AddThemeColorOverride("font_color", (price <= _gold) ? AffordableInk : UnaffordableInk);
+	}
+
+	/// <summary>One trait / boon button: hover for what it does, click to buy (disabled if too expensive).</summary>
+	private void AddForSale(string name, string description, int price, WorkshopChoice choice)
+	{
+		bool affordable = price <= _gold;
+		Button button = new Button
+		{
+			Text = "✦ " + name,
+			ClipText = true,
+			Alignment = HorizontalAlignment.Center,
+			CustomMinimumSize = new Vector2(180f, 34f),
+			FocusMode = Control.FocusModeEnum.None,
+			Disabled = !affordable
+		};
+		button.AddThemeFontOverride("font", ResourceLoader.Load<Font>("res://themes/kreon_bold_shared.tres", null, ResourceLoader.CacheMode.Reuse));
+		button.AddThemeFontSizeOverride("font_size", 17);
+		button.AddThemeColorOverride("font_color", new Color("F3C14F"));
+		button.AddThemeColorOverride("font_hover_color", Ink);
+		button.AddThemeColorOverride("font_pressed_color", Ink);
+		button.AddThemeColorOverride("font_disabled_color", new Color(FadedInk.R, FadedInk.G, FadedInk.B, 0.45f));
+		StyleRow(button, selected: false);
+		LegendTips.Attach(button, () => LegendTips.Make(name, LegendTips.Capitalize(description)));
+		button.Pressed += delegate
+		{
+			if (_choice != null && !_choice.Task.IsCompleted && price <= _gold)
+			{
+				SfxCmd.Play("event:/sfx/ui/clicks/ui_click");
+				_choice.TrySetResult(choice);
+			}
+		};
+		_propertyList.AddChild(button, forceReadableName: false, Node.InternalMode.Disabled);
 	}
 
 	/// <summary>The biggest size the bottom selector offers: what the value allows, at most 999. Gold doesn't limit it; unaffordable sizes show their price in red.</summary>
 	private int MaxUnits()
 	{
-		return Math.Max(1, (_relic != null) ? Tinker.Relic.Catalog.MaxBet(_relic, _relicOptions[_attributeIndex]) : CardUnitCap());
+		return Math.Max(1, (_relic != null) ? Tinker.Relic.Catalog.MaxUnits(_relic, _relicOptions[_attributeIndex]) : CardUnitCap());
 	}
 
 	/// <summary>The gold price of the selected upgrade at this size.</summary>
@@ -945,103 +1071,6 @@ internal sealed class WorkshopScreen
 	{
 		_units = Math.Max(1, Math.Min(MaxUnits(), _units));
 		_spend = Price(_units);
-	}
-
-	private double? WorkshopChance()
-	{
-		if (_card == null || Attribute == null)
-		{
-			return null;
-		}
-		try
-		{
-			return (double)Odds.DisplayPercent(Odds.SuccessChance(Request(_units), CardOdds.Balance)) / 100.0;
-		}
-		catch (ArgumentOutOfRangeException)
-		{
-			return null;
-		}
-	}
-
-	private void RefreshProperties(double? successChance)
-	{
-		foreach (Node child in _propertyList.GetChildren())
-		{
-			if (child is Control owner)
-			{
-				LegendTips.Hide(owner);
-			}
-			child.QueueFree();
-		}
-		_propertyDetail.Text = "";
-		List<ExceptionalDefinition> list = ExceptionalCatalog.Default.Where((ExceptionalDefinition d) => !Settings.Active.IsTraitEnabled(d.Id)).ToList();
-		List<ExceptionalDefinition> list2;
-		if (_card == null)
-		{
-			_propertyChance.Text = (Settings.Active.TraitsEnabled ? Lines.PropertyPickCard : Lines.TraitsOff);
-			list2 = ExceptionalCatalog.Default.Where((ExceptionalDefinition d) => Settings.Active.IsTraitEnabled(d.Id)).ToList();
-		}
-		else
-		{
-			ExceptionalDefinition exceptionalDefinition = ExceptionalEffects.PropertyOf(_card);
-			if (exceptionalDefinition != null)
-			{
-				_propertyChance.Text = Lines.PropertyAlready(ExceptionalEffects.Name(exceptionalDefinition));
-				_propertyChance.AddThemeColorOverride("font_color", GoldInk);
-				_propertyDetail.Text = ExceptionalEffects.Explain(exceptionalDefinition, CardStateStore.Get(_card)?.PropertyGrowth ?? 0);
-				return;
-			}
-			list2 = ExceptionalEffects.ApplicableTo(_card);
-			if (!Settings.Active.TraitsEnabled)
-			{
-				_propertyChance.Text = Lines.TraitsOff;
-			}
-			else if (list2.Count == 0)
-			{
-				_propertyChance.Text = Lines.PropertyNone;
-			}
-			else if (successChance.HasValue)
-			{
-				double num = CardOdds.Balance.ExceptionalChanceFor(successChance.Value) * 100.0;
-				_propertyChance.Text = ((num < 1.0) ? Lines.PropertyChanceTiny : Lines.PropertyChance(Math.Round(num, 1)));
-			}
-			else
-			{
-				_propertyChance.Text = Lines.PropertyChance(0.0);
-			}
-		}
-		_propertyChance.AddThemeColorOverride("font_color", Ink);
-		foreach (ExceptionalDefinition item in list2)
-		{
-			Label label = MakeLabel(17, new Color("F3C14F"), "✦ " + ExceptionalEffects.Name(item));
-			ExceptionalDefinition def = item;
-			LegendTips.Attach(label, () => LegendTips.Make(ExceptionalEffects.Name(def), LegendTips.Capitalize(ExceptionalEffects.Explain(def, 0))));
-			_propertyList.AddChild(label, forceReadableName: false, Node.InternalMode.Disabled);
-		}
-		foreach (ExceptionalDefinition item2 in list)
-		{
-			Label label2 = MakeLabel(17, new Color(FadedInk.R, FadedInk.G, FadedInk.B, 0.55f), "✦ " + ExceptionalEffects.Name(item2));
-			StrikeThrough(label2, 17);
-			ExceptionalDefinition def2 = item2;
-			LegendTips.Attach(label2, () => LegendTips.Make(ExceptionalEffects.Name(def2), LegendTips.Capitalize(ExceptionalEffects.Explain(def2, 0)) + "\n" + Lines.DisabledBySettings));
-			_propertyList.AddChild(label2, forceReadableName: false, Node.InternalMode.Disabled);
-		}
-	}
-
-	private static void StrikeThrough(Label label, int fontSize)
-	{
-		float offsetRight = label.GetThemeFont("font")?.GetStringSize(label.Text, HorizontalAlignment.Left, -1f, fontSize, TextServer.JustificationFlag.Kashida | TextServer.JustificationFlag.WordBound, TextServer.Direction.Auto, TextServer.Orientation.Horizontal).X ?? 100f;
-		label.AddChild(new ColorRect
-		{
-			Color = new Color(NegativeInk.R, NegativeInk.G, NegativeInk.B, 0.8f),
-			AnchorTop = 0.5f,
-			AnchorBottom = 0.5f,
-			OffsetLeft = 0f,
-			OffsetRight = offsetRight,
-			OffsetTop = -1f,
-			OffsetBottom = 1f,
-			MouseFilter = Control.MouseFilterEnum.Ignore
-		}, forceReadableName: false, Node.InternalMode.Disabled);
 	}
 
 	private NCard AddCard(CardModel model, Vector2 center)
@@ -1184,7 +1213,7 @@ internal sealed class WorkshopScreen
 
 	private UpgradeRequest Request(int units)
 	{
-		return CardOdds.BuildRequest(_card, Attribute, units);
+		return CardCost.BuildRequest(_card, Attribute, units);
 	}
 
 	private void ChangeAttribute(int delta)

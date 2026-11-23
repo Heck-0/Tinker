@@ -376,23 +376,15 @@ internal static class ExceptionalEffects
 		return ExceptionalCatalog.Find(text);
 	}
 
-	public static ExceptionalDefinition TryGrant(CardModel card, CardMachineState state, double successChance, double chanceRoll, double pickRoll)
+	/// <summary>Gives the card a trait bought in the Workshop. False if it can't have that one (or has one already).</summary>
+	public static bool Grant(CardModel card, CardMachineState state, string id)
 	{
-		if (state.Property != null)
+		if (state.Property != null || !ApplicableTo(card).Any((ExceptionalDefinition d) => d.Id == id))
 		{
-			return null;
+			return false;
 		}
-		if (chanceRoll >= CardOdds.Balance.ExceptionalChanceFor(successChance))
-		{
-			return null;
-		}
-		ExceptionalDefinition exceptionalDefinition = ExceptionalCatalog.Choose(ApplicableTo(card), pickRoll);
-		if (exceptionalDefinition == null)
-		{
-			return null;
-		}
-		state.GrantProperty(exceptionalDefinition.Id);
-		return exceptionalDefinition;
+		state.GrantProperty(id);
+		return true;
 	}
 
 	public static void ApplyGrowth(CardModel card, CardMachineState state)

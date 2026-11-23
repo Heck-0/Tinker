@@ -1,26 +1,16 @@
-// Tinker's odds engine: how much each upgrade costs in the Workshop.
+// Tinker's prices: how much each upgrade costs in the Workshop.
 // This file is built into the DLL as the defaults. The copy next to the installed DLL is read on top of
 // them, so you can tune that copy without rebuilding; it only needs the values you change.
 //
-// Odds = maxChance · e^(−(weight · risk^curve + strain)), clamped to [minChance, maxChance]
-//   risk   = (earlier upgrades + units) · hits / max(value before upgrades, referenceFloor)
+// Price in gold = gold per upgrade (setting) × e^(weight · ratio^curve + strain), no ceiling
+//   ratio  = (earlier upgrades + units) · hits / max(value before upgrades, referenceFloor)
 //   strain = upgrades the card already has in OTHER values, each with its own family's parameters
-// Price in gold = gold per upgrade (setting) / odds, using odds WITHOUT the minChance floor, so prices have
-// no ceiling. minChance still limits the trait and boon chances. More weight or curve = pricier.
+// More weight or curve = pricier. Traits and boons have fixed prices (settings), not set here.
 {
   "version": 1,
-  "minChance": 0.03,
-  "maxChance": 0.95,
 
   // How much upgrades the card already has in other values raise the next price. 0 = none, 1 = in full.
   "strainFactor": 0.8,
-
-  // Traits on purchase: chance = base · (1 − odds) / odds, capped at maxPerSuccess.
-  // Pricier (lower-odds) upgrades are more likely to give a trait.
-  "exceptional": {
-    "base": 0.20,
-    "maxPerSuccess": 0.80
-  },
 
   "families": {
     // Ampliación: separar acciones recurrentes y selección de los números planos.

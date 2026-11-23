@@ -48,7 +48,7 @@ internal sealed class Config : SimpleModConfig
         }
     }
 
-    [ConfigSection("SectionOdds")]
+    [ConfigSection("SectionPrices")]
     [ConfigSlider(25.0, 300.0, 5.0)]
     [SliderLabelFormat("{0} %")]
     [ConfigHoverTip(true)]
@@ -78,25 +78,13 @@ internal sealed class Config : SimpleModConfig
     }
 
     [ConfigVisibleIf("TraitsEnabled", new object[] { })]
-    [ConfigSlider(0.0, 100.0, 1.0)]
-    [SliderLabelFormat("{0} %")]
+    [ConfigSlider(0.0, 500.0, 10.0)]
     [ConfigHoverTip(true)]
-    public static int TraitBase
+    public static int TraitPrice
     {
-        get => Card.TraitBase;
-        set { Card.TraitBase = value; Changed(); }
+        get => Card.TraitPrice;
+        set { Card.TraitPrice = value; Changed(); }
     }
-
-    [ConfigVisibleIf("TraitsEnabled", new object[] { })]
-    [ConfigSlider(0.0, 100.0, 1.0)]
-    [SliderLabelFormat("{0} %")]
-    [ConfigHoverTip(true)]
-    public static int TraitMaxOnSuccess
-    {
-        get => Card.TraitMaxOnSuccess;
-        set { Card.TraitMaxOnSuccess = value; Changed(); }
-    }
-
 
     [ConfigVisibleIf("TraitsEnabled", new object[] { })]
     public static bool TraitInexhaustible
@@ -148,20 +136,12 @@ internal sealed class Config : SimpleModConfig
         set { Relic.BoonsEnabled = value; Changed(); }
     }
 
-    [ConfigSlider(0.0, 100.0, 5.0, Format = "{0} %")]
+    [ConfigSlider(0.0, 500.0, 10.0)]
     [ConfigHoverTip(true)]
-    public static int BoonBase
+    public static int BoonPrice
     {
-        get => Relic.BoonBase;
-        set { value = Math.Clamp(value, 0, 100); Relic.BoonBase = value; Changed(); }
-    }
-
-    [ConfigSlider(0.0, 100.0, 5.0, Format = "{0} %")]
-    [ConfigHoverTip(true)]
-    public static int BoonMax
-    {
-        get => Relic.BoonMax;
-        set { value = Math.Clamp(value, 0, 100); Relic.BoonMax = value; Changed(); }
+        get => Relic.BoonPrice;
+        set { value = Math.Clamp(value, 0, 9999); Relic.BoonPrice = value; Changed(); }
     }
 
     [ConfigHoverTip(true)]

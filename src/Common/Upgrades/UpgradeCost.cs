@@ -4,20 +4,14 @@ using System.Linq;
 
 namespace Tinker.Common;
 
-public static class Odds
+/// <summary>
+/// How costly a card upgrade is: the exponent the Workshop price grows with (see <see cref="WorkshopPrice"/>).
+/// It is the upgrade's own risk (its size next to the card's base value, in its cost category) plus the strain
+/// from the card's upgrades in other values.
+/// </summary>
+public static class UpgradeCost
 {
-	public static double SuccessChance(UpgradeRequest request, BalanceConfig config)
-	{
-		return RiskCurve.Chance(config.MaxChance, config.MinChance, Exponent(request, config));
-	}
-
-	/// <summary>The chance the Workshop prices from: like <see cref="SuccessChance"/>, without the minimum.</summary>
-	public static double PriceChance(UpgradeRequest request, BalanceConfig config)
-	{
-		return RiskCurve.Unclamped(config.MaxChance, Exponent(request, config));
-	}
-
-	private static double Exponent(UpgradeRequest request, BalanceConfig config)
+	public static double Exponent(UpgradeRequest request, BalanceConfig config)
 	{
 		if (request.Units <= 0)
 		{
@@ -27,12 +21,12 @@ public static class Odds
 		{
 			throw new ArgumentOutOfRangeException("request", "ExistingGain debe ser >= 0");
 		}
-		AttributeBalance attributeBalance = config.For(request.Attribute, request.RiskFamily);
-		double num2 = request.Units;
-		double risk = RiskCurve.Risk(attributeBalance, request.Multiplier * ((double)request.ExistingGain + num2), (double)request.ReferenceValue);
+		AttributeBalance family = config.For(request.Attribute, request.RiskFamily);
+		double risk = RiskCurve.Risk(family, request.Multiplier * (request.ExistingGain + (double)request.Units), request.ReferenceValue);
 		return risk + request.OtherStrain;
 	}
 
+	/// <summary>The card's upgrades in values other than <paramref name="attribute"/>, which make further upgrades pricier.</summary>
 	public static double Strain(CardMachineState state, string attribute, Func<string, int> referenceOf, Func<string, double> multiplierOf, BalanceConfig config, Func<string, string> familyOf = null, Func<string, string> axisOf = null)
 	{
 		if (state == null || attribute == null)
@@ -57,10 +51,4 @@ public static class Odds
 		}
 		return num * config.StrainFactor;
 	}
-
-	public static int DisplayPercent(double chance)
-	{
-		return (int)Math.Round(chance * 100.0, MidpointRounding.AwayFromZero);
-	}
-
 }

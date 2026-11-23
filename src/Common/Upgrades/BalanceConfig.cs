@@ -6,7 +6,7 @@ using System.Text.Json;
 namespace Tinker.Common;
 
 /// <summary>
-/// The odds engine's numbers. Defaults come from content/balance.jsonc, embedded in the DLL; the copy next to
+/// The price curve's numbers. Defaults come from content/balance.jsonc, embedded in the DLL; the copy next to
 /// the DLL (if any) is applied on top through <see cref="ApplyOverrides"/>, so it only needs what it changes.
 /// </summary>
 public sealed class BalanceConfig
@@ -28,15 +28,7 @@ public sealed class BalanceConfig
 		return reader.ReadToEnd();
 	});
 
-	public double MinChance { get; set; }
-
-	public double MaxChance { get; set; }
-
 	public double StrainFactor { get; set; }
-
-	public double ExceptionalBase { get; set; }
-
-	public double ExceptionalMax { get; set; }
 
 	public Dictionary<string, AttributeBalance> Families { get; } = new Dictionary<string, AttributeBalance>(StringComparer.Ordinal);
 
@@ -50,15 +42,6 @@ public sealed class BalanceConfig
 		}
 	}
 
-	public double ExceptionalChanceFor(double successChance)
-	{
-		double num = Math.Max(0.0, Math.Min(1.0, successChance));
-		if (num <= 0.0)
-		{
-			return ExceptionalMax;
-		}
-		return Math.Max(0.0, Math.Min(ExceptionalMax, ExceptionalBase * (1.0 - num) / num));
-	}
 
 	public AttributeBalance For(string attribute)
 	{
@@ -103,32 +86,8 @@ public sealed class BalanceConfig
 			warnings.Add("archivo vacío.");
 			return warnings;
 		}
-		double min = file.MinChance ?? MinChance;
-		double max = file.MaxChance ?? MaxChance;
-		if (min < 0.0 || min >= 1.0 || max <= min || max > 1.0)
-		{
-			warnings.Add($"minChance/maxChance fuera de rango ({min}, {max}); se ignoran.");
-		}
-		else
-		{
-			MinChance = min;
-			MaxChance = max;
-		}
 		Set(file.StrainFactor, v => v >= 0.0 && v <= 5.0, v => StrainFactor = v, "strainFactor (entre 0 y 5)", warnings);
-		if (file.Exceptional != null)
-		{
-			double traitBase = file.Exceptional.Base ?? ExceptionalBase;
-			double traitMax = file.Exceptional.MaxPerSuccess ?? ExceptionalMax;
-			if (traitBase < 0.0 || traitBase > 1.0 || traitMax < 0.0 || traitMax > 1.0)
-			{
-				warnings.Add("exceptional fuera de rango (base y maxPerSuccess entre 0 y 1); se ignora.");
-			}
-			else
-			{
-				ExceptionalBase = traitBase;
-				ExceptionalMax = traitMax;
-			}
-		}
+
 		foreach (KeyValuePair<string, FamilyShape> item in file.Families ?? new Dictionary<string, FamilyShape>())
 		{
 			if (item.Value == null)
@@ -168,25 +127,12 @@ public sealed class BalanceConfig
 		}
 	}
 
-	// The file's shape. Unknown keys ("version", the old "maxUnits") are ignored.
+	// The file's shape. Unknown keys ("version", and the old "minChance", "maxChance", "exceptional", "maxUnits") are ignored.
 	private sealed class BalanceFileShape
 	{
-		public double? MinChance { get; set; }
-
-		public double? MaxChance { get; set; }
-
 		public double? StrainFactor { get; set; }
 
-		public ExceptionalShape Exceptional { get; set; }
-
 		public Dictionary<string, FamilyShape> Families { get; set; }
-	}
-
-	private sealed class ExceptionalShape
-	{
-		public double? Base { get; set; }
-
-		public double? MaxPerSuccess { get; set; }
 	}
 
 	private sealed class FamilyShape

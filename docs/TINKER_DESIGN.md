@@ -25,18 +25,23 @@ id and copy number, cards by deck position.
 
 ## Price
 
-    gold = max(1, round(rate / chance))      chance = maxChance × e^(−exponent)
+    gold = max(1, round(rate × e^exponent))      exponent = weight · ratio^curve + strain
 
-*exponent* is the odds engine's for that exact upgrade (same strain from earlier upgrades, same
-difficulty); *rate* is the *Gold per upgrade* setting (default 25). So the smallest
-upgrade on a fresh card costs about 25 gold, while big upgrades, and upgrades on cards or relics that are
-already upgraded, cost more.
+*ratio* is the upgrade's size (plus earlier upgrades of the same value) next to the value's base, with the
+weight and curve of its cost category (`content/balance.jsonc`); *strain* comes from the card's or relic's
+upgrades in other values; the difficulty setting scales it; *rate* is the *Gold per upgrade* setting
+(default 25). So the smallest upgrade on a fresh card costs about 25 gold, while big upgrades, and upgrades
+on cards or relics that are already upgraded, cost more, with **no ceiling**: a value pushed to several
+times its base gets very expensive (Strength 2 → 10: the next +1 costs about 22,000 gold).
 
-The price ignores the engine's minimum chance (`minChance`, 3 %), so it has **no ceiling**. With the
-minimum, every upgrade past a point cost the same 833 gold, so +999 cost as much as +1 and was the only
-size offered. Now prices grow exponentially: a value pushed to several times its base gets very expensive
-(Strength 2 → 10: the next +1 costs about 23,600 gold). The minimum still applies to the trait and boon
-chances.
+The categories' numbers come from the original roulette, where the same curve set a success chance with a
+3 % floor. That chance, its floor and its cap are gone (1.6.0): prices come straight from the curve.
+
+## Traits and boons
+
+Bought directly in the Workshop's right-hand panel, at a fixed price: *Trait price* (default 150 gold) for
+a card's trait, *Boon price* (default 100) for a relic's boon. One per card or relic; only traits that fit
+the card are offered. Nothing is rolled.
 
 ## Support items: removed
 
@@ -46,8 +51,6 @@ may not load. Tinkerer's Dial is the mod's only item.
 
 ## Unchanged
 
-- **Traits** (cards) and **boons** (relics) can still appear on a purchase, more likely on bigger
-  (pricier) upgrades.
 - **No drawbacks.**
 - Cards and relics keep their upgrade history (`CardMachineState`, relic `Store`), which sets later prices.
   Card upgrades from before 1.6.0 aren't loaded.

@@ -4,10 +4,10 @@ using MegaCrit.Sts2.Core.Models;
 namespace Tinker.Card;
 
 /// <summary>
-/// The odds engine's view of a card upgrade: the request the Workshop prices (see <see cref="WorkshopPrice"/>),
-/// with the card's upgrade history (strain) and its cost category.
+/// A card upgrade as the Workshop prices it (see <see cref="WorkshopPrice"/>): its size, the card's base value,
+/// its upgrade history (strain) and its cost category.
 /// </summary>
-internal static class CardOdds
+internal static class CardCost
 {
 	public static BalanceConfig Balance => Settings.Balance;
 
@@ -27,7 +27,7 @@ internal static class CardOdds
 		}
 		CardMachineState cardMachineState = CardStateStore.Get(card);
 		int num = CardAttributes.CurrentValue(card, attribute);
-		return new UpgradeRequest(attribute, num, units, CardAttributes.NativeReferenceValue(card, attribute), BidirectionalEffects.Gain(card.GetType().Name, attribute, cardMachineState), Multiplier(attribute), Odds.Strain(cardMachineState, attribute, Reference, Multiplier, Balance, (string a) => CardAttributes.RiskFamily(card, a), (string a) => BidirectionalEffects.Axis(card.GetType().Name, a)), CardAttributes.RiskFamily(card, attribute));
+		return new UpgradeRequest(attribute, num, units, CardAttributes.NativeReferenceValue(card, attribute), BidirectionalEffects.Gain(card.GetType().Name, attribute, cardMachineState), Multiplier(attribute), UpgradeCost.Strain(cardMachineState, attribute, Reference, Multiplier, Balance, (string a) => CardAttributes.RiskFamily(card, a), (string a) => BidirectionalEffects.Axis(card.GetType().Name, a)), CardAttributes.RiskFamily(card, attribute));
 		double Multiplier(string a)
 		{
 			if (!(BalanceFamilies.Of(a) == "damage"))

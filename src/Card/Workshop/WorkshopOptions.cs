@@ -7,8 +7,8 @@ using Tinker.Relic;
 namespace Tinker.Card;
 
 /// <summary>
-/// What the Workshop sells and for how much gold: every card and relic upgrade, priced from the odds engine's
-/// chance for the same upgrade (see <see cref="WorkshopPrice"/>).
+/// What the Workshop sells and for how much gold: card and relic upgrades (priced by <see cref="WorkshopPrice"/>),
+/// traits and boons (fixed prices from the settings).
 /// </summary>
 internal static class WorkshopOptions
 {
@@ -18,17 +18,17 @@ internal static class WorkshopOptions
 
     public static bool RelicUsable(RelicModel relic) => Catalog.For(relic).Length != 0;
 
-    /// <summary>The odds engine's chance for this card upgrade, in percent.</summary>
-    public static int CardPercent(CardModel card, string attribute, int units)
-    {
-        return Odds.DisplayPercent(Odds.SuccessChance(CardOdds.BuildRequest(card, attribute, units), CardOdds.Balance));
-    }
+    /// <summary>What a trait costs (fixed, from the settings).</summary>
+    public static int TraitPrice => Settings.Active.TraitPrice;
+
+    /// <summary>What a boon costs (fixed, from the run's relic settings).</summary>
+    public static int BoonPrice => Tinker.Relic.Settings.Active.BoonPrice;
 
     public static int CardPrice(CardModel card, string attribute, int units)
     {
         try
         {
-            return WorkshopPrice.Gold(Odds.PriceChance(CardOdds.BuildRequest(card, attribute, units), CardOdds.Balance), Rate);
+            return WorkshopPrice.Gold(UpgradeCost.Exponent(CardCost.BuildRequest(card, attribute, units), CardCost.Balance), Rate);
         }
         catch (ArgumentOutOfRangeException)
         {
@@ -40,7 +40,7 @@ internal static class WorkshopOptions
     {
         try
         {
-            return WorkshopPrice.Gold(Catalog.Chance(relic, attribute, units, forPrice: true), Rate);
+            return WorkshopPrice.Gold(Catalog.Exponent(relic, attribute, units), Rate);
         }
         catch (ArgumentOutOfRangeException)
         {

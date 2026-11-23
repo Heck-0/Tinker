@@ -40,37 +40,6 @@ internal static class GameCompat
 		return (Task)_exhaust.Invoke(null, new object[4] { context, card, causedByEthereal, skipVisuals });
 	}
 
-	public static Rng SeededRng(Player player, ModelId id, ulong mixin)
-	{
-		if (_rngCtor == null)
-		{
-			_rngCtor = AccessTools.Constructor(typeof(Rng), new Type[3]
-			{
-				typeof(Player),
-				typeof(ModelId),
-				typeof(ulong)
-			}) ?? AccessTools.Constructor(typeof(Rng), new Type[4]
-			{
-				typeof(Player),
-				typeof(ModelId),
-				typeof(uint),
-				typeof(int)
-			});
-			if (_rngCtor == null)
-			{
-				throw new MissingMethodException("Rng(Player, ModelId, mixin)");
-			}
-		}
-		object[] parameters = ((_rngCtor.GetParameters().Length != 3) ? new object[4]
-		{
-			player,
-			id,
-			(uint)(mixin ^ (mixin >> 32)),
-			0
-		} : new object[3] { player, id, mixin });
-		return (Rng)_rngCtor.Invoke(parameters);
-	}
-
 	public static bool RegisterNetworkProperties(Type type)
 	{
 		Type type2 = AccessTools.TypeByName("MegaCrit.Sts2.Core.Saves.Runs.SavedPropertiesTypeCache");

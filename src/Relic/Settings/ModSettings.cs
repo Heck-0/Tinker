@@ -9,15 +9,10 @@ public sealed class ModSettings
 
 	public int Difficulty { get; set; } = 100;
 
-	public int MaxChance { get; set; } = 95;
-
-	public int MinChance { get; set; } = 3;
-
 	public bool BoonsEnabled { get; set; } = true;
 
-	public int BoonBase { get; set; } = 20;
-
-	public int BoonMax { get; set; } = 80;
+	/// <summary>Workshop: what a boon costs (bought directly, one per relic).</summary>
+	public int BoonPrice { get; set; } = 100;
 
 	public bool BoonStrength { get; set; } = true;
 
@@ -58,21 +53,9 @@ public sealed class ModSettings
 		{
 			throw new FormatException("Invalid Difficulty");
 		}
-		if (!double.IsFinite(MaxChance) || MaxChance < 10 || MaxChance > 100)
+		if (BoonPrice < 0 || BoonPrice > 9999)
 		{
-			throw new FormatException("Invalid MaxChance");
-		}
-		if (!double.IsFinite(MinChance) || MinChance < 0 || MinChance > 50)
-		{
-			throw new FormatException("Invalid MinChance");
-		}
-		if (!double.IsFinite(BoonBase) || BoonBase < 0 || BoonBase > 100)
-		{
-			throw new FormatException("Invalid BoonBase");
-		}
-		if (!double.IsFinite(BoonMax) || BoonMax < 0 || BoonMax > 100)
-		{
-			throw new FormatException("Invalid BoonMax");
+			throw new FormatException("Invalid BoonPrice");
 		}
 	}
 
@@ -104,17 +87,12 @@ public sealed class ModSettings
 		if (preset == SettingsPreset.Easy)
 		{
 			modSettings.Difficulty = 70;
-			modSettings.MinChance = 5;
-			modSettings.BoonBase = 30;
-			modSettings.BoonMax = 90;
+			modSettings.BoonPrice = 75;
 		}
 		if (preset == SettingsPreset.Hard)
 		{
 			modSettings.Difficulty = 130;
-			modSettings.MaxChance = 90;
-			modSettings.MinChance = 2;
-			modSettings.BoonBase = 15;
-			modSettings.BoonMax = 70;
+			modSettings.BoonPrice = 150;
 		}
 		return modSettings;
 	}

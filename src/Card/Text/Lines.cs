@@ -16,17 +16,7 @@ public static class Lines
 
 	public static string After => T("Después", "After");
 
-	public static string PropertyChanceTiny => T("< 1 % de ganar una:", "<1% chance of one:");
-
 	public static string PropertyNone => T("Ninguna le sirve a esta carta", "None fit this card");
-
-	public static string PropertyPickCard => T("Rara vez:", "Rarely:");
-
-	public static string Failure => T("Fallo", "Failure");
-
-	public static string Proceed => T("Continuar", "Proceed");
-
-	public static string DisabledBySettings => T("Desactivado en los ajustes.", "Turned off in the settings.");
 
 	public static string TraitsOff => T("Propiedades desactivadas en los ajustes", "Traits are turned off in the settings");
 
@@ -233,11 +223,6 @@ public static class Lines
 			return Regex.Replace(key, "(?<=[a-z])(?=[A-Z])", " ");
 		}
 	}
-	public static string PropertyChance(double percent)
-	{
-		return T($"{percent:0.#} % de ganar una:", $"{percent:0.#}% chance of one:");
-	}
-
 	public static string PropertyAlready(string name)
 	{
 		return T("Ya tiene " + name, "Has " + name);

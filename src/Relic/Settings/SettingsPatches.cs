@@ -7,7 +7,7 @@ using MegaCrit.Sts2.Core.Runs;
 
 namespace Tinker.Relic;
 
-// When relic roulette settings are sent, frozen into a run and released.
+// When the relic settings are sent, frozen into a run and released.
 
 [HarmonyPatch]
 public static class SettingsLobbyPatch

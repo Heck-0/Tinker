@@ -15,20 +15,15 @@ public sealed class CardSettings
 
 	public SettingsPreset Preset { get; set; }
 
-	/// <summary>Workshop: gold for an upgrade the roulette would win every time; riskier ones cost proportionally more.</summary>
+	/// <summary>Workshop: about what the smallest upgrade on a fresh card or relic costs; bigger ones cost more.</summary>
 	public int WorkshopGoldRate { get; set; } = 25;
 
 	public int UpgradeDifficulty { get; set; } = 100;
 
-	public int MaxChance { get; set; } = 95;
-
-	public int MinChance { get; set; } = 3;
-
 	public bool TraitsEnabled { get; set; } = true;
 
-	public int TraitBase { get; set; } = 20;
-
-	public int TraitMaxOnSuccess { get; set; } = 80;
+	/// <summary>Workshop: what a trait costs (bought directly, one per card).</summary>
+	public int TraitPrice { get; set; } = 150;
 
 	public HashSet<string> DisabledTraits { get; set; } = new HashSet<string>(StringComparer.Ordinal);
 
@@ -72,16 +67,11 @@ public sealed class CardSettings
 		{
 		case SettingsPreset.Easy:
 			modSettings.UpgradeDifficulty = 70;
-			modSettings.MinChance = 5;
-			modSettings.TraitBase = 30;
-			modSettings.TraitMaxOnSuccess = 90;
+			modSettings.TraitPrice = 100;
 			break;
 		case SettingsPreset.Hard:
 			modSettings.UpgradeDifficulty = 130;
-			modSettings.MaxChance = 90;
-			modSettings.MinChance = 2;
-			modSettings.TraitBase = 15;
-			modSettings.TraitMaxOnSuccess = 70;
+			modSettings.TraitPrice = 200;
 			break;
 		}
 		return modSettings;
@@ -121,10 +111,6 @@ public sealed class CardSettings
 		{
 			value.Weight *= num;
 		}
-		balance.MaxChance = (double)Clamp(MaxChance, 1, 100) / 100.0;
-		balance.MinChance = Math.Min(balance.MaxChance, (double)Clamp(MinChance, 0, 100) / 100.0);
-		balance.ExceptionalBase = (TraitsEnabled ? ((double)Clamp(TraitBase, 0, 100) / 100.0) : 0.0);
-		balance.ExceptionalMax = (double)Clamp(TraitMaxOnSuccess, 0, 100) / 100.0;
 		return balance;
 	}
 
@@ -137,8 +123,7 @@ public sealed class CardSettings
 	{
 		WorkshopGoldRate = Clamp(WorkshopGoldRate, 1, 200);
 		UpgradeDifficulty = Clamp(UpgradeDifficulty, 10, 400);
-		MaxChance = Clamp(MaxChance, 1, 100);
-		MinChance = Clamp(MinChance, 0, MaxChance);
+		TraitPrice = Clamp(TraitPrice, 0, 9999);
 		if (DisabledTraits == null)
 		{
 			HashSet<string> hashSet = (DisabledTraits = new HashSet<string>(StringComparer.Ordinal));

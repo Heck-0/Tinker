@@ -16,28 +16,21 @@ public static class Boons
 {
 	public static readonly string[] All = new string[6] { "Strength", "Dexterity", "Block", "Heal", "Energy", "Draw" };
 
-	public static double Chance(RelicModel relic, double rawChance)
+	/// <summary>The boons the Workshop sells for this relic: the allowed ones, or none if it already has one.</summary>
+	public static string[] ForSale(RelicModel relic)
 	{
-		if (Store.For(relic).Boon == null)
-		{
-			return Rules.BoonChance((double)Rules.Percent(rawChance) / 100.0);
-		}
-		return 0.0;
+		return (Store.For(relic).Boon != null) ? Array.Empty<string>() : All.Where(Settings.Active.AllowsBoon).ToArray();
 	}
 
-	public static string? TryGrant(RelicModel relic, double rawChance, double chanceRoll, double pickRoll)
+	/// <summary>Gives the relic a boon bought in the Workshop. False if it can't have that one.</summary>
+	public static bool Grant(RelicModel relic, string id)
 	{
-		RelicState relicState = Store.For(relic);
-		if (relicState.Boon != null || chanceRoll >= Chance(relic, rawChance))
+		if (!ForSale(relic).Contains(id))
 		{
-			return null;
+			return false;
 		}
-		string[] array = All.Where(Settings.Active.AllowsBoon).ToArray();
-		if (array.Length == 0)
-		{
-			return null;
-		}
-		return relicState.Boon = array[Math.Min(array.Length - 1, (int)(Math.Clamp(pickRoll, 0.0, 0.999999999) * (double)array.Length))];
+		Store.For(relic).Boon = id;
+		return true;
 	}
 
 	public static string Name(string id)

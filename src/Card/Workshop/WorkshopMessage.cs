@@ -11,7 +11,7 @@ namespace Tinker.Card;
 /// </summary>
 public sealed class WorkshopMessage : ICustomMessage, IPacketSerializable
 {
-    private const int Version = 2;
+    private const int Version = 3;
 
     public ulong PlayerId;
 
@@ -19,13 +19,11 @@ public sealed class WorkshopMessage : ICustomMessage, IPacketSerializable
 
     public int Index;
 
-    public string RelicId = "";
+    public string Id = "";
 
     public int Attribute;
 
     public int Units;
-
-    public int Floor;
 
     private bool _valid = true;
 
@@ -38,10 +36,9 @@ public sealed class WorkshopMessage : ICustomMessage, IPacketSerializable
             PlayerId = player.NetId,
             Op = purchase.Op,
             Index = purchase.Index,
-            RelicId = purchase.RelicId ?? "",
+            Id = purchase.Id ?? "",
             Attribute = purchase.Attribute,
             Units = purchase.Units,
-            Floor = purchase.Floor,
         };
     }
 
@@ -51,10 +48,9 @@ public sealed class WorkshopMessage : ICustomMessage, IPacketSerializable
         writer.WriteULong(PlayerId);
         writer.WriteInt(Op);
         writer.WriteInt(Index);
-        writer.WriteString(RelicId ?? "");
+        writer.WriteString(Id ?? "");
         writer.WriteInt(Attribute);
         writer.WriteInt(Units);
-        writer.WriteInt(Floor);
     }
 
     public void Deserialize(PacketReader reader)
@@ -67,10 +63,9 @@ public sealed class WorkshopMessage : ICustomMessage, IPacketSerializable
         PlayerId = reader.ReadULong();
         Op = reader.ReadInt();
         Index = reader.ReadInt();
-        RelicId = reader.ReadString();
+        Id = reader.ReadString();
         Attribute = reader.ReadInt();
         Units = reader.ReadInt();
-        Floor = reader.ReadInt();
     }
 
     public void HandleMessage(ulong senderId)
@@ -80,6 +75,6 @@ public sealed class WorkshopMessage : ICustomMessage, IPacketSerializable
             ModEntry.Error("Compra del taller de otra versión del mod; se ignora. Todos deben tener la misma versión.");
             return;
         }
-        WorkshopFlow.ApplyRemote(PlayerId, new WorkshopPurchase(Op, Index, RelicId, Attribute, Units, Floor));
+        WorkshopFlow.ApplyRemote(PlayerId, new WorkshopPurchase(Op, Index, Id, Attribute, Units));
     }
 }

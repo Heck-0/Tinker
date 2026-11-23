@@ -90,19 +90,19 @@ Adding Twine and The Abacus would be:
 Group("Twine TheAbacus", "Block", "block");
 ```
 
-Pick the **family** that matches the kind of value. It sets how quickly the odds drop as you bet more
-units (`src/Relic/Upgrades/Rules.cs`, `Families`). There is no per-family bet limit any more (removed in
-1.3.0): the bet stepper just stops once the odds would fall to the minimum chance.
+Pick the **family** that matches the kind of value. It sets how quickly the price rises as you buy more
+units (`src/Relic/Upgrades/Rules.cs`, `Families`). There is no per-family limit: the price just keeps
+rising with the size.
 
 | Family | Use for |
 |---|---|
-| `damage`, `block` | damage, block (odds drop slowly) |
+| `damage`, `block` | damage, block (prices rise slowly) |
 | `resource` | heal, gold, forge, stars |
 | `power` | debuffs/buffs like Weak, Vulnerable, Vigor |
 | `scaling` | Strength, Dexterity, Focus |
 | `draw` | cards drawn |
 | `energy` | energy each turn |
-| `persistentEnergy` / `persistentDraw` | permanent energy/draw (boss relics; odds drop fast) |
+| `persistentEnergy` / `persistentDraw` | permanent energy/draw (boss relics; prices rise fast) |
 | `repeat` | extra triggers, orbs, shivs |
 | `generation`, `selection` | cards created / cards to choose from |
 | `threshold` (direction -1) | "every N cards/turns", requirements |

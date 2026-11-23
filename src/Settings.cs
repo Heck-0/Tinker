@@ -50,24 +50,11 @@ internal static class Settings
         set { Card.UpgradeDifficulty = value; Relic.Difficulty = System.Math.Clamp(value, 25, 300); }
     }
 
-    public static int MaxChance
-    {
-        get => Card.MaxChance;
-        set { Card.MaxChance = value; Relic.MaxChance = System.Math.Clamp(value, 10, 100); }
-    }
-
-    public static int MinChance
-    {
-        get => Card.MinChance;
-        set { Card.MinChance = value; Relic.MinChance = System.Math.Clamp(value, 0, 50); }
-    }
 
     /// <summary>Makes the relic side's shared values equal the card side's.</summary>
     public static void CopySharedToRelic()
     {
         Difficulty = Difficulty;
-        MaxChance = MaxChance;
-        MinChance = MinChance;
     }
 
     /// <summary>

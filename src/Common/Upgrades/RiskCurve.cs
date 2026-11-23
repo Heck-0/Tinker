@@ -3,15 +3,14 @@ using System;
 namespace Tinker.Common;
 
 /// <summary>
-/// The upgrade odds formula, shared by both roulettes.
+/// The cost curve, shared by cards and relics:
 ///
-///   ratio  = amount / max(|reference|, floor)          how big the bet is next to the current value
-///   risk   = weight × ratio ^ curve                     per cost category (balance.jsonc "families")
-///   chance = clamp(maxChance × e^(−exponent), min, max) exponent = risk + strain (× difficulty, relic side)
+///   ratio = amount / max(|reference|, floor)     how big the upgrade is next to the base value
+///   risk  = weight × ratio ^ curve                per cost category (balance.jsonc "families")
 ///
-/// Card Upgrader applies the difficulty setting by scaling the weights; Relic Upgrader multiplies the
-/// exponent. Both read their categories from the same table (BalanceConfig, loaded from balance.jsonc).
-/// The operations are in the same order as each half's original code, so results are unchanged.
+/// The Workshop price is rate × e^(risk + strain) (see <see cref="WorkshopPrice"/>). Cards apply the difficulty
+/// setting by scaling the weights; relics multiply the exponent. Both read the same table (BalanceConfig,
+/// loaded from balance.jsonc).
 /// </summary>
 public static class RiskCurve
 {
@@ -28,19 +27,5 @@ public static class RiskCurve
     public static double Risk(AttributeBalance family, double amount, double reference)
     {
         return Risk(family.Weight, family.Curve, Ratio(amount, reference, family.ReferenceFloor));
-    }
-
-    public static double Chance(double maxChance, double minChance, double exponent)
-    {
-        return Math.Max(minChance, Math.Min(maxChance, Unclamped(maxChance, exponent)));
-    }
-
-    /// <summary>
-    /// The same curve without the minimum: keeps falling as upgrades grow, so prices (which divide by it) keep
-    /// rising instead of stopping at a ceiling once the chance hits the minimum.
-    /// </summary>
-    public static double Unclamped(double maxChance, double exponent)
-    {
-        return maxChance * Math.Exp(0.0 - exponent);
     }
 }

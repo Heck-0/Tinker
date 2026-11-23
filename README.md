@@ -13,11 +13,11 @@ Every run starts with **Tinkerer's Dial**. Click it any time outside combat to o
 
 - pick a card from your deck or one of your relics;
 - the top selector picks the upgrade (Damage, Block, Healing…), the bottom one its size (+1, +3…);
-- the price is shown under it, green if you can afford it, red if not; buying is certain.
+- the price is shown under it, green if you can afford it, red if not. Nothing in the Workshop is random.
 
-Prices come from an odds engine: bigger upgrades, and upgrades on cards or relics that are already upgraded,
-cost more. A purchase can also give a card a **trait** or a relic a **boon**, more likely on pricier
-upgrades. In co-op every purchase is sent to the other players. Design: [docs/TINKER_DESIGN.md](docs/TINKER_DESIGN.md).
+Bigger upgrades, and upgrades on cards or relics that are already upgraded, cost more (no ceiling). The panel
+on the right sells **traits** for cards and **boons** for relics at a fixed price (one per card or relic;
+settings *Trait price* and *Boon price*). In co-op every purchase is sent to the other players. Design: [docs/TINKER_DESIGN.md](docs/TINKER_DESIGN.md).
 
 ## Build
 
@@ -47,12 +47,12 @@ Needs the .NET 8 SDK, the game, and BaseLib (Workshop). Paths are set at the top
   both halves, and the menu's labels.
 - `src/HostSettingsMessages.cs` - co-op: the host's settings, sent to the other players.
 - `src/Card/Workshop/` - the Workshop: page (`WorkshopScreen`), purchases (`WorkshopFlow`), prices
-  (`WorkshopOptions`, `CardOdds`), co-op message, the Dial click and handing out the Dial.
+  (`WorkshopOptions`, `CardCost`), co-op message, the Dial click and handing out the Dial.
 - `src/Card/` (`Tinker.Card`) - card upgrades: which values can change and how (`Upgrades/`), traits, card
   state saves, card texts.
 - `src/Relic/` (`Tinker.Relic`) - relic upgrades (`Upgrades/Catalog.cs`), boons, relic state saves, relic
   settings and texts.
-- `src/Common/` (`Tinker.Common`) - shared rules: odds engine (`Upgrades/RiskCurve.cs`, `Odds.cs`), balance
+- `src/Common/` (`Tinker.Common`) - shared rules: price curve (`Upgrades/RiskCurve.cs`, `UpgradeCost.cs`), balance
   (`BalanceConfig`, loaded from `content/balance.jsonc`), the Workshop price, card state, text system,
   `Patching`.
 - `content/` - `balance.jsonc`: built into the DLL as the defaults, and also copied next to it, where edits

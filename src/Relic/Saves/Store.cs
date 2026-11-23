@@ -16,14 +16,14 @@ public static class Store
 {
 	private sealed class PlayerState
 	{
-		public RouletteSave Save = new RouletteSave();
+		public RunRulesSave Save = new RunRulesSave();
 	}
 
 	/// <summary>
 	/// Per player, saved under relicupgrader_roulette_v2 : the relic rules frozen into the run, so every
 	/// co-op player prices relic upgrades the same.
 	/// </summary>
-	public sealed class RouletteSave
+	public sealed class RunRulesSave
 	{
 		public int Version { get; set; } = 2;
 
@@ -58,7 +58,7 @@ public static class Store
 	{
 		if (!string.IsNullOrEmpty(json))
 		{
-			RouletteSave save = JsonSerializer.Deserialize<RouletteSave>(json) ?? throw new FormatException("Empty relic save");
+			RunRulesSave save = JsonSerializer.Deserialize<RunRulesSave>(json) ?? throw new FormatException("Empty relic save");
 			if (save.Version != 2)
 			{
 				throw new FormatException("Invalid relic save");

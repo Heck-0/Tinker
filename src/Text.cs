@@ -64,7 +64,7 @@ internal static class Text
         string T(string spanish, string english) => es ? spanish : english;
         return new Dictionary<string, string>
         {
-            [Slug("SectionOdds") + ".title"] = T("Precios", "Prices"),
+            [Slug("SectionPrices") + ".title"] = T("Precios", "Prices"),
             [Slug("SectionWorkshop") + ".title"] = T("Taller", "Workshop"),
             [Slug("WorkshopGoldRate") + ".title"] = T("Oro por mejora", "Gold per upgrade"),
             [Slug("WorkshopGoldRate") + ".hover.title"] = T("Oro por mejora", "Gold per upgrade"),

@@ -6,7 +6,7 @@ Ordered from the modification that fits the most cards to the least. Counts are 
 
 ## Card-wide: cost and traits
 
-These don't depend on a card's own numbers. Traits can come with a Workshop purchase. (Drawbacks were removed in 1.5.0.)
+These don't depend on a card's own numbers. Traits are bought in the Workshop at a fixed price, one per card. (Drawbacks were removed in 1.5.0.)
 
 | # cards (about) | Modification | Kind | Fits |
 |---:|---|---|---|

@@ -62,7 +62,7 @@ internal static class BalanceFile
 	public static string Describe(BalanceConfig config)
 	{
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.Append($"  probabilidad entre {config.MinChance:0.##} y {config.MaxChance:0.##}");
+		stringBuilder.Append($"  tensión {config.StrainFactor:0.##}");
 		foreach (KeyValuePair<string, AttributeBalance> family in config.Families)
 		{
 			AttributeBalance value = family.Value;

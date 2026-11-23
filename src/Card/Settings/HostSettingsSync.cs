@@ -9,8 +9,8 @@ namespace Tinker.Card;
 
 internal static class HostSettingsSync
 {
-	// Combined build: the network messages are Tinker.HostSettingsMessage (shared with the relic
-	// roulette) and Tinker.RequestHostSettingsMessage. They call back into these two methods.
+	// The network messages are Tinker.HostSettingsMessage (shared with the relic side) and
+	// Tinker.RequestHostSettingsMessage. They call back into these two methods.
 
 	/// <summary>Client side: the host's card settings arrived.</summary>
 	internal static void Receive(string json)

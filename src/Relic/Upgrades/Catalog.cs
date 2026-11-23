@@ -95,17 +95,18 @@ public static class Catalog
 	}
 
 	/// <summary>The most units one purchase can add: the relic value's limit (at most 999). Gold limits the rest.</summary>
-	public static int MaxBet(RelicModel relic, RelicAttribute attribute)
+	public static int MaxUnits(RelicModel relic, RelicAttribute attribute)
 	{
 		return Math.Min(999, attribute.Limit(relic));
 	}
 
-	public static double Chance(RelicModel relic, RelicAttribute attribute, int units, bool forPrice = false)
+	/// <summary>The upgrade's cost exponent: its size next to the base value, plus the relic's other upgrades.</summary>
+	public static double Exponent(RelicModel relic, RelicAttribute attribute, int units)
 	{
 		RelicState relicState = Store.For(relic);
 
 		UpgradeLedger valueOrDefault = relicState.Upgrades.GetValueOrDefault(attribute.Key);
 		double otherStrain = 0.8 * relicState.Upgrades.Where<KeyValuePair<string, UpgradeLedger>>((KeyValuePair<string, UpgradeLedger> p) => p.Key != attribute.Key).Sum((KeyValuePair<string, UpgradeLedger> p) => Rules.Risk(p.Value.Family, p.Value.Reference, p.Value.Gain));
-		return Rules.Chance(attribute.Family, valueOrDefault?.Reference ?? attribute.Value(relic), valueOrDefault?.Gain ?? 0, units, otherStrain, forPrice);
+		return Rules.Exponent(attribute.Family, valueOrDefault?.Reference ?? attribute.Value(relic), valueOrDefault?.Gain ?? 0, units, otherStrain);
 	}
 }
