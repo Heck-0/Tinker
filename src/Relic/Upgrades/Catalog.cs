@@ -8,10 +8,11 @@ namespace Tinker.Relic;
 
 /// <summary>
 /// Which relic values the Workshop upgrades, and how. The rule engine (<see cref="GameRules"/>) decides the
-/// direction from the relic's own code, and <see cref="DefaultFamily"/> picks the cost category from the value's
-/// name and type. <see cref="Overrides"/> holds the values where the mod knows better: a different cost category
-/// (e.g. energy every turn is pricier than energy once), a direction the rules can't tell, a maximum or label,
-/// or a fractional value (a multiplier) bought in steps.
+/// direction from the relic's own code, and the cost category from where the value is used (energy or draw every
+/// turn, max HP that keeps growing: <see cref="RuleEngine.Category"/>), else from its name and type
+/// (<see cref="DefaultFamily"/>). <see cref="Overrides"/> holds the values where the mod knows better: a cost
+/// category the code doesn't show (e.g. cards created at combat start), a direction the rules can't tell, a
+/// maximum or label, or a fractional value (a multiplier) bought in steps.
 /// </summary>
 public static class Catalog
 {
@@ -63,7 +64,7 @@ public static class Catalog
 				Verdict verdict = GameRules.Decide(relic, v.Name);
 				if (verdict.Sign != 0)
 				{
-					list.Add(new RelicAttribute(v.Name, DefaultFamily(v, verdict), verdict.Sign));
+					list.Add(new RelicAttribute(v.Name, GameRules.Category(relic, v.Name, verdict) ?? DefaultFamily(v, verdict), verdict.Sign));
 				}
 			}
 			RelicAttribute[] result = list.ToArray();
@@ -128,8 +129,6 @@ public static class Catalog
 		// Kept from the old hand-written catalog where the engine + DefaultFamily would differ (tools/relic_overrides.py).
 		Override("BigHat", "Cards", "generation");
 		Override("BigMushroom", "Cards", "drawback", -1, 10000, "drawLoss");
-		Override("BlessedAntler", "Energy", "persistentEnergy");
-		Override("BloodSoakedRose", "Energy", "persistentEnergy");
 		Override("BoundPhylactery", "Summon", "power");
 		Override("Bread", "GainEnergy", "persistentEnergy");
 		Override("BrilliantScarf", "Cards", "threshold", -1);
@@ -137,13 +136,8 @@ public static class Catalog
 		Override("Brimstone", "SelfStrength", "scaling");
 		Override("ChemicalX", "Increase", "repeat");
 		Override("ChoicesParadox", "Cards", "selection");
-		Override("ChosenCheese", "MaxHp", "permanentGrowth");
 		Override("CrackedCore", "Lightning", "repeat");
-		Override("DarkstonePeriapt", "MaxHp", "permanentGrowth");
-		Override("DragonFruit", "MaxHp", "permanentGrowth");
-		Override("Ectoplasm", "Energy", "persistentEnergy");
 		Override("FakeStrikeDummy", "ExtraDamage", "damage");
-		Override("Fiddle", "Cards", "persistentDraw");
 		Override("HandDrill", "VulnerablePower", "power");
 		Override("HelicalDart", "DexterityPower", "scaling");
 		Override("InfusedCore", "ExtraDamage", "damage");
@@ -157,40 +151,43 @@ public static class Catalog
 		Override("MiniatureCannon", "ExtraDamage", "damage");
 		Override("NinjaScroll", "Shivs", "repeat");
 		Override("OrangeDough", "Cards", "generation");
-		Override("PaelsBlood", "Cards", "persistentDraw");
 		Override("PaelsFlesh", "Energy", "persistentEnergy");
 		Override("ParryingShield", "Block", "block");
-		Override("PhilosophersStone", "Energy", "persistentEnergy");
 		Override("PhylacteryUnbound", "StartOfCombat", "power");
 		Override("PhylacteryUnbound", "StartOfTurn", "power");
 		Override("PollinousCore", "Turns", "threshold", -1);
 		Override("PowerCell", "Cards", "selection");
-		Override("PrismaticGem", "Energy", "persistentEnergy");
-		Override("PumpkinCandle", "Energy", "persistentEnergy");
 		Override("RadiantPearl", "Cards", "generation");
 		Override("RedSkull", "HpThreshold", "percentage", 1, 100);
 		Override("RedSkull", "StrengthPower", "scaling");
 		Override("ReptileTrinket", "StrengthPower", "scaling");
 		Override("RingOfTheDrake", "Turns", "duration");
 		Override("SelfFormingClay", "BlockNextTurn", "block");
-		Override("SneckoEye", "Cards", "persistentDraw");
 		Override("SneckoSkull", "PoisonPower", "power");
-		Override("Sozu", "Energy", "persistentEnergy");
-		Override("SpikedGauntlets", "Energy", "persistentEnergy");
 		Override("StoneCalendar", "DamageTurn", "threshold", -1);
 		Override("StrikeDummy", "ExtraDamage", "damage");
 		Override("TheCourier", "Discount", "percentage", 1, 100);
 		Override("Toolbox", "Cards", "selection");
 		Override("TungstenRod", "HpLossReduction", "protection");
 		Override("VelvetChoker", "Cards", "drawback");
-		Override("VelvetChoker", "Energy", "persistentEnergy");
-		Override("WhisperingEarring", "Energy", "persistentEnergy");
 		// Reviewed in docs/COVERAGE_GAPS.md: the rules' guess is wrong or too generic.
 		Override("BlessedAntler", "Cards", "drawback", -1);
 		Override("FuneraryMask", "Cards", "generation");
 		Override("LizardTail", "Heal", "percentage", 1, 100);
 		Override("StoneCracker", "Cards", "generic");
 		Override("WarHammer", "Cards", "generic");
+		// Reviewed 1.7.0: the rules said "unknown" or "compared" (not upgraded); the relic's code says:
+		Override("BeatingRemnant", "MaxHpLoss", "protection", -1);   // a cap on HP lost per turn: lower is better
+		Override("FresnelLens", "NimbleAmount", "generic");          // Nimble put on card rewards
+		Override("LavaRock", "Relics", "deckRemoval");               // extra relics after the act 1 boss (priced like a removal)
+		Override("PaelsLegion", "Turns", "threshold", -1);           // cooldown between blocks
+		Override("SilverCrucible", "Cards", "generation");           // card rewards that come upgraded
+		Override("SwordOfStone", "Elites", "threshold", -1);         // elites to defeat before it transforms
+		Override("SymbioticVirus", "Dark", "orb");                   // Dark orbs channelled at combat start (a loop count)
+		Override("TheBoot", "DamageMinimum", "damage");              // low attacks are raised to this
+		Override("WingCharm", "SwiftAmount", "generic");             // Swift put on a card reward
+		// Left out on review: Bone Tea and Winged Boots (the value only mirrors a use counter), Cauldron, Punch
+		// Dagger and Fur Coat (used when picked up or when the map is made).
 		// Fractions, bought in steps of 0.01 (prices count steps from the "no effect" value).
 		Stepped("BowlerHat", "GoldIncrease", 1, neutral: 1m, minimum: 1m, maximum: 3m);
 		Stepped("UndyingSigil", "DamageDecrease", -1, neutral: 0m, minimum: 0.1m, maximum: 1m);

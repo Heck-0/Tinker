@@ -58,6 +58,20 @@ public static class Text
 			return T("Energía", "Energy");
 		case "DamageThreshold":
 			return T("Daño mínimo por golpe", "Damage needed in one hit");
+		case "MaxHpLoss":
+			return T("Máximo de PV perdidos por turno", "Max HP lost per turn");
+		case "NimbleAmount":
+			return T("Ágil en recompensas", "Nimble on rewards");
+		case "SwiftAmount":
+			return T("Veloz en recompensas", "Swift on rewards");
+		case "Relics":
+			return T("Reliquias extra", "Extra relics");
+		case "Elites":
+			return T("Élites necesarios", "Elites required");
+		case "Dark":
+			return T("Orbes de Oscuridad", "Dark orbs");
+		case "DamageMinimum":
+			return T("Daño mínimo", "Minimum damage");
 		case "GoldIncrease":
 			return T("Multiplicador de oro", "Gold multiplier");
 		case "DamageDecrease":

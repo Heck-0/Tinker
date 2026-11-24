@@ -64,9 +64,10 @@ Since the rule engine (`src/Common/Rules`), the mod reads each card's and relic'
 game runs and decides, per value, whether it can be upgraded and in which direction. The rules, first match
 wins:
 
-1. **derived** (`Calculated…Var`) or a pickup-only relic: not upgradable.
+1. **derived** (`Calculated…Var`): not upgradable.
 2. **not read**: the code never uses the value (it only shows in the text): not upgradable.
-3. **only on pickup**: a relic uses it only in `AfterObtained`, so a later upgrade would do nothing.
+3. **only on pickup**: a relic uses the value only in `AfterObtained` (when you get it), so a later upgrade
+   would do nothing. This also covers relics that do nothing but act on pickup.
 4. **upgrade**: the game's own `OnUpgrade` raises (+1) or lowers (−1) it.
 5. **every N / threshold**: it divides something (`x % N`, `x / N`) or is a `…Threshold` property: −1.
 6. **hurts you**: named `Lose…`, passed to `PlayerCmd.Lose…`, or the amount of damage dealt to the owner: −1.
@@ -100,11 +101,15 @@ Override("MeatOnTheBone", "HpThreshold", "percentage", 1, 100);   // cap at 100 
 Override("BlessedAntler", "Cards", "drawback", -1);               // the rules said +1: wrong
 ```
 
-Values the engine handles get a cost **family** from the value's name and type (`Catalog.DefaultFamily`):
+Values the engine handles get a cost **family** from where the value is used first (`RuleEngine.Category`):
+energy read in `ModifyMaxEnergy` → persistentEnergy, a draw bonus read in `ModifyHandDraw` → persistentDraw,
+cards read in a turn hook → generation (selection if it asks you to choose), max HP gained after pickup →
+permanentGrowth; a hook that checks the turn number (first turn only, every N turns) doesn't count as every
+turn. Otherwise from the value's name and type (`Catalog.DefaultFamily`):
 Damage → damage, Block → block, Heal/Gold/Max HP/Stars/Forge/Summon → resource, Cards → draw, Energy →
 energy, hits → repeat, Strength/Dexterity/Focus → scaling, other powers → power, lower-is-better →
-threshold or drawback. Add an override when a value needs a different family. For example, energy every
-turn is `persistentEnergy`, not `energy`.
+threshold or drawback. Add an override when a value needs a different family, e.g. cards created only at combat start
+(`generation`), which the code can't tell from a one-off.
 
 | Family | Use for |
 |---|---|

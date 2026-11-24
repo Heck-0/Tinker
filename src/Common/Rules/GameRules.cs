@@ -54,6 +54,24 @@ public static class GameRules
 		}
 	}
 
+	/// <summary>The cost category the value's use implies (see <see cref="RuleEngine.Category"/>), or null.</summary>
+	public static string Category(AbstractModel model, string var, Verdict verdict)
+	{
+		lock (Code)
+		{
+			try
+			{
+				ItemCode item = ItemFor(model);
+				VarInfo info = item.Vars.FirstOrDefault(v => v.Name == var);
+				return (info == null) ? null : RuleEngine.Category(item, info, verdict);
+			}
+			catch (Exception)
+			{
+				return null;
+			}
+		}
+	}
+
 	/// <summary>The class's values as its DynamicVars hold them.</summary>
 	public static IReadOnlyList<VarInfo> Vars(AbstractModel model)
 	{
@@ -123,12 +141,6 @@ public static class GameRules
 					Power = (varType.IsGenericType && Clean(varType.Name) == "PowerVar") ? varType.GetGenericArguments()[0].Name : null
 				});
 			}
-		}
-		if (model is RelicModel relic)
-		{
-			HashSet<string> hooks = new HashSet<string>(type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
-				.Where(m => !m.IsSpecialName && m.GetBaseDefinition() != m).Select(m => m.Name));
-			item.PickupOnly = relic.HasUponPickupEffect && hooks.IsSubsetOf(new[] { "AfterObtained" });
 		}
 		Code[type] = item;
 		return item;

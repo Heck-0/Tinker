@@ -72,9 +72,6 @@ public sealed class ItemCode
 	public List<MethodCode> Methods = new List<MethodCode>();
 
 	public List<VarInfo> Vars = new List<VarInfo>();
-
-	/// <summary>Relics only: the effect happens when picked up and nowhere else.</summary>
-	public bool PickupOnly;
 }
 
 /// <summary>A rule's answer: +1 higher is better, -1 lower is better, 0 don't upgrade; and which rule decided.</summary>
@@ -85,7 +82,7 @@ public readonly record struct Verdict(int Sign, string Why);
 /// A port of tools/divergence.py working on compiled IL instead of decompiled source, so it follows game updates.
 /// Rules, first match wins:
 /// <list type="number">
-/// <item>derived: computed values (CalculatedDamage, ...) are never upgraded; pickup-only relics neither.</item>
+/// <item>derived: computed values (CalculatedDamage, ...) are never upgraded.</item>
 /// <item>not read: the code never touches the value (it only shows in the text).</item>
 /// <item>only on pickup: a relic reads it only when obtained (AfterObtained), so a later upgrade does nothing.</item>
 /// <item>upgrade: the game's own OnUpgrade raises (+1) or lowers (-1) it (cards).</item>
@@ -157,10 +154,6 @@ public static class RuleEngine
 		{
 			return new Verdict(0, "derived");
 		}
-		if (item.PickupOnly)
-		{
-			return new Verdict(0, "pickup only");
-		}
 		HashSet<string> names = new HashSet<string>(item.Vars.Select(x => x.Name));
 		List<Read> reads = Reads(item, names).Where(r => r.Var == v.Name).ToList();
 		if (!ReadByFormula.Contains(v.Class) && reads.All(r => r.Method.Name == "OnUpgrade"))
@@ -210,6 +203,66 @@ public static class RuleEngine
 			return new Verdict(0, kind != 0 ? "power (target unclear)" : "power (type unclear)");
 		}
 		return new Verdict(0, "unknown");
+	}
+
+	// ------------------------------------------------------------------ cost category
+
+	/// <summary>Turn hooks: a value read here pays out every turn (unless the hook checks for turn 1).</summary>
+	private static readonly HashSet<string> TurnHooks = new HashSet<string> { "AfterSideTurnStart", "BeforeSideTurnStart", "AfterPlayerTurnStart", "BeforeHandDraw" };
+
+	/// <summary>
+	/// The cost category the value's use implies, or null to fall back to the name-based default. How often a bonus
+	/// pays out is what the pricier categories are for:
+	/// <list type="bullet">
+	/// <item>energy read in ModifyMaxEnergy: energy every turn → persistentEnergy;</item>
+	/// <item>a draw bonus read in ModifyHandDraw: draw every turn → persistentDraw;</item>
+	/// <item>cards read in a turn hook: cards each turn → generation, or selection if the hook asks you to choose;</item>
+	/// <item>(a hook that checks the turn number or counts turns pays out only on some turns, so it doesn't count);</item>
+	/// <item>max HP gained outside pickup (after combats, when gold comes in, ...) → permanentGrowth.</item>
+	/// </list>
+	/// </summary>
+	public static string Category(ItemCode item, VarInfo v, Verdict verdict)
+	{
+		if (verdict.Sign <= 0)
+		{
+			return null;
+		}
+		HashSet<string> names = new HashSet<string>(item.Vars.Select(x => x.Name));
+		List<Read> uses = Reads(item, names).Where(r => r.Var == v.Name && r.Method.Name != "OnUpgrade" && !r.Method.Name.StartsWith("get_", StringComparison.Ordinal)).ToList();
+		if (uses.Count == 0)
+		{
+			return null;
+		}
+		// "Every turn" only when the hook doesn't check which turn it is (first turn only, every N turns, ...).
+		HashSet<string> hooks = new HashSet<string>(uses.Where(r => !ChecksTurn(r.Method)).Select(r => r.Method.Owner));
+		bool energy = v.Name == "Energy" || v.Class == "EnergyVar" || v.Name.EndsWith("Energy", StringComparison.Ordinal);
+		bool cards = v.Name == "Cards" || v.Class == "CardsVar";
+		if (energy && hooks.Contains("ModifyMaxEnergy"))
+		{
+			return "persistentEnergy";
+		}
+		if (cards && hooks.Contains("ModifyHandDraw"))
+		{
+			return "persistentDraw";
+		}
+		if (cards && hooks.Overlaps(TurnHooks))
+		{
+			bool choose = uses.Where(r => TurnHooks.Contains(r.Method.Owner) && !ChecksTurn(r.Method)).Any(r => r.Method.Body.Any(x => x.IsCall && x.Method != null
+				&& (x.Type == "CardSelectCmd" || x.Method.IndexOf("Choose", StringComparison.Ordinal) >= 0)));
+			return choose ? "selection" : "generation";
+		}
+		if ((v.Name == "MaxHp" || v.Class == "MaxHpVar") && uses.Any(r => r.Method.Owner != "AfterObtained" && r.Method.Body.Any(x => x.IsCall && x.Method == "GainMaxHp")))
+		{
+			return "permanentGrowth";
+		}
+		return null;
+	}
+
+	/// <summary>The method looks at the turn number or a turns-seen counter: its effect is limited to some turns.</summary>
+	private static bool ChecksTurn(MethodCode m)
+	{
+		return m.Body.Any(x => (x.IsCall && x.Method != null && (x.Method == "get_TurnNumber" || x.Method == "get_RoundNumber" || x.Method.IndexOf("TurnsSeen", StringComparison.Ordinal) >= 0))
+			|| (x.Str != null && x.Str.IndexOf("TurnsSeen", StringComparison.Ordinal) >= 0));
 	}
 
 	// ------------------------------------------------------------------ reading values

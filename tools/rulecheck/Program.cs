@@ -116,7 +116,7 @@ int PowerType(string p)
 
 int total = 0, same = 0;
 var diffs = new List<string>();
-var dump = new List<string> { "kind\titem\tvalue\tengine\tengine_why\tpython\tpython_why\tmod" };
+var dump = new List<string> { "kind\titem\tvalue\tengine\tengine_why\tpython\tpython_why\tmod\tcategory" };
 foreach (var (kind, ns, csv) in new[] { ("card", "MegaCrit.Sts2.Core.Models.Cards", "divergence_cards.csv"), ("relic", "MegaCrit.Sts2.Core.Models.Relics", "divergence_relics.csv") })
 {
 	var rows = File.ReadAllLines(Path.Combine(cov, csv)).Skip(1).Select(l => l.Split(',')).ToList();
@@ -131,12 +131,6 @@ foreach (var (kind, ns, csv) in new[] { ("card", "MegaCrit.Sts2.Core.Models.Card
 			var tm = Regex.Match(r[2], @"^(\w+?)(?:<(\w+)>)?$");
 			item.Vars.Add(new VarInfo { Name = r[1], Class = tm.Groups[1].Value, Power = tm.Groups[2].Success ? tm.Groups[2].Value : null });
 		}
-		if (kind == "relic")
-		{
-			string text = File.ReadAllText(Path.Combine(src, "MegaCrit.Sts2.Core.Models.Relics", name + ".cs"));
-			var hooks = new HashSet<string>(Regex.Matches(text, @"public\s+override\s+(?:async\s+)?\w+(?:<[^>]+>)?\s+(\w+)\s*\(").Select(m => m.Groups[1].Value));
-			item.PickupOnly = text.Contains("HasUponPickupEffect => true") && hooks.IsSubsetOf(new[] { "AfterObtained" });
-		}
 		foreach (var r in group)
 		{
 			var v = item.Vars.First(x => x.Name == r[1]);
@@ -145,7 +139,7 @@ foreach (var (kind, ns, csv) in new[] { ("card", "MegaCrit.Sts2.Core.Models.Card
 			total++;
 			if (e.Sign == py) same++;
 			else diffs.Add($"{kind}\t{name}.{r[1]}\tengine {e.Sign:+0;-0;0} ({e.Why})\tpython {py:+0;-0;0} ({r[4]})\tmod {r[5]}");
-			dump.Add($"{kind}\t{name}\t{r[1]}\t{e.Sign}\t{e.Why}\t{py}\t{r[4]}\t{r[5]}");
+			dump.Add($"{kind}\t{name}\t{r[1]}\t{e.Sign}\t{e.Why}\t{py}\t{r[4]}\t{r[5]}\t{RuleEngine.Category(item, v, e)}");
 		}
 	}
 }

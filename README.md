@@ -80,9 +80,9 @@ removes no code.
 - **1.7.0** - The rule engine: which values are upgradable, and which way, now comes from the game's own
   compiled code at run time (a port of `tools/divergence.py`'s rules to IL, with three new rules: not read,
   only on pickup, loop bounds aren't limits). The hand-written tables shrank to overrides: cards from
-  ~1,000 lines (`VarDirections` Overrides + Generated) to 52 entries; relics from the full catalog to 68
+  ~1,000 lines (`VarDirections` Overrides + Generated) to 52 entries; relics from the full catalog to 61
   overrides. Every previously upgradable value keeps its exact direction, category and limits (checked
-  value by value); 59 card values and 19 relic values become upgradable. Fractional values are bought in
+  value by value); 59 card values and 28 relic values become upgradable. Fractional values are bought in
   steps of 0.01: Bowler Hat (gold ×1.25), Undying Sigil (×0.5), Tank (×1.5 / ×0.5, now copied onto its
   powers), and Paper Phrog / Paper Krane, whose hard-coded bonus became a value.
 - **1.6.0** - Dropped old-save support: the retired item classes and their icons, the roulette's loss and
