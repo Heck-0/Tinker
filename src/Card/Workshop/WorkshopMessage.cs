@@ -72,7 +72,7 @@ public sealed class WorkshopMessage : ICustomMessage, IPacketSerializable
     {
         if (!_valid)
         {
-            ModEntry.Error("Compra del taller de otra versión del mod; se ignora. Todos deben tener la misma versión.");
+            ModEntry.Error("Workshop purchase from another mod version; ignored. Everyone needs the same version.");
             return;
         }
         WorkshopFlow.ApplyRemote(PlayerId, new WorkshopPurchase(Op, Index, Id, Attribute, Units));

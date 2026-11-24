@@ -5,6 +5,7 @@ using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Enchantments;
 using MegaCrit.Sts2.Core.Saves.Runs;
+using Tinker.Common;
 
 namespace Tinker.Card;
 
@@ -91,7 +92,7 @@ public static class EnchantmentUpgrades
 	{
 		if (Attribute(card) != attribute)
 		{
-			throw new InvalidOperationException("El encantamiento ya no corresponde a " + attribute);
+			throw new InvalidOperationException("The enchantment no longer matches " + attribute);
 		}
 		return checked(Native(card.Enchantment) + (CardStateStore.Get(card)?.RawDelta(attribute) ?? 0));
 	}
@@ -104,26 +105,26 @@ public static class EnchantmentUpgrades
 		{
 		case "Spiral":
 		case "Glam":
-			text = (Lines.Spanish ? "Repeticiones" : "Replays");
+			text = Lang.T("Replays");
 			break;
 		case "Sown":
-			text = (Lines.Spanish ? "Energía" : "Energy");
+			text = Lang.T("Energy");
 			break;
 		case "Swift":
-			text = (Lines.Spanish ? "Robo" : "Draw");
+			text = Lang.T("Draw");
 			break;
 		case "Momentum":
-			text = (Lines.Spanish ? "Daño por uso" : "Damage per play");
+			text = Lang.T("Damage per play");
 			break;
 		case "Adroit":
 		case "Nimble":
-			text = (Lines.Spanish ? "Bloqueo" : "Block");
+			text = Lang.T("Block");
 			break;
 		case "Inky":
-			text = (Lines.Spanish ? "Débil" : "Weak");
+			text = Lang.T("Weak");
 			break;
 		default:
-			text = (Lines.Spanish ? "Daño" : "Damage");
+			text = Lang.T("Damage");
 			break;
 		}
 		return formattedText + ": " + text;

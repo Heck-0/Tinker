@@ -72,7 +72,7 @@ internal static class GameCompat
 				select AccessTools.Method(t, "GetNetIdForPropertyName", new Type[1] { typeof(string) })).FirstOrDefault((MethodInfo m) => m != null);
 			if (_netId == null)
 			{
-				throw new InvalidOperationException("No se encontró GetNetIdForPropertyName.");
+				throw new InvalidOperationException("GetNetIdForPropertyName not found.");
 			}
 		}
 		try

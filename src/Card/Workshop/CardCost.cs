@@ -15,15 +15,15 @@ internal static class CardCost
 	{
 		if (units <= 0 || (AttributeDirection.SignOf(attribute) < 0 && units > CardAttributes.CurrentValue(card, attribute) - CardAttributes.Minimum(card, attribute)))
 		{
-			throw new ArgumentOutOfRangeException("units", "La mejora queda por debajo del mínimo del atributo.");
+			throw new ArgumentOutOfRangeException("units", "The upgrade goes below the attribute's minimum.");
 		}
 		if (AttributeDirection.SignOf(attribute) > 0 && units > CardAttributes.Maximum(card, attribute) - CardAttributes.CurrentValue(card, attribute))
 		{
-			throw new ArgumentOutOfRangeException("units", "La mejora supera el máximo del atributo.");
+			throw new ArgumentOutOfRangeException("units", "The upgrade goes over the attribute's maximum.");
 		}
 		if (attribute == "cost" && (units <= 0 || units > CardAttributes.CurrentValue(card, attribute)))
 		{
-			throw new ArgumentOutOfRangeException("units", "El coste no puede bajar de cero.");
+			throw new ArgumentOutOfRangeException("units", "The cost can't go below zero.");
 		}
 		CardMachineState cardMachineState = CardStateStore.Get(card);
 		int num = CardAttributes.CurrentValue(card, attribute);

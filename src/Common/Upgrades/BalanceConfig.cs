@@ -23,7 +23,7 @@ public sealed class BalanceConfig
 	private static readonly Lazy<string> DefaultText = new Lazy<string>(() =>
 	{
 		using Stream stream = typeof(BalanceConfig).Assembly.GetManifestResourceStream(ResourceName)
-			?? throw new InvalidOperationException("Falta el recurso " + ResourceName + " en el DLL.");
+			?? throw new InvalidOperationException("Missing resource " + ResourceName + " in the DLL.");
 		using StreamReader reader = new StreamReader(stream);
 		return reader.ReadToEnd();
 	});
@@ -38,7 +38,7 @@ public sealed class BalanceConfig
 		List<string> warnings = Apply(DefaultText.Value, addFamilies: true);
 		if (warnings.Count != 0)
 		{
-			throw new InvalidOperationException("El balance integrado no es válido: " + string.Join("; ", warnings));
+			throw new InvalidOperationException("The built-in balance is invalid: " + string.Join("; ", warnings));
 		}
 	}
 
@@ -53,7 +53,7 @@ public sealed class BalanceConfig
 		{
 			return value2;
 		}
-		throw new KeyNotFoundException("Sin balance para el atributo " + attribute);
+		throw new KeyNotFoundException("No balance for attribute " + attribute);
 	}
 
 	public AttributeBalance For(string attribute, string family)
@@ -78,12 +78,12 @@ public sealed class BalanceConfig
 		}
 		catch (JsonException ex)
 		{
-			warnings.Add($"no es JSON válido o un valor no es un número ({ex.Path}): {ex.Message}; se ignora el archivo.");
+			warnings.Add($"not valid JSON, or a value is not a number ({ex.Path}): {ex.Message}; the file is ignored.");
 			return warnings;
 		}
 		if (file == null)
 		{
-			warnings.Add("archivo vacío.");
+			warnings.Add("empty file.");
 			return warnings;
 		}
 		Set(file.StrainFactor, v => v >= 0.0 && v <= 5.0, v => StrainFactor = v, "strainFactor (entre 0 y 5)", warnings);
@@ -92,14 +92,14 @@ public sealed class BalanceConfig
 		{
 			if (item.Value == null)
 			{
-				warnings.Add("La familia «" + item.Key + "» está vacía; se ignora.");
+				warnings.Add("Family \"" + item.Key + "\" is empty; ignored.");
 				continue;
 			}
 			if (!Families.TryGetValue(item.Key, out var family))
 			{
 				if (!addFamilies)
 				{
-					warnings.Add("Familia desconocida «" + item.Key + "»; se ignora.");
+					warnings.Add("Unknown family \"" + item.Key + "\"; ignored.");
 					continue;
 				}
 				family = Families[item.Key] = new AttributeBalance();
@@ -123,7 +123,7 @@ public sealed class BalanceConfig
 		}
 		else
 		{
-			warnings.Add(name + " fuera de rango; se ignora.");
+			warnings.Add(name + " out of range; ignored.");
 		}
 	}
 

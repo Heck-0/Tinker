@@ -8,8 +8,6 @@ public sealed class BidirectionalEffect
 
 	public string Reverse;
 
-	public string Spanish;
-
 	public string English;
 
 	public string Family = "selection";

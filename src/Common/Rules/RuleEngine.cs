@@ -205,6 +205,104 @@ public static class RuleEngine
 		return new Verdict(0, "unknown");
 	}
 
+	// ------------------------------------------------------------------ trigger tiers
+
+	/// <summary>
+	/// How often a hook pays out, as a cost category (balance.jsonc): A constant (several times a turn), B per turn,
+	/// C occasional (a few times a combat), D once a combat, E outside combat (rooms, rewards, shop, rest).
+	/// Every hook the game's powers and relics override is listed (151 in v0.113.1).
+	/// </summary>
+	public static readonly IReadOnlyDictionary<string, string> TierFamilies = new Dictionary<string, string>
+	{
+		["A"] = "triggerConstant", ["B"] = "triggerTurn", ["C"] = "triggerOccasional", ["D"] = "triggerCombat", ["E"] = "triggerRun"
+	};
+
+	private static readonly Dictionary<string, string> HookTiers = BuildHookTiers();
+
+	private static Dictionary<string, string> BuildHookTiers()
+	{
+		Dictionary<string, string> tiers = new Dictionary<string, string>(StringComparer.Ordinal);
+		void Add(string tier, string hooks)
+		{
+			foreach (string h in hooks.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+			{
+				tiers[h] = tier;
+			}
+		}
+		// A: per card played, per hit or attack dealt, per Block gained, per card drawn / created / moved.
+		Add("A", "AfterCardPlayed BeforeCardPlayed ModifyCardPlayCount AfterModifyingCardPlayCount ShouldPlay ModifyCardPlayResultLocation AfterModifyingCardPlayResultLocation TryModifyEnergyCostInCombat TryModifyEnergyCostInCombatLate TryModifyStarCost TryModifyKeywordsInCombat ModifyXValue");
+		Add("A", "ModifyDamageMultiplicative ModifyDamageAdditive AfterDamageGiven AfterAttack BeforeAttack ModifyAttackHitCount AfterModifyingDamageAmount ModifyDamageCap");
+		Add("A", "ModifyBlockAdditive ModifyBlockMultiplicative AfterModifyingBlockAmount AfterBlockGained");
+		Add("A", "AfterCardDrawn AfterCardDrawnEarly ShouldDraw AfterPreventingDraw AfterCardGeneratedForCombat AfterCardEnteredCombat AfterCardChangedPiles AfterShuffle AfterHandEmptied");
+		// B: per turn; per damage taken; per power applied; per energy / star / Forge; per orb; per arrow.
+		Add("B", "AfterAutoPrePlayPhaseEntered AfterAutoPrePlayPhaseEnteredLate AfterAutoPostPlayPhaseEntered");
+		Add("B", "AfterSideTurnStart AfterSideTurnStartLate BeforeSideTurnStart AfterPlayerTurnStart AfterPlayerTurnStartLate AfterSideTurnEnd AfterSideTurnEndLate BeforeSideTurnEnd BeforeSideTurnEndEarly BeforeSideTurnEndVeryEarly BeforeHandDraw ModifyHandDraw AfterModifyingHandDraw ModifyMaxEnergy AfterEnergyReset AfterEnergyResetLate ShouldPlayerResetEnergy ShouldClearBlock AfterBlockCleared AfterPreventingBlockClear ShouldFlush AfterFlush ShouldTakeExtraTurn ShouldTakeExtraTurnEarly AfterTakingExtraTurn");
+		Add("B", "AfterDamageReceived BeforeDamageReceived ModifyHpLostAfterOsty ModifyHpLostAfterOstyLate AfterModifyingHpLostAfterOsty ModifyHpLostBeforeOstyLate AfterModifyingHpLostBeforeOsty AfterBlockBroken AfterCurrentHpChanged ModifyUnblockedDamageTarget ModifyPreBlockDamageTarget");
+		Add("B", "BeforeApplied AfterPowerAmountChanged BeforePowerAmountChanged TryModifyPowerAmountReceived AfterModifyingPowerAmountReceived ModifyPowerAmountGivenAdditive ModifyPowerAmountGivenMultiplicative AfterModifyingPowerAmountGiven");
+		Add("B", "AfterEnergySpent ModifyEnergyGain AfterModifyingEnergyGain AfterStarsSpent AfterStarsGained AfterForge");
+		Add("B", "AfterOrbChanneled AfterOrbEvoked ModifyOrbValue ModifyOrbPassiveTriggerCounts AfterModifyingOrbPassiveTriggerCount AfterArrowShot AfterArrowDislodged AfterArrowImpaled");
+		// C: per card exhausted / discarded, per death or survival, per potion.
+		Add("C", "AfterCardExhausted AfterCardDiscarded");
+		Add("C", "AfterDeath BeforeDeath ShouldDieLate AfterPreventingDeath AfterDiedToDoom ShouldOwnerDeathTriggerFatal ShouldCreatureBeRemovedFromCombatAfterDeath ShouldPowerBeRemovedAfterOwnerDeath ShouldPowerBeRemovedOnDeath ShouldStopCombatFromEnding ShouldAllowHitting AfterCreatureAddedToCombat AfterOstyRevived");
+		Add("C", "AfterPotionUsed BeforePotionUsed AfterPotionProcured AfterPotionDiscarded ShouldProcurePotion ShouldForcePotionReward");
+		// D: once a combat.
+		Add("D", "BeforeCombatStart BeforeCombatStartLate AfterCombatEnd AfterCombatVictory AfterCombatVictoryEarly BeforeCombatRewardOffered GetScaledAmountForMultiplayer");
+		// E: outside combat.
+		Add("E", "AfterRoomEntered ModifyUnknownMapPointRoomTypes ModifyGeneratedMap ModifyGeneratedMapLate ShouldAllowFreeTravel ShouldGenerateTreasure IsAllowedAtNeow");
+		Add("E", "TryModifyRewards TryModifyRewardsLate AfterModifyingRewards TryModifyCardRewardOptions TryModifyCardRewardOptionsLate AfterModifyingCardRewardOptions ModifyCardRewardCreationOptions TryModifyCardRewardAlternatives TryModifyCardBeingAddedToDeck");
+		Add("E", "ModifyGoldGained AfterModifyingGoldGained AfterGoldGained ModifyMerchantPrice ModifyMerchantCardCreationResults ShouldRefillMerchantEntry AfterItemPurchased");
+		Add("E", "TryModifyRestSiteOptions TryModifyRestSiteHealRewards ModifyRestSiteHealAmount AfterRestSiteHeal ModifyExtraRestSiteHealText ShouldDisableRemainingRestSiteOptions");
+		return tiers;
+	}
+
+	/// <summary>The trigger tier of a hook, or null if it isn't a hook (OnPlay, a helper method, ...).</summary>
+	public static string HookTier(string hook) => (hook != null && HookTiers.TryGetValue(hook, out string t)) ? t : null;
+
+	/// <summary>Turn-start / turn-end hooks: often bookkeeping (resets, end-of-turn batches) next to the real trigger.</summary>
+	private static readonly HashSet<string> TurnPhaseHooks = new HashSet<string>
+	{
+		"AfterSideTurnStart", "AfterSideTurnStartLate", "BeforeSideTurnStart", "AfterPlayerTurnStart", "AfterPlayerTurnStartLate",
+		"AfterSideTurnEnd", "AfterSideTurnEndLate", "BeforeSideTurnEnd", "BeforeSideTurnEndEarly", "BeforeSideTurnEndVeryEarly"
+	};
+
+	/// <summary>
+	/// The trigger-tier category for a value used in these methods. The most frequent tier wins, but turn-start and
+	/// turn-end hooks only count when nothing else triggers (Dark Embrace draws per Exhaust; its turn-end read only
+	/// batches Ethereal cards). A per-turn hook that checks the turn number (turn 1 only, every N turns) counts as
+	/// once a combat. Null if no method is a hook.
+	/// </summary>
+	public static string TriggerFamily(IEnumerable<MethodCode> methods)
+	{
+		List<(string Tier, bool TurnPhase)> found = new List<(string, bool)>();
+		foreach (MethodCode m in methods)
+		{
+			string tier = HookTier(m.Owner);
+			if (tier == "B" && ChecksTurn(m))
+			{
+				tier = "D";
+			}
+			if (tier != null)
+			{
+				found.Add((tier, TurnPhaseHooks.Contains(m.Owner)));
+			}
+		}
+		List<string> tiers = (found.Any(f => !f.TurnPhase) ? found.Where(f => !f.TurnPhase) : found).Select(f => f.Tier).ToList();
+		return (tiers.Count == 0) ? null : TierFamilies[tiers.Min(StringComparer.Ordinal)];
+	}
+
+	/// <summary>A relic value's trigger tier: the hooks it is read in (not OnUpgrade, not property getters).</summary>
+	public static string TriggerFamily(ItemCode item, string var)
+	{
+		HashSet<string> names = new HashSet<string>(item.Vars.Select(x => x.Name));
+		return TriggerFamily(Reads(item, names).Where(r => r.Var == var && r.Method.Name != "OnUpgrade" && !r.Method.Name.StartsWith("get_", StringComparison.Ordinal)).Select(r => r.Method));
+	}
+
+	/// <summary>A power's trigger tier: the hooks where it reads its own Amount (what a bigger amount pays out).</summary>
+	public static string PowerTriggerFamily(ItemCode power)
+	{
+		return TriggerFamily(power.Methods.Where(m => !m.Name.StartsWith("get_", StringComparison.Ordinal) && m.Body.Any(x => x.IsCall && (x.Method == "get_Amount" || x.Method == "get_AmountOnTurnStart"))));
+	}
+
 	// ------------------------------------------------------------------ cost category
 
 	/// <summary>Turn hooks: a value read here pays out every turn (unless the hook checks for turn 1).</summary>

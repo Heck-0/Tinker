@@ -2,7 +2,7 @@
 
 namespace Tinker.Common;
 
-// Simplified Chinese for the whole mod: English text -> Chinese, used by Lang.T and Lang.Zh. Templates match
+// Simplified Chinese for the whole mod: English text -> Chinese, used by Lang.T. Templates match
 // text with numbers or names in it; "{0}" pieces are translated in turn.
 
 public static class Chinese

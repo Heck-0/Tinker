@@ -46,7 +46,7 @@ public static class ToolboxSelectionPatch
 			return;
 		}
 		LocString locString = new LocString("relics", "RELICUPGRADER_REWARD");
-		locString.Add("label", Text.T("Elige una carta para añadir a tu mano.", "Choose a card to add to your hand."));
+		locString.Add("label", Text.T("Choose a card to add to your hand."));
 		foreach (CardModel item in await CardSelectCmd.FromSimpleGrid(context, list, relic.Owner, new CardSelectorPrefs(locString, 1)))
 		{
 			await CardPileCmd.AddGeneratedCardToCombat(item, PileType.Hand, player);

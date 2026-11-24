@@ -13,6 +13,7 @@ using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Models;
+using Tinker.Common;
 
 namespace Tinker.Card;
 
@@ -56,13 +57,13 @@ internal static class PowerParameters
 			{
 				if (__instance.GetType().Name == "DoubleDamagePower" && pair.Key == "extra:shadowMultiplier" && Value(__instance, "shadow:boostTurns", 0) > 0)
 				{
-					list.Add(Lang.T("Multiplicador de daño", "Damage multiplier") + ": " + FinalCardEffects.DisplayValue(pair.Key, pair.Value) + ".");
+					list.Add(Lang.T("Damage multiplier") + ": " + FinalCardEffects.DisplayValue(pair.Key, pair.Value) + ".");
 					continue;
 				}
 				ExpandedEffect expandedEffect = ExpandedEffects.Entries.FirstOrDefault((ExpandedEffect e) => e.Target == __instance.GetType().Name && e.Attribute == pair.Key);
 				if (expandedEffect != null && pair.Value != ((!(__instance.GetType().Name == "DemesnePower")) ? expandedEffect.Native : 0))
 				{
-					list.Add((Lines.Spanish ? expandedEffect.Spanish : Lang.Zh(expandedEffect.English)) + ": " + FinalCardEffects.DisplayValue(pair.Key, pair.Value) + ".");
+					list.Add((Lang.T(expandedEffect.English)) + ": " + FinalCardEffects.DisplayValue(pair.Key, pair.Value) + ".");
 				}
 			}
 			if (list.Count != 0)
@@ -183,7 +184,7 @@ internal static class PowerParameters
 			}
 			catch (Exception ex)
 			{
-				ModEntry.Warn("Parámetro desactivado para " + item + ": " + ex.GetBaseException().Message);
+				ModEntry.Warn("Parameter disabled for " + item + ": " + ex.GetBaseException().Message);
 			}
 		}
 	}
@@ -386,7 +387,7 @@ internal static class PowerParameters
 			}
 			if (num != 1)
 			{
-				throw new InvalidOperationException("Firma de Reflect inesperada: " + num);
+				throw new InvalidOperationException("Unexpected Reflect signature: " + num);
 			}
 			for (int num3 = 0; num3 <= list.Count; num3++)
 			{
@@ -451,7 +452,7 @@ internal static class PowerParameters
 		int num5 = ((!(name == "OrbitPower") || !(__originalMethod.Name == "get_DisplayAmount")) ? 1 : 2);
 		if (num != num5)
 		{
-			throw new InvalidOperationException($"Firma de parámetro inesperada en {name}: {num}/{num5}");
+			throw new InvalidOperationException($"Unexpected parameter signature in {name}: {num}/{num5}");
 		}
 		return list2;
 	}

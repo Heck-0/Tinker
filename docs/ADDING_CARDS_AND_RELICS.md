@@ -101,7 +101,23 @@ Override("MeatOnTheBone", "HpThreshold", "percentage", 1, 100);   // cap at 100 
 Override("BlessedAntler", "Cards", "drawback", -1);               // the rules said +1: wrong
 ```
 
-Values the engine handles get a cost **family** from where the value is used first (`RuleEngine.Category`):
+**Trigger tiers.** A power amount (a card's `PowerVar`, a relic's power, or the mod's own power effects like
+Dark Embrace's draw) is priced by how often the power pays out its `Amount`, read from the hooks where the
+power uses it; a relic value read in a hook, by how often that hook fires (`RuleEngine.HookTiers` maps all
+151 hooks the game's powers and relics use):
+
+| Tier | Category | How often | Examples |
+|---|---|---|---|
+| A | `triggerConstant` | per card played, hit, Block gain, card drawn | Afterimage, Strength, Envenom |
+| B | `triggerTurn` | per turn, damage taken, power applied, energy/star spent, orb | Poison, Mayhem, Vulnerable's turns |
+| C | `triggerOccasional` | per Exhaust / discard, kill, potion | Dark Embrace, Feel No Pain |
+| D | `triggerCombat` | once a combat, or a turn hook that only fires on some turns | Vajra-like combat-start relics |
+| E | `triggerRun` | rooms, rewards, shop, rest sites | gold or reward relics |
+
+The most frequent tier wins, but turn-start/end hooks only count when nothing else triggers (they're often
+bookkeeping). The numbers are in `content/balance.jsonc`; `tools/coverage/TIER_CHANGES.txt` lists what changed.
+
+Other values the engine handles get a cost **family** from where the value is used (`RuleEngine.Category`):
 energy read in `ModifyMaxEnergy` → persistentEnergy, a draw bonus read in `ModifyHandDraw` → persistentDraw,
 cards read in a turn hook → generation (selection if it asks you to choose), max HP gained after pickup →
 permanentGrowth; a hook that checks the turn number (first turn only, every N turns) doesn't count as every
@@ -134,8 +150,8 @@ threshold or drawback. Add an override when a value needs a different family, e.
 sets the step (0.01), the "no effect" value that prices count from, and the limits.
 
 **Label**: the Workshop shows a name for the value from `Text.Attribute` in `src/Relic/Text/Text.cs`.
-Common names already have labels. For a new value name, add a `case` there (Spanish and English) and the
-Chinese in `src/Common/Text/Chinese.cs`.
+Common names already have labels. For a new value name, add a `case` there (in English) and its
+translations in `src/Common/Text/Chinese.cs` and `src/Common/Text/Spanish.cs`.
 
 ## Step 2b: a card override
 

@@ -48,21 +48,21 @@ public sealed record RelicAttribute(string Key, string Family, int Direction = 1
 										{
 											return Text.Attribute(Key);
 										}
-										return Text.T("Duración (turnos)", "Duration (turns)");
+										return Text.T("Duration (turns)");
 									}
-									return Text.T("Daño propio", "Self damage");
+									return Text.T("Self damage");
 								}
-								return Text.T("Cartas necesarias", "Cards required");
+								return Text.T("Cards required");
 							}
-							return Text.T("Energía necesaria", "Energy required");
+							return Text.T("Energy required");
 						}
-						return Text.T("Oro pagado", "Gold paid");
+						return Text.T("Gold paid");
 					}
-					return Text.T("Estrellas necesarias", "Stars required");
+					return Text.T("Stars required");
 				}
-				return Text.T("Precio (%)", "Price (%)");
+				return Text.T("Price (%)");
 			}
-			return Text.T("Cartas no robadas", "Cards lost");
+			return Text.T("Cards lost");
 		}
 	}
 

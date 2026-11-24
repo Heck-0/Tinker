@@ -294,7 +294,7 @@ internal static class FinalCardEffects
 		}
 		if (num != (flag ? 1 : 2))
 		{
-			throw new InvalidOperationException("Firma inesperada de " + fieldInfo.FieldType.Name + ": " + num);
+			throw new InvalidOperationException("Unexpected signature of " + fieldInfo.FieldType.Name + ": " + num);
 		}
 		for (int i = 0; i <= code.Count; i++)
 		{
@@ -463,7 +463,7 @@ internal static class FinalCardEffects
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private static Task<IEnumerable<CardModel>> NativeDraw(PlayerChoiceContext choiceContext, decimal count, Player player, bool fromHandDraw)
 	{
-		throw new InvalidOperationException("El adaptador nativo de robo no está instalado.");
+		throw new InvalidOperationException("The native draw adapter is not installed.");
 	}
 
 	private static bool BoundedDraw(PlayerChoiceContext choiceContext, decimal count, Player player, bool fromHandDraw, ref Task<IEnumerable<CardModel>> __result)
@@ -496,10 +496,10 @@ internal static class FinalCardEffects
 		return result;
 	}
 
-	internal static void AddTexts(Dictionary<string, Dictionary<string, string>> tables, bool spanish)
+	internal static void AddTexts(Dictionary<string, Dictionary<string, string>> tables)
 	{
-		tables["card_selection"]["UPGRADER_PERMANENT_UPGRADE"] = (spanish ? "Mejora permanentemente hasta {Amount} cartas." : "Permanently Upgrade up to {Amount} cards.");
-		tables["card_selection"]["UPGRADER_INITIAL_SLY"] = (spanish ? "Da Astucia a hasta {Amount} Habilidades." : "Give Sly to up to {Amount} Skills.");
-		tables["card_selection"]["UPGRADER_REDRAW"] = (spanish ? "Descarta hasta {Amount} cartas para robar otras tantas." : "Discard up to {Amount} cards to draw that many cards.");
+		tables["card_selection"]["UPGRADER_PERMANENT_UPGRADE"] = "Permanently Upgrade up to {Amount} cards.";
+		tables["card_selection"]["UPGRADER_INITIAL_SLY"] = "Give Sly to up to {Amount} Skills.";
+		tables["card_selection"]["UPGRADER_REDRAW"] = "Discard up to {Amount} cards to draw that many cards.";
 	}
 }

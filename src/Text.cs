@@ -31,8 +31,8 @@ internal static class Text
             {
                 Copy(card, "RULETA-", labels);
             }
-            Copy(Lang.Zh(Tinker.Relic.ConfigText.Values(Tinker.Relic.Text.Spanish), manager.Language), "RELICUPGRADER-", labels);
-            foreach (KeyValuePair<string, string> pair in Lang.Zh(Own(Lang.IsSpanish(manager.Language)), manager.Language))
+            Copy(Lang.T(Tinker.Relic.ConfigText.Values(), manager.Language), "RELICUPGRADER-", labels);
+            foreach (KeyValuePair<string, string> pair in Lang.T(Own(), manager.Language))
             {
                 labels[Prefix + pair.Key] = pair.Value;
             }
@@ -59,19 +59,18 @@ internal static class Text
     private static string Slug(string name) => StringHelper.Slugify(name);
 
     /// <summary>Titles for sections and settings that are new in the merged layout.</summary>
-    private static Dictionary<string, string> Own(bool es)
+    private static Dictionary<string, string> Own()
     {
-        string T(string spanish, string english) => es ? spanish : english;
         return new Dictionary<string, string>
         {
-            [Slug("SectionPrices") + ".title"] = T("Precios", "Prices"),
-            [Slug("SectionWorkshop") + ".title"] = T("Taller", "Workshop"),
-            [Slug("WorkshopGoldRate") + ".title"] = T("Oro por mejora", "Gold per upgrade"),
-            [Slug("WorkshopGoldRate") + ".hover.title"] = T("Oro por mejora", "Gold per upgrade"),
-            [Slug("WorkshopGoldRate") + ".hover.desc"] = T("Lo que cuesta la mejora más pequeña de una carta o reliquia sin mejorar. Las demás cuestan en proporción.", "What the smallest upgrade on a fresh card or relic costs. Others cost proportionally more."),
-            [Slug("SectionTraits") + ".title"] = T("Cartas: propiedades", "Cards: traits"),
-            [Slug("SectionBoons") + ".title"] = T("Reliquias: bufos", "Relics: boons"),
-            [Slug("Difficulty") + ".title"] = T("Dificultad de mejora", "Upgrade difficulty"),
+            [Slug("SectionPrices") + ".title"] = "Prices",
+            [Slug("SectionWorkshop") + ".title"] = "Workshop",
+            [Slug("WorkshopGoldRate") + ".title"] = "Gold per upgrade",
+            [Slug("WorkshopGoldRate") + ".hover.title"] = "Gold per upgrade",
+            [Slug("WorkshopGoldRate") + ".hover.desc"] = "What the smallest upgrade on a fresh card or relic costs. Others cost proportionally more.",
+            [Slug("SectionTraits") + ".title"] = "Cards: traits",
+            [Slug("SectionBoons") + ".title"] = "Relics: boons",
+            [Slug("Difficulty") + ".title"] = "Upgrade difficulty",
         };
     }
 

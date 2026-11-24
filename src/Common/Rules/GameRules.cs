@@ -72,6 +72,57 @@ public static class GameRules
 		}
 	}
 
+	private static readonly Dictionary<string, string> PowerTiers = new Dictionary<string, string>();
+
+	/// <summary>The trigger-tier category of a relic value, from the hooks it's read in (see <see cref="RuleEngine.TriggerFamily(ItemCode, string)"/>), or null.</summary>
+	public static string TriggerFamily(AbstractModel model, string var)
+	{
+		lock (Code)
+		{
+			try
+			{
+				return RuleEngine.TriggerFamily(ItemFor(model), var);
+			}
+			catch (Exception)
+			{
+				return null;
+			}
+		}
+	}
+
+	/// <summary>The trigger-tier category of a power's amount, from the hooks where it reads Amount, or null.</summary>
+	public static string PowerTriggerFamily(string powerName)
+	{
+		if (string.IsNullOrEmpty(powerName))
+		{
+			return null;
+		}
+		lock (Code)
+		{
+			if (PowerTiers.TryGetValue(powerName, out string cached))
+			{
+				return cached;
+			}
+			string family = null;
+			try
+			{
+				PowerModel power = ModelDb.AllPowers.FirstOrDefault(p => p.GetType().Name == powerName);
+				if (power != null)
+				{
+					ItemCode item = new ItemCode { Name = powerName };
+					AddMethods(power.GetType(), null, item.Methods);
+					family = RuleEngine.PowerTriggerFamily(item);
+				}
+			}
+			catch (Exception)
+			{
+				family = null;
+			}
+			PowerTiers[powerName] = family;
+			return family;
+		}
+	}
+
 	/// <summary>The class's values as its DynamicVars hold them.</summary>
 	public static IReadOnlyList<VarInfo> Vars(AbstractModel model)
 	{

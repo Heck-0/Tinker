@@ -97,10 +97,12 @@ public static class Store
 			string key2 = key;
 			UpgradeLedger upgradeLedger = value;
 			RelicAttribute relicAttribute = Catalog.Find(relic, key2);
-			if (relicAttribute == null || relicAttribute.Direction != upgradeLedger.Direction || relicAttribute.Family != upgradeLedger.Family || !relic.DynamicVars.TryGetValue(key2, out DynamicVar value2))
+			if (relicAttribute == null || relicAttribute.Direction != upgradeLedger.Direction || !relic.DynamicVars.TryGetValue(key2, out DynamicVar value2))
 			{
 				throw new FormatException("Unknown upgraded relic attribute " + key2);
 			}
+			// The cost category only prices future purchases: a save from before a category change takes the current one.
+			upgradeLedger.Family = relicAttribute.Family;
 			decimal num = relicAttribute.After(upgradeLedger.Reference, upgradeLedger.Gain);
 			if (num < Math.Min(relicAttribute.Minimum, upgradeLedger.Reference) || num > Math.Max(relicAttribute.Maximum, upgradeLedger.Reference))
 			{

@@ -30,11 +30,11 @@ public sealed class CardMachineState
 	{
 		if (Property != null)
 		{
-			throw new InvalidOperationException("La copia ya tiene una propiedad excepcional.");
+			throw new InvalidOperationException("The copy already has a trait.");
 		}
 		if (ExceptionalCatalog.Find(id) == null)
 		{
-			throw new ArgumentException("Propiedad desconocida: " + id, "id");
+			throw new ArgumentException("Unknown trait: " + id, "id");
 		}
 		Property = id;
 		PropertyGrowth = 0;
@@ -44,7 +44,7 @@ public sealed class CardMachineState
 	{
 		if (Property == null)
 		{
-			throw new InvalidOperationException("La copia no tiene propiedad excepcional.");
+			throw new InvalidOperationException("The copy has no trait.");
 		}
 		if (amount <= 0)
 		{
@@ -53,7 +53,7 @@ public sealed class CardMachineState
 		int num = checked(PropertyGrowth + amount);
 		if (num > MaxStoredUnits)
 		{
-			throw new InvalidOperationException("Límite de crecimiento alcanzado.");
+			throw new InvalidOperationException("Growth limit reached.");
 		}
 		PropertyGrowth = num;
 	}
@@ -115,7 +115,7 @@ public sealed class CardMachineState
 		int gain = checked(ledger.Gain + powerUnits);
 		if (gain > MaxStoredUnits)
 		{
-			throw new InvalidOperationException("Límite de estado de máquina alcanzado.");
+			throw new InvalidOperationException("Machine state limit reached.");
 		}
 		ledger.Gain = gain;
 		return powerUnits * AttributeDirection.SignOf(attribute);
@@ -125,11 +125,11 @@ public sealed class CardMachineState
 	{
 		if (string.IsNullOrEmpty(attribute))
 		{
-			throw new ArgumentException("Atributo vacío.", "attribute");
+			throw new ArgumentException("Empty attribute.", "attribute");
 		}
 		if (!(attribute == "cost") && !FixedEffects.Known(attribute) && !ExpandedEffects.Known(attribute) && !EnchantmentEffects.Known(attribute) && !AdvancedEnchantmentEffects.Known(attribute) && !AttributeKeys.IsVar(attribute) && (!attribute.StartsWith("self:", StringComparison.Ordinal) || attribute.Length <= "self:".Length) && (!attribute.StartsWith("kw+:", StringComparison.Ordinal) || attribute.Length <= "kw+:".Length))
 		{
-			throw new ArgumentException("Atributo de máquina desconocido.", "attribute");
+			throw new ArgumentException("Unknown machine attribute.", "attribute");
 		}
 	}
 
@@ -187,13 +187,13 @@ public sealed class CardMachineState
 	{
 		try
 		{
-			JsonObject jsonObject = (JsonNode.Parse(json) as JsonObject) ?? throw new FormatException("estado de máquina vacío");
-			int version = (int)(jsonObject["v"] ?? throw new FormatException("falta la versión"));
+			JsonObject jsonObject = (JsonNode.Parse(json) as JsonObject) ?? throw new FormatException("empty machine state");
+			int version = (int)(jsonObject["v"] ?? throw new FormatException("missing version"));
 			if (version != FormatVersion)
 			{
-				throw new FormatException("versión de estado no soportada: " + version);
+				throw new FormatException("unsupported state version: " + version);
 			}
-			JsonObject obj = (jsonObject["a"] as JsonObject) ?? throw new FormatException("faltan los atributos");
+			JsonObject obj = (jsonObject["a"] as JsonObject) ?? throw new FormatException("missing attributes");
 			CardMachineState cardMachineState = new CardMachineState();
 			foreach (KeyValuePair<string, JsonNode> item in obj)
 			{
@@ -201,7 +201,7 @@ public sealed class CardMachineState
 				int gain = (int)(item.Value ?? throw new FormatException("atributo mal formado: " + item.Key));
 				if (gain < 0 || gain > MaxStoredUnits)
 				{
-					throw new FormatException("valores fuera de rango en " + item.Key);
+					throw new FormatException("values out of range in " + item.Key);
 				}
 				cardMachineState._ledgers[item.Key] = new AttributeLedger
 				{
@@ -214,7 +214,7 @@ public sealed class CardMachineState
 				int growth = (int)(jsonObject2["g"] ?? ((JsonNode)0));
 				if (growth < 0 || growth > MaxStoredUnits)
 				{
-					throw new FormatException("crecimiento de propiedad inválido");
+					throw new FormatException("invalid trait growth");
 				}
 				if (text != null && ExceptionalCatalog.Find(text) != null)
 				{
@@ -227,7 +227,7 @@ public sealed class CardMachineState
 		}
 		catch (Exception ex) when (ex is JsonException || ex is InvalidOperationException || ex is OverflowException || ex is ArgumentException)
 		{
-			throw new FormatException("estructura de estado de máquina inválida", ex);
+			throw new FormatException("invalid machine state structure", ex);
 		}
 	}
 }

@@ -38,7 +38,7 @@ internal static class WorkshopRelicPatch
         }
         catch (Exception ex)
         {
-            ModEntry.Error("No se pudo abrir el taller: " + ex);
+            ModEntry.Error("Could not open the Workshop: " + ex);
             return true;
         }
     }

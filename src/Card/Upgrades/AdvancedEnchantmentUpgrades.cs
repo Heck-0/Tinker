@@ -177,7 +177,7 @@ internal static class AdvancedEnchantmentUpgrades
 			}
 			if (num != 1)
 			{
-				throw new InvalidOperationException("Firma automática de Imbued inesperada: " + num);
+				throw new InvalidOperationException("Unexpected Imbued auto-play signature: " + num);
 			}
 			return list2;
 		}
@@ -218,7 +218,7 @@ internal static class AdvancedEnchantmentUpgrades
 		}
 		if (num2 != 1)
 		{
-			throw new InvalidOperationException("Firma de coste del encantamiento inesperada: " + num2);
+			throw new InvalidOperationException("Unexpected enchantment cost signature: " + num2);
 		}
 		return list2;
 	}
@@ -248,14 +248,14 @@ internal static class AdvancedEnchantmentUpgrades
 			}
 			if (item.Attribute == "enchanteffect:goopyGrowth")
 			{
-				string text2 = ExpandedEffectText.RewriteLine(text, "Goopy", item.Attribute, "enchantmentText", Value(card, item.Attribute), Lines.Spanish);
+				string text2 = ExpandedEffectText.RewriteLine(text, "Goopy", item.Attribute, "enchantmentText", Value(card, item.Attribute));
 				if (text2 != null)
 				{
 					text = text2;
 					continue;
 				}
 			}
-			string text3 = (Lines.Spanish ? item.Spanish : Lang.Zh(item.English));
+			string text3 = Lang.T(item.English);
 			text = text + "\n" + text3 + ": " + Value(card, item.Attribute) + ((item.Family == "percentage") ? "%" : "") + ".";
 		}
 		return text;

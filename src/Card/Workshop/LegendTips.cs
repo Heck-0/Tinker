@@ -29,7 +29,7 @@ internal static class LegendTips
 			}
 			catch (Exception ex)
 			{
-				ModEntry.Warn("No se pudo mostrar la ayuda: " + ex.Message);
+				ModEntry.Warn("Could not show the help: " + ex.Message);
 			}
 		};
 		owner.MouseExited += delegate

@@ -25,6 +25,7 @@ using MegaCrit.Sts2.Core.Models.Orbs;
 using MegaCrit.Sts2.Core.Rewards;
 using MegaCrit.Sts2.Core.Rooms;
 using MegaCrit.Sts2.Core.Runs;
+using Tinker.Common;
 
 namespace Tinker.Card;
 
@@ -110,7 +111,7 @@ internal static class ExpandedEffectPatches
 			{
 				if (ExpandedEffects.For(item).Any((ExpandedEffect e) => e.Kind == "capture" && !PowerParameters.Enabled(e.Target)))
 				{
-					throw new InvalidOperationException("El adaptador del poder no está disponible");
+					throw new InvalidOperationException("The power adapter is not available");
 				}
 				foreach (string item2 in (from e in ExpandedEffects.For(item)
 					select e.Method).Distinct())
@@ -138,7 +139,7 @@ internal static class ExpandedEffectPatches
 			}
 			catch (Exception ex)
 			{
-				ModEntry.Warn("Ampliación desactivada para " + item + ": " + ex.GetBaseException().Message);
+				ModEntry.Warn("Expansion disabled for " + item + ": " + ex.GetBaseException().Message);
 			}
 		}
 	}
@@ -438,7 +439,7 @@ internal static class ExpandedEffectPatches
 					string text2 = ((type == typeof(decimal)) ? "AdjustDecimal" : ((type == typeof(int)) ? "AdjustInt" : null));
 					if (text2 == null)
 					{
-						throw new InvalidOperationException("Tipo de argumento inesperado: " + type);
+						throw new InvalidOperationException("Unexpected argument type: " + type);
 					}
 					List<CodeInstruction> list7 = Load(fieldInfo);
 					list7.Add(new CodeInstruction(OpCodes.Ldstr, item.Attribute));
@@ -463,7 +464,7 @@ internal static class ExpandedEffectPatches
 			}
 			if (num != num4)
 			{
-				throw new InvalidOperationException($"Firma inesperada en {item.Card}/{item.Attribute}: {num}/{num4}");
+				throw new InvalidOperationException($"Unexpected signature in {item.Card}/{item.Attribute}: {num}/{num4}");
 			}
 		}
 		List<CodeInstruction> list8 = new List<CodeInstruction>();
@@ -524,7 +525,7 @@ internal static class ExpandedEffectPatches
 			CodeInstruction codeInstruction = code[num2];
 			if (codeInstruction.opcode.FlowControl == FlowControl.Branch || codeInstruction.opcode.FlowControl == FlowControl.Cond_Branch)
 			{
-				throw new InvalidOperationException("Argumento con ramas: necesita adaptador específico");
+				throw new InvalidOperationException("Branching argument: needs a specific adapter");
 			}
 			int num3 = Push(codeInstruction);
 			int num4 = Pop(codeInstruction);
@@ -538,7 +539,7 @@ internal static class ExpandedEffectPatches
 				throw new InvalidOperationException("Pila IL ambigua");
 			}
 		}
-		throw new InvalidOperationException("Argumento sin productor IL");
+		throw new InvalidOperationException("Argument has no IL producer");
 	}
 
 	private static int Push(CodeInstruction c)
@@ -591,7 +592,7 @@ internal static class ExpandedEffectPatches
 		case StackBehaviour.Popref_popi_pop1:
 			return 3;
 		default:
-			throw new InvalidOperationException("Pop IL no admitido: " + c.opcode);
+			throw new InvalidOperationException("Unsupported IL pop: " + c.opcode);
 		}
 	}
 
@@ -1220,7 +1221,7 @@ internal static class ExpandedEffectPatches
 				{
 					num2 = CardAttributes.CurrentValue(card, "extra:reflectionPercent") * CardAttributes.CurrentValue(card, "extra:power");
 				}
-				string text2 = ExpandedEffectText.RewriteLine(text, item.Card, item.Attribute, item.Kind, (item.Attribute == "extra:sharedForge") ? (num2 * 25) : ((item.Kind == "x") ? num : num2), Lines.Spanish);
+				string text2 = ExpandedEffectText.RewriteLine(text, item.Card, item.Attribute, item.Kind, (item.Attribute == "extra:sharedForge") ? (num2 * 25) : ((item.Kind == "x") ? num : num2));
 				if (text2 != null)
 				{
 					text = text2;
@@ -1234,24 +1235,23 @@ internal static class ExpandedEffectPatches
 					BidirectionalEffect bidirectionalEffect = BidirectionalEffects.Find(card.GetType().Name, item.Attribute);
 					if (bidirectionalEffect != null)
 					{
-						string text3 = ((!(card is TrueGrit) || card.IsUpgraded) ? (Lines.Spanish ? bidirectionalEffect.Spanish : bidirectionalEffect.English) : (Lines.Spanish ? "Agotamientos aleatorios" : "Random Exhausts"));
-						text = text + "\n" + Lang.Zh(text3) + ": " + CardAttributes.CurrentValue(card, item.Attribute) + Lang.T(" (ajustado).", " (adjusted).");
+						string text3 = ((!(card is TrueGrit) || card.IsUpgraded) ? Lang.T(bidirectionalEffect.English) : Lang.T("Random Exhausts"));
+						text = text + "\n" + text3 + ": " + CardAttributes.CurrentValue(card, item.Attribute) + Lang.T(" (adjusted).");
 						continue;
 					}
-					string format = ((!(item.Card == "Eidolon")) ? ((item.Card == "Tracking" && TrackingUsesPercent) ? (Lines.Spanish ? "El bonus de daño contra Débil aumenta en {0} puntos porcentuales." : "The damage bonus against Weak increases by {0} percentage points.") : (Lines.Spanish ? item.ExtraSpanish : item.ExtraEnglish)) : ((!EidolonUsesAutoPlay) ? (Lines.Spanish ? "Obtén {0} Intangible adicional si cumples el requisito." : "Gain {0} additional Intangible when the requirement is met.") : (Lines.Spanish ? "Cada carta automática se juega {0} veces adicionales." : "Each automatic card is played {0} additional times.")));
+					string format = ((!(item.Card == "Eidolon")) ? ((item.Card == "Tracking" && TrackingUsesPercent) ? Lang.T("The damage bonus against Weak increases by {0} percentage points.") : Lang.T(item.ExtraEnglish)) : ((!EidolonUsesAutoPlay) ? Lang.T("Gain {0} additional Intangible when the requirement is met.") : Lang.T("Each automatic card is played {0} additional times.")));
 					if (item.Attribute == "extra:blockGrowth")
 					{
-						format = (Lines.Spanish ? "Al final de tu turno, aumenta tu Bloqueo un {0} %." : "At the end of your turn, increase your Block by {0}%.");
+						format = Lang.T("At the end of your turn, increase your Block by {0}%.");
 					}
 					if (item.Attribute == "extra:sharedForge")
 					{
-						format = (Lines.Spanish ? "Los aliados reciben un {0} % de tu Forja." : "Allies receive {0}% of your Forge.");
+						format = Lang.T("Allies receive {0}% of your Forge.");
 					}
 					if (item.Attribute == "extra:shadowMultiplier")
 					{
-						format = (Lines.Spanish ? "El daño potenciado se multiplica por {0}." : "Boosted damage is multiplied by {0}.");
+						format = Lang.T("Boosted damage is multiplied by {0}.");
 					}
-					format = Lang.Zh(format);
 					int num3 = ((item.Attribute == "extra:blockGrowth") ? (num * 10) : ((item.Attribute == "extra:sharedForge") ? (CardAttributes.CurrentValue(card, item.Attribute) * 25) : ((item.Attribute == "extra:shadowMultiplier") ? CardAttributes.CurrentValue(card, item.Attribute) : ((item.Kind == "chooseGenerated") ? Math.Max(0, unchecked(num2 - Native(card, item))) : Math.Abs(num)))));
 					text = text + "\n" + string.Format(format, num3);
 				}

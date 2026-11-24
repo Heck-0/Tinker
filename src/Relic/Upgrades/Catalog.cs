@@ -64,13 +64,28 @@ public static class Catalog
 				Verdict verdict = GameRules.Decide(relic, v.Name);
 				if (verdict.Sign != 0)
 				{
-					list.Add(new RelicAttribute(v.Name, GameRules.Category(relic, v.Name, verdict) ?? DefaultFamily(v, verdict), verdict.Sign));
+					list.Add(new RelicAttribute(v.Name, FamilyFor(relic, v, verdict), verdict.Sign));
 				}
 			}
 			RelicAttribute[] result = list.ToArray();
 			Cache[type] = result;
 			return result;
 		}
+	}
+
+	/// <summary>
+	/// The cost category for a value the engine decided: a usage category (energy / draw every turn, max HP growth),
+	/// else its trigger tier (for a power amount, how often the power pays out; else how often the relic's hook
+	/// fires), else by name and type. Lower-is-better values keep threshold / drawback.
+	/// </summary>
+	private static string FamilyFor(RelicModel relic, VarInfo v, Verdict verdict)
+	{
+		string family = GameRules.Category(relic, v.Name, verdict);
+		if (family == null && verdict.Sign > 0)
+		{
+			family = (v.Power != null) ? GameRules.PowerTriggerFamily(v.Power) : GameRules.TriggerFamily(relic, v.Name);
+		}
+		return family ?? DefaultFamily(v, verdict);
 	}
 
 	/// <summary>The cost category for a value the rules decided (tools/relic_overrides.py uses the same mapping).</summary>

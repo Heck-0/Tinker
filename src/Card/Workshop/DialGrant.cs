@@ -29,7 +29,7 @@ internal static class DialGrant
             }
             catch (Exception ex)
             {
-                ModEntry.Error("No se pudo dar el Dial del Artífice al empezar: " + ex);
+                ModEntry.Error("Could not give the Tinkerer's Dial at the start: " + ex);
             }
         }
     }

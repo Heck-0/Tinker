@@ -74,7 +74,7 @@ public static class PersistencePatches
 			}
 			catch (Exception ex) when (ex is FormatException || ex is InvalidOperationException || ex is OverflowException)
 			{
-				ModEntry.Error($"Estado de máquina ilegible en {save.Id}; la carta queda normal. {ex.Message}");
+				ModEntry.Error($"Unreadable machine state on {save.Id}; the card stays normal. {ex.Message}");
 			}
 		}
 	}
@@ -125,7 +125,7 @@ public static class PersistencePatches
 				catch (Exception ex) when (ex is ArgumentException || ex is InvalidOperationException)
 				{
 					_hasNetId = false;
-					ModEntry.Error("El estado de las cartas no tiene id de red; no viajará al otro jugador. " + ex.Message);
+					ModEntry.Error("Card state has no network id; it won't reach the other player. " + ex.Message);
 				}
 			}
 			return _hasNetId.Value;

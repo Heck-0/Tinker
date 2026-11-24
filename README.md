@@ -84,7 +84,14 @@ removes no code.
   overrides. Every previously upgradable value keeps its exact direction, category and limits (checked
   value by value); 59 card values and 28 relic values become upgradable. Fractional values are bought in
   steps of 0.01: Bowler Hat (gold ×1.25), Undying Sigil (×0.5), Tank (×1.5 / ×0.5, now copied onto its
-  powers), and Paper Phrog / Paper Krane, whose hard-coded bonus became a value.
+  powers), and Paper Phrog / Paper Krane, whose hard-coded bonus became a value. Cost categories also come
+  from the code: per-turn energy / draw and max-HP growth by where a relic value is used, and **trigger
+  tiers** for power amounts and relic hooks (per play / per turn / occasional / per combat / per run, from the
+  151 hooks the game uses), so e.g. Afterimage (per card) is priced above Dark Embrace (per Exhaust).
+  Text: the code is English only; Spanish moved into a translation table like Chinese
+  (`Common/Text/Spanish.cs`, same output as before). The rewrites of the game's own Spanish card text are
+  gone, so Spanish card descriptions keep the game's wording, as Chinese already did. Log and error messages
+  are in English.
 - **1.6.0** - Dropped old-save support: the retired item classes and their icons, the roulette's loss and
   drawback-repair bookkeeping (card state is now just units bought per value), the original Card Upgrader's
   save key, the Dial offer for runs started without it, the settings copy from `UpgraderCombined.cfg`, and

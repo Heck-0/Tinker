@@ -30,11 +30,11 @@ public static class ModEntry
 			RegisterNetwork();
 			RegisterConfig();
 			BalanceFile.Reload();
-			Log.Info("[Tinker Card] activo, versión 0.9.2.");
+			Log.Info("[Tinker Card] active, version 0.9.2.");
 		}
 		catch (Exception ex)
 		{
-			Log.Error("[Tinker Card] fallo al inicializar: " + ex);
+			Log.Error("[Tinker Card] failed to initialize: " + ex);
 		}
 	}
 
@@ -43,7 +43,7 @@ public static class ModEntry
 	{
 		if (Environment.GetEnvironmentVariable("CARDUPGRADER_SELFTEST_NOREG") == "1")
 		{
-			Warn("Registro de red omitido (prueba de control).");
+			Warn("Network registration skipped (control test).");
 			return;
 		}
 		try
@@ -51,12 +51,12 @@ public static class ModEntry
 			if (GameCompat.RegisterNetworkProperties(typeof(TinkerersDial)))
 			{
 				GameCompat.NetIdForPropertyName("CardUpgraderState");
-				Info("Estado de cartas registrado para el cooperativo.");
+				Info("Card state registered for co-op.");
 			}
 		}
 		catch (Exception ex)
 		{
-			Error("El estado de cartas no se pudo registrar para el cooperativo: " + ex.GetBaseException().Message);
+			Error("Could not register card state for co-op: " + ex.GetBaseException().Message);
 		}
 	}
 
@@ -70,7 +70,7 @@ public static class ModEntry
 		}
 		catch (Exception ex)
 		{
-			Error("No se pudo crear el menú de ajustes: " + ex.GetBaseException().Message);
+			Error("Could not create the settings menu: " + ex.GetBaseException().Message);
 		}
 	}
 

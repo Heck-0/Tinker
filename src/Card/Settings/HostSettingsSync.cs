@@ -20,11 +20,11 @@ internal static class HostSettingsSync
 			CardSettings modSettings = CardSettings.FromJson(json);
 			if (modSettings == null)
 			{
-				ModEntry.Error("Configuración del anfitrión ilegible; se mantiene la anterior.");
+				ModEntry.Error("Unreadable host settings; keeping the previous ones.");
 				return;
 			}
 			Settings.HostOverride = modSettings;
-			ModEntry.Info($"Se usa la configuración del anfitrión (preajuste {modSettings.Preset}).");
+			ModEntry.Info($"Using the host's settings (preset {modSettings.Preset}).");
 		}
 	}
 
@@ -57,7 +57,7 @@ internal static class HostSettingsSync
 				}
 				catch (Exception ex)
 				{
-					ModEntry.Error("No se pudo pedir la configuración al anfitrión: " + ex.Message);
+					ModEntry.Error("Could not request the host's settings: " + ex.Message);
 					break;
 				}
 			default:
@@ -74,7 +74,7 @@ internal static class HostSettingsSync
 		{
 			if (Settings.HostOverride != null)
 			{
-				ModEntry.Info("Fin de la partida cooperativa: vuelve la configuración propia.");
+				ModEntry.Info("Co-op run over: back to your own settings.");
 			}
 			Settings.HostOverride = null;
 		}
@@ -101,11 +101,11 @@ internal static class HostSettingsSync
 			{
 				CardJson = Settings.Local.ToJson()
 			});
-			ModEntry.Info("Configuración del anfitrión enviada.");
+			ModEntry.Info("Host settings sent.");
 		}
 		catch (Exception ex)
 		{
-			ModEntry.Error("No se pudo enviar la configuración del anfitrión: " + ex.Message);
+			ModEntry.Error("Could not send the host settings: " + ex.Message);
 		}
 	}
 }

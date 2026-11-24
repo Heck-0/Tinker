@@ -12,11 +12,7 @@ public sealed class ExpandedEffect
 
 	public string Family;
 
-	public string Spanish;
-
 	public string English;
-
-	public string ExtraSpanish;
 
 	public string ExtraEnglish;
 

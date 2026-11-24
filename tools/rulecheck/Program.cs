@@ -116,7 +116,21 @@ int PowerType(string p)
 
 int total = 0, same = 0;
 var diffs = new List<string>();
-var dump = new List<string> { "kind\titem\tvalue\tengine\tengine_why\tpython\tpython_why\tmod\tcategory" };
+var powerTiers = new Dictionary<string, string>();
+string PowerTier(TypeDefinition pt)
+{
+	var pi = new ItemCode { Name = pt.Name };
+	AddMethods(pt, null, pi.Methods);
+	return RuleEngine.PowerTriggerFamily(pi);
+}
+string powerList = Environment.GetEnvironmentVariable("RULE_POWER_TIERS");
+if (powerList != null)
+{
+	foreach (string p in powerList.Split(','))
+		Console.WriteLine($"POWER\t{p}\t{(types.TryGetValue("MegaCrit.Sts2.Core.Models.Powers." + p, out var pt) ? PowerTier(pt) : "missing")}");
+	return;
+}
+var dump = new List<string> { "kind\titem\tvalue\tengine\tengine_why\tpython\tpython_why\tmod\tcategory\ttier" };
 foreach (var (kind, ns, csv) in new[] { ("card", "MegaCrit.Sts2.Core.Models.Cards", "divergence_cards.csv"), ("relic", "MegaCrit.Sts2.Core.Models.Relics", "divergence_relics.csv") })
 {
 	var rows = File.ReadAllLines(Path.Combine(cov, csv)).Skip(1).Select(l => l.Split(',')).ToList();
@@ -139,7 +153,20 @@ foreach (var (kind, ns, csv) in new[] { ("card", "MegaCrit.Sts2.Core.Models.Card
 			total++;
 			if (e.Sign == py) same++;
 			else diffs.Add($"{kind}\t{name}.{r[1]}\tengine {e.Sign:+0;-0;0} ({e.Why})\tpython {py:+0;-0;0} ({r[4]})\tmod {r[5]}");
-			dump.Add($"{kind}\t{name}\t{r[1]}\t{e.Sign}\t{e.Why}\t{py}\t{r[4]}\t{r[5]}\t{RuleEngine.Category(item, v, e)}");
+			string tier = null;
+			if (v.Power != null)
+			{
+				if (!powerTiers.TryGetValue(v.Power, out tier))
+				{
+					tier = types.TryGetValue("MegaCrit.Sts2.Core.Models.Powers." + v.Power, out var pt) ? PowerTier(pt) : null;
+					powerTiers[v.Power] = tier;
+				}
+			}
+			else if (kind == "relic")
+			{
+				tier = RuleEngine.TriggerFamily(item, v.Name);
+			}
+			dump.Add($"{kind}\t{name}\t{r[1]}\t{e.Sign}\t{e.Why}\t{py}\t{r[4]}\t{r[5]}\t{RuleEngine.Category(item, v, e)}\t{tier}");
 		}
 	}
 }

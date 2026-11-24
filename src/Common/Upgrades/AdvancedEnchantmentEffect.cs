@@ -8,8 +8,6 @@ public sealed class AdvancedEnchantmentEffect
 
 	public string Family;
 
-	public string Spanish;
-
 	public string English;
 
 	public int Native;
