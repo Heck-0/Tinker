@@ -4,19 +4,16 @@ Ordered from the modification that fits the most cards to the least. Counts are 
 
 **676 of the 717 cards** have at least one modification. In total there are **289 different value modifications** (cost included), and 221 of them exist on only one card.
 
-## Card-wide: cost and traits
+## Card-wide: cost and enchantments
 
-These don't depend on a card's own numbers. Traits are bought in the Workshop at a fixed price, one per card. (Drawbacks were removed in 1.5.0.)
+These don't depend on a card's own numbers. The Workshop also sells all 22 of the game's enchantments, each
+at its own price (see [TINKER_DESIGN.md](TINKER_DESIGN.md#enchantments)), one per card, on the cards each one
+fits. (Drawbacks were removed in
+1.5.0, traits in 1.8.0.)
 
 | # cards (about) | Modification | Kind | Fits |
 |---:|---|---|---|
-| 650 | Trait: Echo (first play each combat plays twice) | Trait | playable cards |
 | 524 | Cost (lower) | Cost | cards costing 1 or more (not X) |
-| 524 | Trait: Awakening (costs 0 after its first play in a combat) | Trait | non-Power cards costing 1 or more, without Exhaust |
-| 213 | Trait: Legacy (+5 damage on elite/boss kills) | Trait | cards that deal damage |
-| 213 | Trait: Venomous (1 Poison per hit) | Trait | cards that deal damage |
-| 213 | Trait: Lifesteal (heal from unblocked damage) | Trait | cards that deal damage |
-| 140 | Trait: Inexhaustible (no longer Exhausts) | Trait | cards that Exhaust, except Powers |
 
 ## Card values on two or more cards
 

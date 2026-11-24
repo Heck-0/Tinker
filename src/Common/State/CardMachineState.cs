@@ -7,8 +7,9 @@ using System.Text.Json.Nodes;
 namespace Tinker.Common;
 
 /// <summary>
-/// A card's Workshop upgrades: units bought per attribute, plus its trait. Saved as JSON under CardUpgraderState:
-/// {"v":2,"a":{"var:Damage":3},"p":{"id":"Echo","g":0}}. Version 1 (the roulette's gain/loss ledgers) isn't read.
+/// A card's Workshop upgrades: units bought per attribute. Saved as JSON under CardUpgraderState:
+/// {"v":2,"a":{"var:Damage":3}}. Version 1 (the roulette's gain/loss ledgers) isn't read; a trait ("p", removed in
+/// 1.8.0) is ignored.
 /// </summary>
 public sealed class CardMachineState
 {
@@ -20,43 +21,7 @@ public sealed class CardMachineState
 
 	public IReadOnlyDictionary<string, AttributeLedger> Ledgers => _ledgers;
 
-	public bool IsEmpty => _ledgers.Count == 0 && Property == null;
-
-	public string Property { get; private set; }
-
-	public int PropertyGrowth { get; private set; }
-
-	public void GrantProperty(string id)
-	{
-		if (Property != null)
-		{
-			throw new InvalidOperationException("The copy already has a trait.");
-		}
-		if (ExceptionalCatalog.Find(id) == null)
-		{
-			throw new ArgumentException("Unknown trait: " + id, "id");
-		}
-		Property = id;
-		PropertyGrowth = 0;
-	}
-
-	public void AddPropertyGrowth(int amount)
-	{
-		if (Property == null)
-		{
-			throw new InvalidOperationException("The copy has no trait.");
-		}
-		if (amount <= 0)
-		{
-			throw new ArgumentOutOfRangeException("amount");
-		}
-		int num = checked(PropertyGrowth + amount);
-		if (num > MaxStoredUnits)
-		{
-			throw new InvalidOperationException("Growth limit reached.");
-		}
-		PropertyGrowth = num;
-	}
+	public bool IsEmpty => _ledgers.Count == 0;
 
 	public bool RemoveAttribute(string attribute)
 	{
@@ -135,11 +100,7 @@ public sealed class CardMachineState
 
 	public CardMachineState Clone()
 	{
-		CardMachineState cardMachineState = new CardMachineState
-		{
-			Property = Property,
-			PropertyGrowth = PropertyGrowth
-		};
+		CardMachineState cardMachineState = new CardMachineState();
 		foreach (KeyValuePair<string, AttributeLedger> ledger in _ledgers)
 		{
 			cardMachineState._ledgers[ledger.Key] = new AttributeLedger
@@ -172,14 +133,6 @@ public sealed class CardMachineState
 			["v"] = FormatVersion,
 			["a"] = attributes
 		};
-		if (Property != null)
-		{
-			jsonObject["p"] = new JsonObject
-			{
-				["id"] = Property,
-				["g"] = PropertyGrowth
-			};
-		}
 		return jsonObject.ToJsonString();
 	}
 
@@ -198,7 +151,7 @@ public sealed class CardMachineState
 			foreach (KeyValuePair<string, JsonNode> item in obj)
 			{
 				ValidateAttribute(item.Key);
-				int gain = (int)(item.Value ?? throw new FormatException("atributo mal formado: " + item.Key));
+				int gain = (int)(item.Value ?? throw new FormatException("malformed attribute: " + item.Key));
 				if (gain < 0 || gain > MaxStoredUnits)
 				{
 					throw new FormatException("values out of range in " + item.Key);
@@ -207,20 +160,6 @@ public sealed class CardMachineState
 				{
 					Gain = gain
 				};
-			}
-			if (jsonObject["p"] is JsonObject jsonObject2)
-			{
-				string text = (string?)jsonObject2["id"];
-				int growth = (int)(jsonObject2["g"] ?? ((JsonNode)0));
-				if (growth < 0 || growth > MaxStoredUnits)
-				{
-					throw new FormatException("invalid trait growth");
-				}
-				if (text != null && ExceptionalCatalog.Find(text) != null)
-				{
-					cardMachineState.Property = text;
-					cardMachineState.PropertyGrowth = growth;
-				}
 			}
 			cardMachineState.Prune();
 			return cardMachineState;

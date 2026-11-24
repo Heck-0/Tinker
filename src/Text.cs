@@ -68,8 +68,10 @@ internal static class Text
             [Slug("WorkshopGoldRate") + ".title"] = "Gold per upgrade",
             [Slug("WorkshopGoldRate") + ".hover.title"] = "Gold per upgrade",
             [Slug("WorkshopGoldRate") + ".hover.desc"] = "What the smallest upgrade on a fresh card or relic costs. Others cost proportionally more.",
-            [Slug("SectionTraits") + ".title"] = "Cards: traits",
-            [Slug("SectionBoons") + ".title"] = "Relics: boons",
+            [Slug("SectionEnchantments") + ".title"] = "Enchantments",
+            [Slug("EnchantmentsEnabled") + ".title"] = "Enchantments in the Workshop",
+            [Slug("EnchantmentsEnabled") + ".hover.title"] = "Enchantments in the Workshop",
+            [Slug("EnchantmentsEnabled") + ".hover.desc"] = "The Workshop sells the game's enchantments for cards, each at its own price (balance.jsonc). Turn them off and it doesn't.",
             [Slug("Difficulty") + ".title"] = "Upgrade difficulty",
         };
     }

@@ -21,15 +21,15 @@ namespace Tinker.Card;
 /// <list type="bullet">
 /// <item><see cref="WorkshopFlow.OpCard"/>: card upgrade. Index = deck position, Attribute = upgrade, Units = size.</item>
 /// <item><see cref="WorkshopFlow.OpRelic"/>: relic upgrade. Id = relic id, Index = copy, Attribute = upgrade, Units = size.</item>
-/// <item><see cref="WorkshopFlow.OpTrait"/>: card trait. Index = deck position, Id = trait id.</item>
-/// <item><see cref="WorkshopFlow.OpBoon"/>: relic boon. Id = relic id, Index = copy, Attribute = boon (index in Boons.All).</item>
+/// <item><see cref="WorkshopFlow.OpEnchant"/>: card enchantment. Index = deck position, Id = enchantment id, Units = amount.</item>
 /// </list>
 /// </summary>
 internal sealed record WorkshopPurchase(int Op, int Index, string Id, int Attribute, int Units);
 
 /// <summary>
-/// The Workshop, opened by clicking Tinkerer's Dial outside combat: buy card and relic upgrades, card traits and
-/// relic boons with gold until you leave. Nothing is random: what you pick is what you get.
+/// The Workshop, opened by clicking Tinkerer's Dial outside combat: buy card and relic upgrades, and the game's
+/// shop enchantments for cards (<see cref="ShopEnchantments"/>), with gold until you leave. Nothing is random:
+/// what you pick is what you get.
 ///
 /// Co-op: the buyer's game applies each purchase, then sends it to the other players (<see cref="WorkshopMessage"/>),
 /// whose games apply the same purchase and gold loss. Nobody has to wait for the Workshop to close.
@@ -40,9 +40,7 @@ internal static class WorkshopFlow
 
     public const int OpRelic = 2;
 
-    public const int OpTrait = 3;
-
-    public const int OpBoon = 4;
+    public const int OpEnchant = 3;
 
     private static bool _busy;
 
@@ -133,11 +131,6 @@ internal static class WorkshopFlow
         if (choice.Relic != null)
         {
             int copy = CopyIndex(player, choice.Relic);
-            if (choice.Boon != null)
-            {
-                int boon = Array.IndexOf(Boons.All, choice.Boon);
-                return (boon < 0) ? null : new WorkshopPurchase(OpBoon, copy, choice.Relic.Id.Entry, boon, 0);
-            }
             return (choice.RelicAttributeIndex < 0) ? null : new WorkshopPurchase(OpRelic, copy, choice.Relic.Id.Entry, choice.RelicAttributeIndex, choice.RelicUnits);
         }
         int deckIndex = player.Deck.Cards.ToList().IndexOf(choice.Card);
@@ -145,9 +138,9 @@ internal static class WorkshopFlow
         {
             return null;
         }
-        if (choice.Trait != null)
+        if (choice.Enchantment != null)
         {
-            return new WorkshopPurchase(OpTrait, deckIndex, choice.Trait, 0, 0);
+            return new WorkshopPurchase(OpEnchant, deckIndex, choice.Enchantment, 0, choice.EnchantmentAmount);
         }
         int attributeIndex = CardAttributes.SupportedFor(choice.Card).ToList().IndexOf(choice.Request.Attribute);
         return (attributeIndex < 0) ? null : new WorkshopPurchase(OpCard, deckIndex, "", attributeIndex, choice.Request.Units);
@@ -160,8 +153,7 @@ internal static class WorkshopFlow
         {
             OpCard => BuyCard(player, purchase, remote),
             OpRelic => BuyRelic(player, purchase, remote),
-            OpTrait => BuyTrait(player, purchase, remote),
-            OpBoon => BuyBoon(player, purchase, remote),
+            OpEnchant => BuyEnchantment(player, purchase, remote),
             _ => Task.FromResult(false),
         };
     }
@@ -271,47 +263,26 @@ internal static class WorkshopFlow
         return true;
     }
 
-    private static async Task<bool> BuyTrait(Player player, WorkshopPurchase purchase, bool remote)
+    private static async Task<bool> BuyEnchantment(Player player, WorkshopPurchase purchase, bool remote)
     {
         CardModel card = FindCard(player, purchase.Index);
         if (card == null)
         {
             return false;
         }
-        CardMachineState state = CardStateStore.GetOrCreate(card);
-        if (state.Property != null || !ExceptionalEffects.ApplicableTo(card).Any((ExceptionalDefinition d) => d.Id == purchase.Id))
+        (EnchantmentModel Model, int Amount)? offer = ShopEnchantments.Find(purchase.Id);
+        if (offer == null || offer.Value.Amount != purchase.Units || !ShopEnchantments.For(card).Any(((EnchantmentModel Model, int Amount) e) => e.Model.GetType().Name == purchase.Id))
         {
-            ModEntry.Error($"Workshop purchase: {card.Id.Entry} can't have trait {purchase.Id}; ignored.");
+            ModEntry.Error($"Workshop purchase: {card.Id.Entry} can't take enchantment {purchase.Id} {purchase.Units}; ignored.");
             return false;
         }
-        int price = WorkshopOptions.TraitPrice;
-        string what = $"{card.Id.Entry} propiedad {purchase.Id}";
+        int price = ShopEnchantments.Price(offer.Value.Model);
+        string what = $"{card.Id.Entry} enchantment {purchase.Id} {purchase.Units}";
         if (!await Pay(player, price, remote, what))
         {
             return false;
         }
-        ExceptionalEffects.Grant(card, state, purchase.Id);
-        CardStateStore.Set(card, state);
-        Bought(player, what, price);
-        return true;
-    }
-
-    private static async Task<bool> BuyBoon(Player player, WorkshopPurchase purchase, bool remote)
-    {
-        RelicModel relic = FindRelic(player, purchase.Id, purchase.Index);
-        string boon = (purchase.Attribute >= 0 && purchase.Attribute < Boons.All.Length) ? Boons.All[purchase.Attribute] : null;
-        if (relic == null || boon == null || !Boons.ForSale(relic).Contains(boon))
-        {
-            ModEntry.Error($"Workshop purchase: boon {purchase.Attribute} not available for {purchase.Id} #{purchase.Index}; ignored.");
-            return false;
-        }
-        int price = WorkshopOptions.BoonPrice;
-        string what = $"{relic.Id.Entry} bufo {boon}";
-        if (!await Pay(player, price, remote, what))
-        {
-            return false;
-        }
-        Boons.Grant(relic, boon);
+        CardCmd.Enchant(offer.Value.Model.ToMutable(), card, offer.Value.Amount);
         Bought(player, what, price);
         return true;
     }

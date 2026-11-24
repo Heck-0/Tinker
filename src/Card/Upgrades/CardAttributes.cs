@@ -701,7 +701,6 @@ public static class CardAttributes
 		{
 			ApplyRaw(card, item3.Up, BidirectionalEffects.RawDelta(cardName, item3.Canonical, state));
 		}
-		ExceptionalEffects.ApplyGrowth(card, state);
 		int ProjectedBase(BidirectionalEffect pair)
 		{
 			if (AttributeKeys.IsVar(pair.Canonical))

@@ -35,11 +35,11 @@ internal sealed class WorkshopChoice
 
 	public int RelicUnits { get; init; }
 
-	/// <summary>Trait bought for <see cref="Card"/> (its id), instead of an upgrade.</summary>
-	public string Trait { get; init; }
+	/// <summary>Enchantment bought for <see cref="Card"/> (its id), instead of an upgrade.</summary>
+	public string Enchantment { get; init; }
 
-	/// <summary>Boon bought for <see cref="Relic"/> (its id), instead of an upgrade.</summary>
-	public string Boon { get; init; }
+	/// <summary>The bought enchantment's amount.</summary>
+	public int EnchantmentAmount { get; init; }
 }
 
 /// <summary>
@@ -101,7 +101,7 @@ internal sealed class WorkshopScreen
 
 	private Label _extrasLine;
 
-	private GridContainer _propertyList;
+	private VBoxContainer _propertyList;
 
 	private Label _propertyDetail;
 
@@ -285,7 +285,7 @@ internal sealed class WorkshopScreen
 		SfxCmd.Play("event:/sfx/ui/map/map_open");
 	}
 
-	/// <summary>The right-hand panel: the player's gold like the top bar's counter, then the traits / boons for sale.</summary>
+	/// <summary>The right-hand panel: the player's gold like the top bar's counter, then the enchantments for sale.</summary>
 	private void BuildPanel()
 	{
 		ColorRect panel = BluePanel(new Vector2(1452f, 64f), new Vector2(462f, 536f), 16f);
@@ -295,7 +295,7 @@ internal sealed class WorkshopScreen
 		{
 			Alignment = BoxContainer.AlignmentMode.Center,
 			MouseFilter = Control.MouseFilterEnum.Ignore,
-			Position = new Vector2(0f, 60f),
+			Position = new Vector2(0f, 36f),
 			Size = new Vector2(462f, 90f)
 		};
 		gold.AddThemeConstantOverride("separation", 12);
@@ -314,35 +314,40 @@ internal sealed class WorkshopScreen
 		panel.AddChild(new ColorRect
 		{
 			Color = new Color(Gold.R, Gold.G, Gold.B, 0.55f),
-			Position = new Vector2(52f, 318f),
+			Position = new Vector2(52f, 140f),
 			Size = new Vector2(358f, 2f),
 			MouseFilter = Control.MouseFilterEnum.Ignore
 		}, forceReadableName: false, Node.InternalMode.Disabled);
 		_extrasHeading = MakeLabel(28, GoldInk, "");
 		_extrasHeading.HorizontalAlignment = HorizontalAlignment.Center;
-		_extrasHeading.Position = new Vector2(0f, 326f);
+		_extrasHeading.Position = new Vector2(0f, 148f);
 		_extrasHeading.Size = new Vector2(462f, 40f);
 		panel.AddChild(_extrasHeading, forceReadableName: false, Node.InternalMode.Disabled);
 		_extrasLine = MakeLabel(18, Ink, "");
 		_extrasLine.HorizontalAlignment = HorizontalAlignment.Center;
-		_extrasLine.Position = new Vector2(30f, 364f);
+		_extrasLine.Position = new Vector2(30f, 186f);
 		_extrasLine.Size = new Vector2(402f, 28f);
 		panel.AddChild(_extrasLine, forceReadableName: false, Node.InternalMode.Disabled);
-		_propertyList = new GridContainer
+		// One row per enchantment (name, price on the right); scrolls when a card fits more than nine.
+		ScrollContainer scroll = new ScrollContainer
 		{
-			Columns = 2,
-			Position = new Vector2(46f, 396f),
-			Size = new Vector2(370f, 116f),
-			MouseFilter = Control.MouseFilterEnum.Ignore
+			Position = new Vector2(40f, 218f),
+			Size = new Vector2(382f, 296f),
+			HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled
 		};
-		_propertyList.AddThemeConstantOverride("h_separation", 10);
-		_propertyList.AddThemeConstantOverride("v_separation", 4);
-		panel.AddChild(_propertyList, forceReadableName: false, Node.InternalMode.Disabled);
+		panel.AddChild(scroll, forceReadableName: false, Node.InternalMode.Disabled);
+		_propertyList = new VBoxContainer
+		{
+			CustomMinimumSize = new Vector2(370f, 0f),
+			MouseFilter = Control.MouseFilterEnum.Pass
+		};
+		_propertyList.AddThemeConstantOverride("separation", 3);
+		scroll.AddChild(_propertyList, forceReadableName: false, Node.InternalMode.Disabled);
 		_propertyDetail = MakeLabel(15, Ink, "");
 		_propertyDetail.AutowrapMode = TextServer.AutowrapMode.WordSmart;
 		_propertyDetail.HorizontalAlignment = HorizontalAlignment.Center;
-		_propertyDetail.Position = new Vector2(46f, 396f);
-		_propertyDetail.Size = new Vector2(370f, 100f);
+		_propertyDetail.Position = new Vector2(46f, 222f);
+		_propertyDetail.Size = new Vector2(370f, 280f);
 		panel.AddChild(_propertyDetail, forceReadableName: false, Node.InternalMode.Disabled);
 	}
 
@@ -909,7 +914,7 @@ internal sealed class WorkshopScreen
 		}
 	}
 
-	/// <summary>Right panel: the selected card's traits or relic's boons for sale (fixed price, one each).</summary>
+	/// <summary>Right panel: the enchantments for sale for the selected card (fixed price, one per card).</summary>
 	private void RefreshExtras()
 	{
 		foreach (Node child in _propertyList.GetChildren())
@@ -922,80 +927,46 @@ internal sealed class WorkshopScreen
 		}
 		_propertyDetail.Text = "";
 		_extrasLine.AddThemeColorOverride("font_color", Ink);
-		if (_relic != null)
+		_extrasHeading.Text = Lang.T("Enchantments");
+		if (_card != null)
 		{
-			RefreshBoons();
-		}
-		else if (_card != null)
-		{
-			RefreshTraits();
+			RefreshEnchantments();
 		}
 		else
 		{
-			_extrasHeading.Text = Lang.T("Traits and boons");
-			_extrasLine.Text = Lang.T("Pick a card or a relic");
+			_extrasLine.Text = Lang.T((_relic != null) ? "Only cards can be enchanted" : "Pick a card");
 		}
 	}
 
-	private void RefreshTraits()
+	private void RefreshEnchantments()
 	{
-		_extrasHeading.Text = Lang.T("Traits");
-		ExceptionalDefinition owned = ExceptionalEffects.PropertyOf(_card);
+		EnchantmentModel owned = _card.Enchantment;
 		if (owned != null)
 		{
-			ShowOwned(Lines.PropertyAlready(ExceptionalEffects.Name(owned)), ExceptionalEffects.Explain(owned, CardStateStore.Get(_card)?.PropertyGrowth ?? 0));
+			ShowOwned(Lang.T("Has " + ShopEnchantments.Name(owned, owned.Amount)), ShopEnchantments.Description(owned, owned.Amount));
 			return;
 		}
-		if (!Settings.Active.TraitsEnabled)
+		if (!Settings.Active.EnchantmentsEnabled)
 		{
-			_extrasLine.Text = Lines.TraitsOff;
+			_extrasLine.Text = Lang.T("Enchantments are turned off in the settings");
 			return;
 		}
-		List<ExceptionalDefinition> forSale = ExceptionalEffects.ApplicableTo(_card);
+		List<(EnchantmentModel Model, int Amount)> forSale = ShopEnchantments.For(_card);
 		if (forSale.Count == 0)
 		{
-			_extrasLine.Text = Lines.PropertyNone;
+			_extrasLine.Text = Lang.T("None fit this card");
 			return;
 		}
-		int price = WorkshopOptions.TraitPrice;
-		ShowEachPrice(price);
+		_extrasLine.Text = Lang.T("One per card");
 		CardModel card = _card;
-		foreach (ExceptionalDefinition def in forSale)
+		foreach ((EnchantmentModel model, int amount) in forSale)
 		{
-			AddForSale(ExceptionalEffects.Name(def), ExceptionalEffects.Explain(def, 0), price, new WorkshopChoice
+			int price = ShopEnchantments.Price(model);
+			AddForSale(ShopEnchantments.Name(model, amount), ShopEnchantments.Description(model, amount), price, new WorkshopChoice
 			{
 				Card = card,
-				Trait = def.Id
-			});
-		}
-	}
-
-	private void RefreshBoons()
-	{
-		_extrasHeading.Text = Lang.T("Boons");
-		string owned = Tinker.Relic.Store.For(_relic).Boon;
-		if (owned != null)
-		{
-			string name = Tinker.Relic.Boons.Name(owned);
-			ShowOwned(Lang.T("Has the " + name + " boon."), Tinker.Relic.Boons.Description(owned));
-			return;
-		}
-		string[] forSale = Tinker.Relic.Boons.ForSale(_relic);
-		if (forSale.Length == 0)
-		{
-			_extrasLine.Text = Lang.T("Boons are turned off in the settings");
-			return;
-		}
-		int price = WorkshopOptions.BoonPrice;
-		ShowEachPrice(price);
-		RelicModel relic = _relic;
-		foreach (string boon in forSale)
-		{
-			AddForSale(Tinker.Relic.Boons.Name(boon), Tinker.Relic.Boons.Description(boon), price, new WorkshopChoice
-			{
-				Relic = relic,
-				RelicAttributeIndex = -1,
-				Boon = boon
+				Enchantment = model.GetType().Name,
+				EnchantmentAmount = amount
 			});
 		}
 	}
@@ -1007,14 +978,7 @@ internal sealed class WorkshopScreen
 		_propertyDetail.Text = detail;
 	}
 
-	/// <summary>The price line above the buttons: green if the player can afford one, red if not.</summary>
-	private void ShowEachPrice(int price)
-	{
-		_extrasLine.Text = Lang.T($"{price:N0} gold each");
-		_extrasLine.AddThemeColorOverride("font_color", (price <= _gold) ? AffordableInk : UnaffordableInk);
-	}
-
-	/// <summary>One trait / boon button: hover for what it does, click to buy (disabled if too expensive).</summary>
+	/// <summary>One enchantment button: hover for what it does, click to buy (disabled if too expensive).</summary>
 	private void AddForSale(string name, string description, int price, WorkshopChoice choice)
 	{
 		bool affordable = price <= _gold;
@@ -1022,19 +986,28 @@ internal sealed class WorkshopScreen
 		{
 			Text = "✦ " + name,
 			ClipText = true,
-			Alignment = HorizontalAlignment.Center,
-			CustomMinimumSize = new Vector2(180f, 34f),
+			Alignment = HorizontalAlignment.Left,
+			CustomMinimumSize = new Vector2(370f, 30f),
+			MouseFilter = Control.MouseFilterEnum.Pass,
 			FocusMode = Control.FocusModeEnum.None,
 			Disabled = !affordable
 		};
 		button.AddThemeFontOverride("font", ResourceLoader.Load<Font>("res://themes/kreon_bold_shared.tres", null, ResourceLoader.CacheMode.Reuse));
-		button.AddThemeFontSizeOverride("font_size", 17);
+		button.AddThemeFontSizeOverride("font_size", 16);
 		button.AddThemeColorOverride("font_color", new Color("F3C14F"));
 		button.AddThemeColorOverride("font_hover_color", Ink);
 		button.AddThemeColorOverride("font_pressed_color", Ink);
 		button.AddThemeColorOverride("font_disabled_color", new Color(FadedInk.R, FadedInk.G, FadedInk.B, 0.45f));
 		StyleRow(button, selected: false);
-		LegendTips.Attach(button, () => LegendTips.Make(name, LegendTips.Capitalize(description)));
+		string priceLine = Lang.T($"{price:N0} gold");
+		Label priceLabel = MakeLabel(16, affordable ? AffordableInk : UnaffordableInk, priceLine);
+		priceLabel.HorizontalAlignment = HorizontalAlignment.Right;
+		priceLabel.VerticalAlignment = VerticalAlignment.Center;
+		priceLabel.Position = new Vector2(0f, 0f);
+		priceLabel.Size = new Vector2(358f, 30f);
+		priceLabel.MouseFilter = Control.MouseFilterEnum.Ignore;
+		button.AddChild(priceLabel, forceReadableName: false, Node.InternalMode.Disabled);
+		LegendTips.Attach(button, () => LegendTips.Make(name, LegendTips.Capitalize(description) + "\n\n" + ((price <= _gold) ? "[green]" : "[red]") + priceLine + ((price <= _gold) ? "[/green]" : "[/red]")));
 		button.Pressed += delegate
 		{
 			if (_choice != null && !_choice.Task.IsCompleted && price <= _gold)

@@ -44,7 +44,6 @@ public static class Evolution
 				Family = relicAttribute.Family
 			};
 		}
-		relicState2.Boon = relicState.Boon;
 		Store.Restore(next, relicState2.ToJson());
 		return true;
 	}

@@ -46,11 +46,42 @@ buffs and debuffs, values that are never read or only read on pickup). Hand-writ
 tell, cost categories that differ from the default, and fractional values, which are bought in steps of
 0.01. Rules and overrides are listed in [ADDING_CARDS_AND_RELICS.md](ADDING_CARDS_AND_RELICS.md).
 
-## Traits and boons
+## Enchantments
 
-Bought directly in the Workshop's right-hand panel, at a fixed price: *Trait price* (default 150 gold) for
-a card's trait, *Boon price* (default 100) for a relic's boon. One per card or relic; only traits that fit
-the card are offered. Nothing is rolled.
+Bought directly in the Workshop's right-hand panel: all 22 of the game's enchantments, each with its own
+price and amount (`enchantments` in `content/balance.jsonc`, read by `ShopEnchantments`), the same on
+every preset. Only enchantments the card can take are shown
+(the game's `CanEnchant`), one per card as in the game. The amounts are the game's own: its shop list
+(Sharp 2, Nimble 3, Adroit 3, Steady 1, Swift 2, Vigorous 5) and the relics and events that give the rest. Prices are set by value: every-play
+effects and extra plays at the top, once-a-combat and situational ones lower, mixed blessings (Corrupted,
+Slither) at the bottom. Nothing is rolled. Relics have no extras (the traits and boons of 1.5.0-1.7.0 were
+removed in 1.8.0).
+
+| Enchantment | Gold | Does | Fits |
+|---|---:|---|---|
+| Instinct | 400 | double damage | Attacks |
+| Tezcatara's Ember | 400 | costs 0, Eternal, +3 damage | any |
+| Glam | 320 | first play each combat is played an extra time | any |
+| Spiral | 280 | every play is played an extra time | basic Strike / Defend |
+| Adroit 3 | 280 | gain 3 Block per play | any |
+| Momentum 5 | 280 | +5 damage after each play this combat | Attacks |
+| Sown | 240 | first play each combat: gain 1 Energy | any |
+| Imbued | 240 | played by itself on turn 1 | Skills |
+| Royally Approved | 240 | Innate and Retain | Attacks, Skills |
+| Nimble 3 | 240 | +3 Block per play | cards that gain Block |
+| Sharp 2 | 240 | +2 damage per play | Attacks |
+| Clone | 240 | copied at rest sites | only while you have Pael's Growth |
+| Swift 2 | 200 | first play each combat: draw 2 | any |
+| Soul's Power | 200 | removes Exhaust | cards that Exhaust |
+| Corrupted | 200 | ×1.5 damage, you take 2 per play | Attacks |
+| Slumbering Essence | 160 | costs 1 less per turn held in hand | any |
+| Goopy | 160 | gains Exhaust; +1 Block forever after each play | Defends |
+| Inky | 160 | apply 1 Weak per play | any |
+| Steady | 160 | Retain | any |
+| Vigorous 5 | 160 | +5 damage on its first play each combat | Attacks |
+| Perfect Fit | 120 | goes on top of the draw pile when shuffled | any |
+| Slither | 80 | random cost (0-3) each time it's drawn | playable, not X-cost |
+
 
 ## Support items: removed
 

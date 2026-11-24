@@ -32,6 +32,9 @@ public sealed class BalanceConfig
 
 	public Dictionary<string, AttributeBalance> Families { get; } = new Dictionary<string, AttributeBalance>(StringComparer.Ordinal);
 
+	/// <summary>The enchantments the Workshop sells, by the game's enchantment id ("Sharp"), with price and amount.</summary>
+	public Dictionary<string, EnchantmentOffer> Enchantments { get; } = new Dictionary<string, EnchantmentOffer>(StringComparer.Ordinal);
+
 	/// <summary>The built-in balance (the embedded balance.jsonc).</summary>
 	public BalanceConfig()
 	{
@@ -86,7 +89,7 @@ public sealed class BalanceConfig
 			warnings.Add("empty file.");
 			return warnings;
 		}
-		Set(file.StrainFactor, v => v >= 0.0 && v <= 5.0, v => StrainFactor = v, "strainFactor (entre 0 y 5)", warnings);
+		Set(file.StrainFactor, v => v >= 0.0 && v <= 5.0, v => StrainFactor = v, "strainFactor (0 to 5)", warnings);
 
 		foreach (KeyValuePair<string, FamilyShape> item in file.Families ?? new Dictionary<string, FamilyShape>())
 		{
@@ -107,6 +110,29 @@ public sealed class BalanceConfig
 			Set(item.Value.Weight, v => v > 0.0 && v <= 20.0, v => family.Weight = v, item.Key + ".weight", warnings);
 			Set(item.Value.Curve, v => v > 0.0 && v <= 5.0, v => family.Curve = v, item.Key + ".curve", warnings);
 			Set(item.Value.ReferenceFloor, v => v >= 1.0 && v <= 100.0, v => family.ReferenceFloor = v, item.Key + ".referenceFloor", warnings);
+		}
+		foreach (KeyValuePair<string, EnchantmentShape> item in file.Enchantments ?? new Dictionary<string, EnchantmentShape>())
+		{
+			if (item.Value == null)
+			{
+				warnings.Add("Enchantment \"" + item.Key + "\" is empty; ignored.");
+				continue;
+			}
+			if (!Enchantments.TryGetValue(item.Key, out var offer))
+			{
+				if (!addFamilies)
+				{
+					warnings.Add("Unknown enchantment \"" + item.Key + "\"; ignored.");
+					continue;
+				}
+				offer = Enchantments[item.Key] = new EnchantmentOffer();
+			}
+			Set(item.Value.Price, v => v <= 99999.0, v => offer.Price = (int)Math.Round(v), item.Key + ".price", warnings);
+			Set(item.Value.Amount, v => v >= 1.0 && v <= 999.0, v => offer.Amount = (int)Math.Round(v), item.Key + ".amount", warnings);
+			if (item.Value.Relic != null)
+			{
+				offer.Relic = (item.Value.Relic.Length == 0) ? null : item.Value.Relic;
+			}
 		}
 		return warnings;
 	}
@@ -133,6 +159,17 @@ public sealed class BalanceConfig
 		public double? StrainFactor { get; set; }
 
 		public Dictionary<string, FamilyShape> Families { get; set; }
+
+		public Dictionary<string, EnchantmentShape> Enchantments { get; set; }
+	}
+
+	private sealed class EnchantmentShape
+	{
+		public double? Price { get; set; }
+
+		public double? Amount { get; set; }
+
+		public string Relic { get; set; }
 	}
 
 	private sealed class FamilyShape
@@ -143,4 +180,14 @@ public sealed class BalanceConfig
 
 		public double? ReferenceFloor { get; set; }
 	}
+}
+
+/// <summary>One enchantment the Workshop sells: its price in gold at Normal, its amount, and the relic it needs (if any).</summary>
+public sealed class EnchantmentOffer
+{
+	public int Price { get; set; }
+
+	public int Amount { get; set; } = 1;
+
+	public string Relic { get; set; }
 }

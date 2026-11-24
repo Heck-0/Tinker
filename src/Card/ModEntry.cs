@@ -22,7 +22,6 @@ public static class ModEntry
 			Loc.Install();
 			Lang.OnTablesLoaded(Loc.MergeIntoTables);
 			Patching.PatchNamespace("Tinker.Card", "[Tinker Card] ");
-			ExceptionalEffects.InexhaustibleLocationPatch.Install(Patching.Harmony);
 			FixedEffectPatches.Install(Patching.Harmony);
 			PowerParameters.Install(Patching.Harmony);
 			ExpandedEffectPatches.Install(Patching.Harmony);

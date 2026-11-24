@@ -11,7 +11,7 @@ namespace Tinker.Card;
 /// </summary>
 public sealed class WorkshopMessage : ICustomMessage, IPacketSerializable
 {
-    private const int Version = 3;
+    private const int Version = 4;
 
     public ulong PlayerId;
 

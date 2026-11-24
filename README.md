@@ -16,8 +16,9 @@ Every run starts with **Tinkerer's Dial**. Click it any time outside combat to o
 - the price is shown under it, green if you can afford it, red if not. Nothing in the Workshop is random.
 
 Bigger upgrades, and upgrades on cards or relics that are already upgraded, cost more (no ceiling). The panel
-on the right sells **traits** for cards and **boons** for relics at a fixed price (one per card or relic;
-settings *Trait price* and *Boon price*). In co-op every purchase is sent to the other players. Design: [docs/TINKER_DESIGN.md](docs/TINKER_DESIGN.md).
+on the right sells the game's **enchantments** for cards (all 22: Instinct, Glam, Sharp…), each at its own
+price from `content/balance.jsonc` (80-400 gold, the same on every preset), one per card like in the game; a bought enchantment's amount can then be upgraded like any other value. In co-op every purchase is sent to the
+other players. Design: [docs/TINKER_DESIGN.md](docs/TINKER_DESIGN.md).
 
 ## Build
 
@@ -53,9 +54,9 @@ Needs the .NET 8 SDK, the game, and BaseLib (Workshop). Paths are set at the top
 - `src/Common/Rules/` - the rule engine: which card and relic values can be upgraded, and which way, read from
   the game's compiled code at run time (`RuleEngine` = the rules, `GameRules` = reading the game through Harmony).
 - `src/Card/` (`Tinker.Card`) - card upgrades: how values change (`Upgrades/`; direction overrides in
-  `VarDirections.cs`, fractional values in `SteppedValues.cs`), traits, card state saves, card texts.
+  `VarDirections.cs`, fractional values in `SteppedValues.cs`), card state saves, card texts.
 - `src/Relic/` (`Tinker.Relic`) - relic upgrades (`Upgrades/Catalog.cs`: engine + overrides, cost categories,
-  fractional `Stepped` values; `PaperRelics.cs`), boons, relic state saves, relic settings and texts.
+  fractional `Stepped` values; `PaperRelics.cs`), relic state saves, relic settings and texts.
 - `src/Common/` (`Tinker.Common`) - shared rules: price curve (`Upgrades/RiskCurve.cs`, `UpgradeCost.cs`), balance
   (`BalanceConfig`, loaded from `content/balance.jsonc`), the Workshop price, card state, text system,
   `Patching`.
@@ -77,6 +78,11 @@ removes no code.
 
 ## History
 
+- **1.8.0** - Enchantments replace traits and boons. The Workshop's right-hand panel sells all 22 of the
+  game's enchantments for cards, one per card, only on the cards each fits, each with its own price and amount
+  (`enchantments` in `content/balance.jsonc`, the same on every preset). Clone is offered only with Pael's Growth (its rest-site copy needs that relic). The mod's card traits (Inexhaustible, Echo, Awakening, Legacy, Venomous,
+  Lifesteal) and relic boons are gone, with their settings. Saves: upgrades load as before; a trait or boon
+  bought earlier is dropped. Enchantments are saved by the game itself. Every co-op player needs 1.8.0.
 - **1.7.0** - The rule engine: which values are upgradable, and which way, now comes from the game's own
   compiled code at run time (a port of `tools/divergence.py`'s rules to IL, with three new rules: not read,
   only on pickup, loop bounds aren't limits). The hand-written tables shrank to overrides: cards from

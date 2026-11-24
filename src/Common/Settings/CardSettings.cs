@@ -20,12 +20,8 @@ public sealed class CardSettings
 
 	public int UpgradeDifficulty { get; set; } = 100;
 
-	public bool TraitsEnabled { get; set; } = true;
-
-	/// <summary>Workshop: what a trait costs (bought directly, one per card).</summary>
-	public int TraitPrice { get; set; } = 150;
-
-	public HashSet<string> DisabledTraits { get; set; } = new HashSet<string>(StringComparer.Ordinal);
+	/// <summary>Workshop: whether it sells the game's shop enchantments for cards.</summary>
+	public bool EnchantmentsEnabled { get; set; } = true;
 
 	public static CardSettings Default()
 	{
@@ -50,15 +46,6 @@ public sealed class CardSettings
 		}
 	}
 
-	public bool IsTraitEnabled(string id)
-	{
-		if (TraitsEnabled)
-		{
-			return !DisabledTraits.Contains(id);
-		}
-		return false;
-	}
-
 	public static CardSettings ForPreset(SettingsPreset preset)
 	{
 		CardSettings modSettings = Default();
@@ -67,11 +54,9 @@ public sealed class CardSettings
 		{
 		case SettingsPreset.Easy:
 			modSettings.UpgradeDifficulty = 70;
-			modSettings.TraitPrice = 100;
 			break;
 		case SettingsPreset.Hard:
 			modSettings.UpgradeDifficulty = 130;
-			modSettings.TraitPrice = 200;
 			break;
 		}
 		return modSettings;
@@ -123,18 +108,11 @@ public sealed class CardSettings
 	{
 		WorkshopGoldRate = Clamp(WorkshopGoldRate, 1, 200);
 		UpgradeDifficulty = Clamp(UpgradeDifficulty, 10, 400);
-		TraitPrice = Clamp(TraitPrice, 0, 9999);
-		if (DisabledTraits == null)
-		{
-			HashSet<string> hashSet = (DisabledTraits = new HashSet<string>(StringComparer.Ordinal));
-		}
 	}
 
 	public string ToJson()
 	{
-		CardSettings obj = (CardSettings)MemberwiseClone();
-		obj.DisabledTraits = new HashSet<string>(DisabledTraits.OrderBy<string, string>((string x) => x, StringComparer.Ordinal), StringComparer.Ordinal);
-		return JsonSerializer.Serialize(obj, Json);
+		return JsonSerializer.Serialize(this, Json);
 	}
 
 	public static CardSettings FromJson(string json)
@@ -150,7 +128,6 @@ public sealed class CardSettings
 			{
 				return null;
 			}
-			modSettings.DisabledTraits = new HashSet<string>(modSettings.DisabledTraits ?? new HashSet<string>(), StringComparer.Ordinal);
 			modSettings.Sanitize();
 			return modSettings;
 		}

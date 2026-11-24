@@ -125,10 +125,6 @@ internal static class RewrittenCardValues
 		int num = cardMachineState?.RawDelta(AttributeKeys.Var(variable)) ?? 0;
 		checked
 		{
-			if (variable == "Damage" && cardMachineState?.Property == "Legacy")
-			{
-				num += cardMachineState.PropertyGrowth;
-			}
 			if (Growth.TryGetValue(card, out var value) && value.Combat != null && value.Combat.TryGetTarget(out var target) && target == card.CombatState)
 			{
 				num += value.Amount;

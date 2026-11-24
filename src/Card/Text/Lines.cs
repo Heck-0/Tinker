@@ -15,10 +15,6 @@ public static class Lines
 
 	public static string After => T("After");
 
-	public static string PropertyNone => T("None fit this card");
-
-	public static string TraitsOff => T("Traits are turned off in the settings");
-
 	private static string T(string en) => Lang.T(en);
 
 	public static string Pct(int percent)
@@ -216,9 +212,4 @@ public static class Lines
 			return Regex.Replace(key, "(?<=[a-z])(?=[A-Z])", " ");
 		}
 	}
-	public static string PropertyAlready(string name)
-	{
-		return T("Has " + name);
-	}
-
 }

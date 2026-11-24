@@ -10,10 +10,10 @@ namespace Tinker;
 
 /// <summary>
 /// The settings menu (BaseLib mod config, saved as Tinker.cfg): preset, upgrade difficulty, the Workshop's gold
-/// per upgrade, traits (cards) and boons (relics).
+/// per upgrade, and the enchantments it sells for cards.
 ///
 /// - Shared values (preset, difficulty) write to both halves through <see cref="Settings"/>.
-/// - Traits and boons read and write the halves' own settings objects (CardSettings / Tinker.Relic.ModSettings).
+/// - The Workshop values read and write Card Upgrader's settings object (CardSettings).
 /// </summary>
 internal sealed class Config : SimpleModConfig
 {
@@ -69,144 +69,18 @@ internal sealed class Config : SimpleModConfig
         set { Card.WorkshopGoldRate = value; Changed(); }
     }
 
-    [ConfigSection("SectionTraits")]
+    [ConfigSection("SectionEnchantments")]
     [ConfigHoverTip(true)]
-    public static bool TraitsEnabled
+    public static bool EnchantmentsEnabled
     {
-        get => Card.TraitsEnabled;
-        set { Card.TraitsEnabled = value; Changed(); }
-    }
-
-    [ConfigVisibleIf("TraitsEnabled", new object[] { })]
-    [ConfigSlider(0.0, 500.0, 10.0)]
-    [ConfigHoverTip(true)]
-    public static int TraitPrice
-    {
-        get => Card.TraitPrice;
-        set { Card.TraitPrice = value; Changed(); }
-    }
-
-    [ConfigVisibleIf("TraitsEnabled", new object[] { })]
-    public static bool TraitInexhaustible
-    {
-        get => CardTrait("Inexhaustible");
-        set { SetCardTrait("Inexhaustible", value); Changed(); }
-    }
-
-    [ConfigVisibleIf("TraitsEnabled", new object[] { })]
-    public static bool TraitEcho
-    {
-        get => CardTrait("Echo");
-        set { SetCardTrait("Echo", value); Changed(); }
-    }
-
-    [ConfigVisibleIf("TraitsEnabled", new object[] { })]
-    public static bool TraitAwakening
-    {
-        get => CardTrait("Awakening");
-        set { SetCardTrait("Awakening", value); Changed(); }
-    }
-
-    [ConfigVisibleIf("TraitsEnabled", new object[] { })]
-    public static bool TraitLegacy
-    {
-        get => CardTrait("Legacy");
-        set { SetCardTrait("Legacy", value); Changed(); }
-    }
-
-    [ConfigVisibleIf("TraitsEnabled", new object[] { })]
-    public static bool TraitVenomous
-    {
-        get => CardTrait("Venomous");
-        set { SetCardTrait("Venomous", value); Changed(); }
-    }
-
-    [ConfigVisibleIf("TraitsEnabled", new object[] { })]
-    public static bool TraitLifesteal
-    {
-        get => CardTrait("Lifesteal");
-        set { SetCardTrait("Lifesteal", value); Changed(); }
-    }
-
-    [ConfigSection("SectionBoons")]
-    [ConfigHoverTip(true)]
-    public static bool BoonsEnabled
-    {
-        get => Relic.BoonsEnabled;
-        set { Relic.BoonsEnabled = value; Changed(); }
-    }
-
-    [ConfigSlider(0.0, 500.0, 10.0)]
-    [ConfigHoverTip(true)]
-    public static int BoonPrice
-    {
-        get => Relic.BoonPrice;
-        set { value = Math.Clamp(value, 0, 9999); Relic.BoonPrice = value; Changed(); }
-    }
-
-    [ConfigHoverTip(true)]
-    public static bool BoonStrength
-    {
-        get => Relic.BoonStrength;
-        set { Relic.BoonStrength = value; Changed(); }
-    }
-
-    [ConfigHoverTip(true)]
-    public static bool BoonDexterity
-    {
-        get => Relic.BoonDexterity;
-        set { Relic.BoonDexterity = value; Changed(); }
-    }
-
-    [ConfigHoverTip(true)]
-    public static bool BoonBlock
-    {
-        get => Relic.BoonBlock;
-        set { Relic.BoonBlock = value; Changed(); }
-    }
-
-    [ConfigHoverTip(true)]
-    public static bool BoonHeal
-    {
-        get => Relic.BoonHeal;
-        set { Relic.BoonHeal = value; Changed(); }
-    }
-
-    [ConfigHoverTip(true)]
-    public static bool BoonEnergy
-    {
-        get => Relic.BoonEnergy;
-        set { Relic.BoonEnergy = value; Changed(); }
-    }
-
-    [ConfigHoverTip(true)]
-    public static bool BoonDraw
-    {
-        get => Relic.BoonDraw;
-        set { Relic.BoonDraw = value; Changed(); }
+        get => Card.EnchantmentsEnabled;
+        set { Card.EnchantmentsEnabled = value; Changed(); }
     }
 
     // ---------------------------------------------------------------- plumbing
 
     /// <summary>Card Upgrader's settings object (applied live; in co-op the host's copy is used instead).</summary>
     private static CardSettings Card => Tinker.Card.Settings.Local;
-
-    /// <summary>Relic Upgrader's settings object (frozen into each new run). Re-read every time: presets replace it.</summary>
-    private static Tinker.Relic.ModSettings Relic => Tinker.Relic.Settings.Local;
-
-    private static bool CardTrait(string id) => !Card.DisabledTraits.Contains(id);
-
-    private static void SetCardTrait(string id, bool on)
-    {
-        if (on)
-        {
-            Card.DisabledTraits.Remove(id);
-        }
-        else
-        {
-            Card.DisabledTraits.Add(id);
-        }
-    }
 
     /// <summary>The font the menu uses, so the card graphs match it.</summary>
     private static Font FindFont(Node root)
