@@ -8,9 +8,10 @@ namespace Tinker.Common;
 
 /// <summary>
 /// The mod's text system:
-/// - which language is active (Spanish / Simplified Chinese / English),
-/// - <see cref="T"/>: Spanish or English text, with Simplified Chinese looked up in <see cref="Chinese"/>;
-///   <see cref="Zh"/> does the Chinese step for English text picked elsewhere (data tables, labels),
+/// - which language is active,
+/// - <see cref="T(string)"/>: the mod's text is written in English and translated by table, like the game's own
+///   localization: <see cref="Chinese"/> for Simplified Chinese, <see cref="Spanish"/> for Spanish; any other
+///   language shows the English,
 /// - merging each half's translation tables into the game, and running them when the game loads or
 ///   changes language (see <see cref="LanguageHooks"/>). Each half registers its tables at startup.
 /// </summary>
@@ -19,9 +20,24 @@ public static class Lang
     [ThreadStatic]
     private static string _installing;
 
-    private static readonly List<(Regex Pattern, string Zh)> ChineseTemplates = Chinese.Templates
-        .Select(t => (new Regex("^" + Regex.Replace(Regex.Escape(t.En), "\\\\\\{(\\d+)}", "(.+?)") + "$", RegexOptions.Singleline), t.Zh))
-        .ToList();
+    private sealed class Table
+    {
+        public Dictionary<string, string> Exact;
+
+        public List<(Regex Pattern, string Text)> Templates;
+
+        public Table(Dictionary<string, string> exact, IEnumerable<(string En, string Text)> templates)
+        {
+            Exact = exact;
+            Templates = templates
+                .Select(t => (new Regex("^" + Regex.Replace(Regex.Escape(t.En), "\\\\\\{(\\d+)}", "(.+?)") + "$", RegexOptions.Singleline), t.Text))
+                .ToList();
+        }
+    }
+
+    private static readonly Table ChineseTable = new Table(Chinese.Exact, Chinese.Templates);
+
+    private static readonly Table SpanishTable = new Table(Spanish.Exact, Spanish.Templates);
 
     private static readonly List<Action<LocManager>> LanguageInstallers = new List<Action<LocManager>>();
 
@@ -30,78 +46,59 @@ public static class Lang
     /// <summary>Game language code ("eng", "spa", "zhs", ...). While tables install, the language being installed.</summary>
     public static string Current => _installing ?? LocManager.Instance?.Language ?? "eng";
 
-    public static bool IsSpanish(string language) => language == "spa" || language == "esp";
-
-    public static bool IsSimplifiedChinese(string language) => language == "zhs";
-
-    public static bool Spanish => IsSpanish(Current);
-
-    public static bool SimplifiedChinese => IsSimplifiedChinese(Current);
-
-    /// <summary>Spanish text in Spanish; otherwise English, translated when the game is in Simplified Chinese.</summary>
-    public static string T(string spanish, string english, bool? isSpanish = null)
+    private static Table TableFor(string language) => language switch
     {
-        if (isSpanish ?? Spanish)
+        "zhs" => ChineseTable,
+        "spa" or "esp" => SpanishTable,
+        _ => null
+    };
+
+    /// <summary>English text in the current language.</summary>
+    public static string T(string english) => Translate(english, Current);
+
+    /// <summary>A translation table's values (English) in <paramref name="language"/>.</summary>
+    public static Dictionary<string, Dictionary<string, string>> T(Dictionary<string, Dictionary<string, string>> tables, string language)
+    {
+        foreach (Dictionary<string, string> table in tables.Values)
         {
-            return spanish;
-        }
-        return SimplifiedChinese ? Translate(english) : english;
-    }
-
-    /// <summary>English text, translated when the game is in Simplified Chinese. For text that isn't Spanish.</summary>
-    public static string Zh(string english)
-    {
-        return (english != null && SimplifiedChinese) ? Translate(english) : english;
-    }
-
-    /// <summary>A translation table's values (English) translated, when <paramref name="language"/> is Simplified Chinese.</summary>
-    public static Dictionary<string, Dictionary<string, string>> Zh(Dictionary<string, Dictionary<string, string>> tables, string language)
-    {
-        if (IsSimplifiedChinese(language))
-        {
-            foreach (Dictionary<string, string> table in tables.Values)
-            {
-                Zh(table, language);
-            }
+            T(table, language);
         }
         return tables;
     }
 
-    public static Dictionary<string, string> Zh(Dictionary<string, string> table, string language)
+    public static Dictionary<string, string> T(Dictionary<string, string> table, string language)
     {
-        if (IsSimplifiedChinese(language))
+        foreach (string key in table.Keys.ToList())
         {
-            foreach (string key in table.Keys.ToList())
-            {
-                table[key] = Translate(table[key]);
-            }
+            table[key] = Translate(table[key], language);
         }
         return table;
     }
 
     /// <summary>
-    /// Simplified Chinese for an English string: an exact entry, then a "{0}" template whose pieces are
+    /// An English string in <paramref name="language"/>: an exact entry, then a "{0}" template whose pieces are
     /// translated in turn (so "{0} Total: +{1}." translates both the sentence and the number); else the English.
     /// </summary>
-    public static string Translate(string english)
+    public static string Translate(string english, string language)
     {
-        if (string.IsNullOrEmpty(english))
+        Table table = TableFor(language);
+        if (table == null || string.IsNullOrEmpty(english))
         {
             return english;
         }
-        if (Chinese.Exact.TryGetValue(english, out string exact))
+        if (table.Exact.TryGetValue(english, out string exact))
         {
             return exact;
         }
-        foreach ((Regex pattern, string zh) in ChineseTemplates)
+        foreach ((Regex pattern, string text) in table.Templates)
         {
             Match match = pattern.Match(english);
             if (match.Success)
             {
-                return Regex.Replace(zh, "\\{(\\d+)\\}", m =>
+                return Regex.Replace(text, "\\{(\\d+)\\}", m =>
                 {
                     string part = match.Groups[int.Parse(m.Groups[1].Value) + 1].Value;
-                    return part.Length < english.Length ? Translate(part) : part;
+                    return part.Length < english.Length ? Translate(part, language) : part;
                 });
             }
         }

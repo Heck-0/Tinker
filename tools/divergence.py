@@ -11,9 +11,11 @@ Rules, in order (the first that applies wins):
   otherwise unknown. Relics whose effect only happens on pickup (HasUponPickupEffect and no other hook)
   are marked "pickup" and not upgraded.
 
-The mod's answer:
-  cards  - VarDirections.Overrides, then VarDirections.Generated (confidence >= 1)   (src/Card/Upgrades)
-  relics - Catalog.cs Group(...) lines                                              (src/Relic/Upgrades)
+Since the rule engine (src/Common/Rules, a port of these rules to compiled IL) the mod's own tables only hold
+overrides; "mod" below is the override where there is one, else 0 (the engine decides). tools/rulecheck runs the
+mod's engine itself and compares it with this script.
+  cards  - VarDirections.Overrides                                                  (src/Card/Upgrades)
+  relics - Catalog.cs Override(...) / Stepped(...) lines                            (src/Relic/Upgrades)
 
 Usage:  python tools/divergence.py [game_src] [mod_src] [out_dir]
 Output: <out_dir>/divergence_cards.csv, divergence_relics.csv, DIVERGENCE.md
@@ -234,9 +236,6 @@ def mod_card_signs():
         start = text.index(name + " = new Dictionary")
         return block(text, start)
     signs = {}
-    for m in re.finditer(r'\[\("(\w+)",\s*"(\w+)"\)\]\s*=\s*\((-?\d+),\s*(-?\d+)\)', table("Generated")):
-        if int(m.group(4)) >= 1:
-            signs[(m.group(1), m.group(2))] = (int(m.group(3)), "Generated")
     for m in re.finditer(r'\[\("(\w+)",\s*"(\w+)"\)\]\s*=\s*\((-?\d+),', table("Overrides")):
         signs[(m.group(1), m.group(2))] = (int(m.group(3)), "Overrides")
     return signs
@@ -245,9 +244,10 @@ def mod_card_signs():
 def mod_relic_signs():
     text = read(os.path.join(MOD, "Relic", "Upgrades", "Catalog.cs"))
     signs = {}
-    for m in re.finditer(r'Group\("([^"]+)",\s*"(\w+)",\s*"(\w+)"(?:,\s*(-?\d+))?', text):
-        for relic in m.group(1).split():
-            signs[(relic, m.group(2))] = (int(m.group(4) or 1), m.group(3))
+    for m in re.finditer(r'Override\("(\w+)",\s*"(\w+)",\s*"(\w+)"(?:,\s*(-?\d+))?', text):
+        signs[(m.group(1), m.group(2))] = (int(m.group(4) or 1), m.group(3))
+    for m in re.finditer(r'Stepped\("(\w+)",\s*"(\w+)",\s*(-?\d+)', text):
+        signs[(m.group(1), m.group(2))] = (int(m.group(3)), "percentage")
     return signs
 
 

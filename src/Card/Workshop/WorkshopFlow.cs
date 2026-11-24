@@ -51,11 +51,11 @@ internal static class WorkshopFlow
     {
         if (player?.RunState == null || NRun.Instance == null)
         {
-            return Lang.T("Solo durante una partida.", "Only during a run.");
+            return Lang.T("Only during a run.");
         }
         if (CombatManager.Instance.IsInProgress)
         {
-            return Lang.T("El taller no se puede usar en combate.", "The Workshop can't be used in combat.");
+            return Lang.T("The Workshop can't be used in combat.");
         }
         if (_busy || WorkshopScreen.Current != null)
         {
@@ -74,6 +74,7 @@ internal static class WorkshopFlow
         _busy = true;
         try
         {
+            Tinker.Common.Rules.GameRules.DumpIfRequested();
             CardModel lastCard = null;
             RelicModel lastRelic = null;
             while (true)
@@ -108,7 +109,7 @@ internal static class WorkshopFlow
         }
         catch (Exception ex)
         {
-            ModEntry.Error("Error en el taller: " + ex);
+            ModEntry.Error("Workshop error: " + ex);
         }
         finally
         {
@@ -182,7 +183,7 @@ internal static class WorkshopFlow
         IReadOnlyList<CardModel> cards = player.Deck.Cards;
         if (index < 0 || index >= cards.Count)
         {
-            ModEntry.Error($"Compra del taller con carta {index} fuera del mazo ({cards.Count}); se ignora.");
+            ModEntry.Error($"Workshop purchase for card {index} outside the deck ({cards.Count}); ignored.");
             return null;
         }
         return cards[index];
@@ -196,7 +197,7 @@ internal static class WorkshopFlow
     {
         if (price < 0 || price == int.MaxValue || (!remote && player.Gold < price))
         {
-            ModEntry.Error($"Compra del taller sin oro suficiente: {what} cuesta {price}, hay {player.Gold}.");
+            ModEntry.Error($"Workshop purchase without enough gold: {what} costs {price}, have {player.Gold}.");
             return false;
         }
         if (price > 0)
@@ -208,7 +209,7 @@ internal static class WorkshopFlow
 
     private static void Bought(Player player, string what, int price)
     {
-        ModEntry.Info($"Taller, planta {player.RunState?.TotalFloor}: {what} por {price} de oro.");
+        ModEntry.Info($"Workshop, floor {player.RunState?.TotalFloor}: {what} for {price} gold.");
     }
 
     private static async Task<bool> BuyCard(Player player, WorkshopPurchase purchase, bool remote)
@@ -221,7 +222,7 @@ internal static class WorkshopFlow
         List<string> attributes = CardAttributes.SupportedFor(card).ToList();
         if (purchase.Attribute < 0 || purchase.Attribute >= attributes.Count)
         {
-            ModEntry.Error($"Compra del taller con atributo {purchase.Attribute} inválido en {card.Id.Entry}; se ignora.");
+            ModEntry.Error($"Workshop purchase with invalid attribute {purchase.Attribute} on {card.Id.Entry}; ignored.");
             return false;
         }
         string attribute = attributes[purchase.Attribute];
@@ -243,20 +244,20 @@ internal static class WorkshopFlow
         RelicModel relic = FindRelic(player, purchase.Id, purchase.Index);
         if (relic == null)
         {
-            ModEntry.Error($"Compra del taller con reliquia {purchase.Id} #{purchase.Index} no encontrada; se ignora.");
+            ModEntry.Error($"Workshop purchase for relic {purchase.Id} #{purchase.Index}, not found; ignored.");
             return false;
         }
         RelicAttribute[] attributes = Catalog.For(relic);
         if (purchase.Attribute < 0 || purchase.Attribute >= attributes.Length)
         {
-            ModEntry.Error($"Compra del taller con atributo {purchase.Attribute} inválido en {relic.Id.Entry}; se ignora.");
+            ModEntry.Error($"Workshop purchase with invalid attribute {purchase.Attribute} on {relic.Id.Entry}; ignored.");
             return false;
         }
         RelicAttribute attribute = attributes[purchase.Attribute];
         int units = purchase.Units;
         if (units < 1 || units > Catalog.MaxUnits(relic, attribute))
         {
-            ModEntry.Error($"Compra del taller con {units} unidades fuera de rango en {relic.Id.Entry}; se ignora.");
+            ModEntry.Error($"Workshop purchase with {units} units out of range on {relic.Id.Entry}; ignored.");
             return false;
         }
         int price = WorkshopOptions.RelicPrice(player, relic, attribute, units);
@@ -280,7 +281,7 @@ internal static class WorkshopFlow
         CardMachineState state = CardStateStore.GetOrCreate(card);
         if (state.Property != null || !ExceptionalEffects.ApplicableTo(card).Any((ExceptionalDefinition d) => d.Id == purchase.Id))
         {
-            ModEntry.Error($"Compra del taller: {card.Id.Entry} no puede tener la propiedad {purchase.Id}; se ignora.");
+            ModEntry.Error($"Workshop purchase: {card.Id.Entry} can't have trait {purchase.Id}; ignored.");
             return false;
         }
         int price = WorkshopOptions.TraitPrice;
@@ -301,7 +302,7 @@ internal static class WorkshopFlow
         string boon = (purchase.Attribute >= 0 && purchase.Attribute < Boons.All.Length) ? Boons.All[purchase.Attribute] : null;
         if (relic == null || boon == null || !Boons.ForSale(relic).Contains(boon))
         {
-            ModEntry.Error($"Compra del taller: bufo {purchase.Attribute} no disponible para {purchase.Id} #{purchase.Index}; se ignora.");
+            ModEntry.Error($"Workshop purchase: boon {purchase.Attribute} not available for {purchase.Id} #{purchase.Index}; ignored.");
             return false;
         }
         int price = WorkshopOptions.BoonPrice;

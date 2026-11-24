@@ -12,6 +12,7 @@ using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
+using Tinker.Common;
 
 namespace Tinker.Card;
 
@@ -34,10 +35,10 @@ internal static class FixedEffectPatches
 		return false;
 	}
 
-	/// <summary>The upgrade's name in the Workshop (translated to Chinese when the game is in Chinese).</summary>
+	/// <summary>The upgrade's name in the Workshop (in the game's language).</summary>
 	internal static string AttributeName(CardModel card, string attribute)
 	{
-		return Lang.Zh(AttributeNameText(card, attribute));
+		return Lang.T(AttributeNameText(card, attribute));
 	}
 
 	private static string AttributeNameText(CardModel card, string attribute)
@@ -45,7 +46,7 @@ internal static class FixedEffectPatches
 		BidirectionalEffect bidirectionalEffect = BidirectionalEffects.Find(card?.GetType().Name, attribute);
 		if (bidirectionalEffect != null)
 		{
-			return ((!(card is TrueGrit) || card.IsUpgraded) ? (Lines.Spanish ? bidirectionalEffect.Spanish : bidirectionalEffect.English) : (Lines.Spanish ? "Agotamientos aleatorios" : "Random Exhausts")) + ((AttributeDirection.SignOf(attribute) <= 0) ? (Lines.Spanish ? " (bajar)" : " (decrease)") : (Lines.Spanish ? " (subir)" : " (increase)"));
+			return ((!(card is TrueGrit) || card.IsUpgraded) ? bidirectionalEffect.English : "Random Exhausts") + ((AttributeDirection.SignOf(attribute) <= 0) ? " (decrease)" : " (increase)");
 		}
 		if (EnchantmentEffects.Known(attribute))
 		{
@@ -54,11 +55,7 @@ internal static class FixedEffectPatches
 		AdvancedEnchantmentEffect advancedEnchantmentEffect = AdvancedEnchantmentEffects.Find(attribute);
 		if (advancedEnchantmentEffect != null)
 		{
-			if (!Lines.Spanish)
-			{
-				return advancedEnchantmentEffect.English;
-			}
-			return advancedEnchantmentEffect.Spanish;
+			return advancedEnchantmentEffect.English;
 		}
 		ExpandedEffect expandedEffect = ExpandedEffects.Find(card?.GetType().Name, attribute);
 		if (card is Eidolon && expandedEffect != null)
@@ -67,31 +64,19 @@ internal static class FixedEffectPatches
 			{
 				return "Intangible";
 			}
-			if (!Lines.Spanish)
-			{
-				return "Plays per automatic card";
-			}
-			return "Jugadas por carta automática";
+			return "Plays per automatic card";
 		}
 		if (card?.GetType().Name == "Tracking" && expandedEffect != null && ExpandedEffectPatches.TrackingUsesPercent)
 		{
-			if (!Lines.Spanish)
-			{
-				return "Damage bonus against Weak (%)";
-			}
-			return "Bonus de daño contra Débil (%)";
+			return "Damage bonus against Weak (%)";
 		}
 		if (attribute == AttributeKeys.VarDown("Cards") && (card?.GetType().Name == "SorrowfulStrike" || card?.GetType().Name == "Jest"))
 		{
-			return Lines.Spanish ? "Tristeza añadida" : "Sadness added";
+			return "Sadness added";
 		}
 		if (attribute == AttributeKeys.Var("Increase") && card is GeneticAlgorithm)
 		{
-			if (!Lines.Spanish)
-			{
-				return "Block growth per play";
-			}
-			return "Crecimiento de Bloqueo por jugada";
+			return "Block growth per play";
 		}
 		if (AttributeKeys.VarName(attribute) == "CalculationBase" && card != null && CardAttributes.HiddenCalculationCards.Contains(card.GetType().Name))
 		{
@@ -99,45 +84,25 @@ internal static class FixedEffectPatches
 		}
 		if (expandedEffect != null)
 		{
-			if (!Lines.Spanish)
-			{
-				return expandedEffect.English;
-			}
-			return expandedEffect.Spanish;
+			return expandedEffect.English;
 		}
 		if (attribute == "effect:extraLightning")
 		{
-			if (!Lines.Spanish)
-			{
-				return "Additional Lightning to X";
-			}
-			return "Relámpagos adicionales a X";
+			return "Additional Lightning to X";
 		}
 		if (attribute == "effect:glass")
 		{
-			if (!Lines.Spanish)
-			{
-				return "Glass Orbs";
-			}
-			return "Orbes de Cristal";
+			return "Glass Orbs";
 		}
 		if (attribute == AttributeKeys.Var("Repeat"))
 		{
 			if (card is Chaos)
 			{
-				if (!Lines.Spanish)
-				{
-					return "Random orbs";
-				}
-				return "Orbes aleatorios";
+				return "Random orbs";
 			}
 			if (card is Capacitor)
 			{
-				if (!Lines.Spanish)
-				{
-					return "Orb slots";
-				}
-				return "Huecos de orbe";
+				return "Orb slots";
 			}
 		}
 		return Lines.AttributeName(attribute);
@@ -154,14 +119,14 @@ internal static class FixedEffectPatches
 				Type type2 = AccessTools.DeclaredMethod(type, "OnPlay").GetCustomAttribute<AsyncStateMachineAttribute>()?.StateMachineType;
 				if (type2 == null)
 				{
-					throw new InvalidOperationException("OnPlay no es async");
+					throw new InvalidOperationException("OnPlay is not async");
 				}
 				harmony.Patch(AccessTools.DeclaredMethod(type2, "MoveNext"), null, null, new HarmonyMethod(typeof(FixedEffectPatches), "Transpile"));
 				Active.Add(type);
 			}
 			catch (Exception ex)
 			{
-				ModEntry.Warn("Efectos ampliados desactivados para " + text + ": " + ex.GetBaseException().Message);
+				ModEntry.Warn("Expanded effects disabled for " + text + ": " + ex.GetBaseException().Message);
 			}
 		}
 	}
@@ -195,7 +160,7 @@ internal static class FixedEffectPatches
 					Type type = methodInfo.GetGenericArguments()[0];
 					if (!FixedEffects.Supports(name, ChannelEffect(name, type.Name)))
 					{
-						throw new InvalidOperationException("Tipo de orbe inesperado en " + name);
+						throw new InvalidOperationException("Unexpected orb type in " + name);
 					}
 					methodInfo2 = methodInfo2.MakeGenericMethod(type);
 				}
@@ -231,7 +196,7 @@ internal static class FixedEffectPatches
 		int num4 = num3;
 		if (num != num4)
 		{
-			throw new InvalidOperationException($"Firma IL inesperada en {name}: {num}/{num4}");
+			throw new InvalidOperationException($"Unexpected IL signature in {name}: {num}/{num4}");
 		}
 		return list2;
 	}
@@ -270,7 +235,7 @@ internal static class FixedEffectPatches
 		case "GlassOrb":
 			return "effect:glass";
 		default:
-			throw new InvalidOperationException("Tipo de orbe no admitido: " + orb);
+			throw new InvalidOperationException("Unsupported orb type: " + orb);
 		}
 	}
 
@@ -314,13 +279,13 @@ internal static class FixedEffectPatches
 		{
 			if (cardMachineState.RawDelta(item) != 0)
 			{
-				text = RewriteLine(text, item, Value(card, item), card.IsUpgraded, Lines.Spanish);
+				text = RewriteLine(text, item, Value(card, item), card.IsUpgraded);
 			}
 		}
 		return text;
 	}
 
-	internal static string RewriteLine(string text, string effect, int value, bool upgraded, bool spanish)
+	internal static string RewriteLine(string text, string effect, int value, bool upgraded)
 	{
 		string replacement;
 		object obj;
@@ -329,8 +294,8 @@ internal static class FixedEffectPatches
 		switch (effect)
 		{
 		case "effect:evokes":
-			pattern = (spanish ? "dos veces" : "twice");
-			replacement = value + (spanish ? " veces" : " times");
+			pattern = "twice";
+			replacement = value + " times";
 			break;
 		case "effect:extraEvokes":
 		case "effect:extraLightning":
@@ -338,7 +303,7 @@ internal static class FixedEffectPatches
 			replacement = "X+" + (value + (upgraded ? 1 : 0));
 			break;
 		default:
-			obj = "(?:Frost|Escarcha)";
+			obj = "Frost";
 			goto IL_00e9;
 		case "effect:glass":
 			obj = "(?:Glass|Cristal)";
@@ -347,16 +312,16 @@ internal static class FixedEffectPatches
 			obj = "Plasma";
 			goto IL_00e9;
 		case "effect:dark":
-			obj = "(?:Dark|Oscuridad)";
+			obj = "Dark";
 			goto IL_00e9;
 		case "effect:lightning":
 			{
-				obj = "(?:Lightning|Relámpago)";
+				obj = "Lightning";
 				goto IL_00e9;
 			}
 			IL_00e9:
 			text2 = (string)obj;
-			pattern = "((?:\\[gold\\])?(?:Channel|Invoca)(?:\\[/gold\\])?\\s+)\\d+(\\s+(?:\\[gold\\])?" + text2 + "\\b)";
+			pattern = "((?:\\[gold\\])?Channel(?:\\[/gold\\])?\\s+)\\d+(\\s+(?:\\[gold\\])?" + text2 + "\\b)";
 			return Regex.Replace(text, pattern, (Match m) => m.Groups[1].Value + value + m.Groups[2].Value, RegexOptions.None, TimeSpan.FromMilliseconds(50L, 0L));
 		}
 		return Regex.Replace(text, pattern, replacement, RegexOptions.None, TimeSpan.FromMilliseconds(50L, 0L));

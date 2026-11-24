@@ -17,6 +17,7 @@ using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.Rooms;
+using Tinker.Common;
 
 namespace Tinker.Card;
 
@@ -182,7 +183,7 @@ internal static class ExceptionalEffects
 			}
 			catch (Exception ex)
 			{
-				ModEntry.Error("No se pudo añadir el globo de la propiedad: " + ex);
+				ModEntry.Error("Could not add the trait tooltip: " + ex);
 			}
 		}
 	}
@@ -191,60 +192,35 @@ internal static class ExceptionalEffects
 
 	private static readonly ConditionalWeakTable<CardModel, StrongBox<int>> LifestealPending = new ConditionalWeakTable<CardModel, StrongBox<int>>();
 
-	/// <summary>The trait's name (translated to Chinese when the game is in Chinese).</summary>
+	/// <summary>The trait's name (in the game's language).</summary>
 	public static string Name(ExceptionalDefinition d)
 	{
-		return Lang.Zh(NameText(d));
+		return Lang.T(NameText(d));
 	}
 
-	/// <summary>What the trait does (translated to Chinese when the game is in Chinese).</summary>
+	/// <summary>What the trait does (in the game's language).</summary>
 	public static string Explain(ExceptionalDefinition d, int growth)
 	{
-		return Lang.Zh(ExplainText(d, growth));
+		return Lang.T(ExplainText(d, growth));
 	}
 
 	private static string NameText(ExceptionalDefinition d)
 	{
-		bool spanish = Lines.Spanish;
 		switch (d.Id)
 		{
 
 		case "Inexhaustible":
-			if (!spanish)
-			{
-				return "Inexhaustible";
-			}
-			return "Inagotable";
+			return "Inexhaustible";
 		case "Echo":
-			if (!spanish)
-			{
-				return "Echo";
-			}
-			return "Eco";
+			return "Echo";
 		case "Awakening":
-			if (!spanish)
-			{
-				return "Awakening";
-			}
-			return "Despertar";
+			return "Awakening";
 		case "Legacy":
-			if (!spanish)
-			{
-				return "Legacy";
-			}
-			return "Legado";
+			return "Legacy";
 		case "Venomous":
-			if (!spanish)
-			{
-				return "Venomous";
-			}
-			return "Ponzoña";
+			return "Venomous";
 		case "Lifesteal":
-			if (!spanish)
-			{
-				return "Lifesteal";
-			}
-			return "Vampirismo";
+			return "Lifesteal";
 		default:
 			return d.Id;
 		}
@@ -252,42 +228,21 @@ internal static class ExceptionalEffects
 
 	private static string ExplainText(ExceptionalDefinition d, int growth)
 	{
-		bool spanish = Lines.Spanish;
-		string text = ((growth <= 0) ? "" : (spanish ? $" Llevas +{growth}." : $" Total: +{growth}."));
+		string text = ((growth <= 0) ? "" : $" Total: +{growth}.");
 		switch (d.Id)
 		{
 
 		case "Inexhaustible":
-			if (!spanish)
-			{
-				return "No longer Exhausts. If it's a Power, it goes to your discard pile instead.";
-			}
-			return "Ya no se agota. Si es un poder, va al descarte en vez de desaparecer.";
+			return "No longer Exhausts. If it's a Power, it goes to your discard pile instead.";
 		case "Echo":
-			if (!spanish)
-			{
-				return "The first time you play it each combat, play it twice.";
-			}
-			return "La primera vez que la juegas en cada combate, se juega dos veces.";
+			return "The first time you play it each combat, play it twice.";
 		case "Awakening":
-			if (spanish)
-			{
-				return "Después de jugarla una vez en un combate, cuesta 0 el resto del combate.";
-			}
 			return "After you play it once in a combat, it costs 0 for the rest of that combat.";
 		case "Legacy":
-			return (spanish ? $"Si mata a un élite o a un jefe, aumenta su daño en {5} de forma permanente. Una vez por combate." : $"If it kills an elite or boss, permanently increase its damage by {5}. Once per combat.") + text;
+			return $"If it kills an elite or boss, permanently increase its damage by {5}. Once per combat." + text;
 		case "Venomous":
-			if (spanish)
-			{
-				return "Cada golpe aplica 1 de Veneno.";
-			}
 			return "Each hit applies 1 Poison.";
 		case "Lifesteal":
-			if (spanish)
-			{
-				return $"Al jugarla, te curas un {25}\u00a0% del daño sin bloquear que haga.";
-			}
 			return $"When played, heal for {25}% of the unblocked damage it deals.";
 		default:
 			return d.Id;
@@ -361,7 +316,7 @@ internal static class ExceptionalEffects
 		}
 		catch (Exception ex)
 		{
-			ModEntry.Warn("No se pudo prever la forja de " + card.Id.Entry + ": " + ex.Message);
+			ModEntry.Warn("Could not preview the Forge of " + card.Id.Entry + ": " + ex.Message);
 			return null;
 		}
 	}
@@ -448,7 +403,7 @@ internal static class ExceptionalEffects
 				value3.BaseValue += (decimal)num;
 			}
 			CardStateStore.Set(deckVersion, cardMachineState);
-			ModEntry.Info($"Legacy: {deckVersion.Id.Entry} remata a {target} y crece para siempre (+{cardMachineState.PropertyGrowth}).");
+			ModEntry.Info($"Legacy: {deckVersion.Id.Entry} finished off {target} and grows permanently (+{cardMachineState.PropertyGrowth}).");
 		}
 	}
 
@@ -461,7 +416,7 @@ internal static class ExceptionalEffects
 		}
 		catch (Exception ex)
 		{
-			ModEntry.Error("No se pudo aplicar Legado: " + ex);
+			ModEntry.Error("Could not apply Legacy: " + ex);
 		}
 	}
 
@@ -487,7 +442,7 @@ internal static class ExceptionalEffects
 		}
 		catch (Exception ex)
 		{
-			ModEntry.Error("No se pudo aplicar Ponzoña: " + ex);
+			ModEntry.Error("Could not apply Venomous: " + ex);
 		}
 	}
 
@@ -518,7 +473,7 @@ internal static class ExceptionalEffects
 		}
 		catch (Exception ex)
 		{
-			ModEntry.Error("No se pudo aplicar Vampirismo: " + ex);
+			ModEntry.Error("Could not apply Lifesteal: " + ex);
 		}
 	}
 

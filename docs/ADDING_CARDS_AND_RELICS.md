@@ -58,41 +58,74 @@ How to read the value name:
 | `new DynamicVar("Turns", 3m)` | the string: `Turns` |
 | `BoolVar`, `StringVar`, `Calculated...Var` | not a plain number, skip |
 
-Then check **how the value is used** in the same file (*Ctrl+F* for `DynamicVars`):
+### Most values need nothing: the rule engine
 
-- Used in a combat or turn hook (`BeforeCombatStart`, `AfterSideTurnStart`, `ModifyHandDraw`, …): good,
-  upgrading it changes play.
-- Used only in `AfterObtained`: it happens once on pickup, so upgrading it later does nothing. Skip it.
-- Is a higher number **good** or **bad** for you? That's the *direction*: `1` if higher is better, `-1` if
-  lower is better (thresholds like "every 3 turns", costs, things that help enemies).
-- Is it a fraction (`0.5m`, `1.25m`)? The Workshop sells whole units, so skip it.
+Since the rule engine (`src/Common/Rules`), the mod reads each card's and relic's compiled code when the
+game runs and decides, per value, whether it can be upgraded and in which direction. The rules, first match
+wins:
 
-## Step 2a: add a relic (Relic Upgrader)
+1. **derived** (`Calculated…Var`): not upgradable.
+2. **not read**: the code never uses the value (it only shows in the text): not upgradable.
+3. **only on pickup**: a relic uses the value only in `AfterObtained` (when you get it), so a later upgrade
+   would do nothing. This also covers relics that do nothing but act on pickup.
+4. **upgrade**: the game's own `OnUpgrade` raises (+1) or lowers (−1) it.
+5. **every N / threshold**: it divides something (`x % N`, `x / N`) or is a `…Threshold` property: −1.
+6. **hurts you**: named `Lose…`, passed to `PlayerCmd.Lose…`, or the amount of damage dealt to the owner: −1.
+7. **subtracted** (`x − N`) or **compared** (`x >= N`, not a loop bound): not upgradable, a cost and a
+   limit look the same.
+8. **type**: Damage, Block, Cards, Energy, Heal, Gold, Max HP, Stars, Forge, Summon, hits: +1; HpLoss: −1.
+9. **power**: a buff on yourself or a debuff on enemies: +1; the reverse: −1.
 
-Open `src/Relic/Upgrades/Catalog.cs`. Each `Group(...)` line makes one value upgradable on one or more relics:
+So a new card or relic is usually covered with no change. Check it in the game (Step 3), and add an
+**override** only when the engine is wrong or can't tell.
 
-```csharp
-Group("RelicNames separated by spaces", "ValueName", "family", direction, maximum, labelKey);
-//                                                              optional: 1        10000    null
+To see what the engine decides for every value without starting the game, run the **rulecheck** tool (it
+also compares with `tools/divergence.py`):
+
+```
+dotnet run --project tools/rulecheck -c Release -- "<game>/data_sts2_windows_x86_64/sts2.dll" "C:/Users/Sean/Documents/StS2ModSource/_sts2_full" tools/coverage out.tsv
 ```
 
-Examples already in the file:
+In the game, put an empty file named `rules_dump` in `mods/tinker/`: opening the Workshop then writes the
+engine's verdicts to `mods/tinker/rules_dump.tsv`.
+
+## Step 2a: a relic override
+
+Open `src/Relic/Upgrades/Catalog.cs`, `BuildOverrides`. One line per relic value:
 
 ```csharp
-Group("Anchor HornCleat Orichalcum", "Block", "block");            // more block is better
-Group("IvoryTile", "EnergyThreshold", "threshold", -1);            // lower threshold is better
-Group("MeatOnTheBone RedSkull", "HpThreshold", "percentage", 1, 90); // cap at 90 (%)
+Override("Relic", "ValueName", "family", direction, maximum, labelKey);
+//                                      optional: 1        10000    null
+Override("IvoryTile", "EnergyThreshold", "threshold", -1);        // lower threshold is better
+Override("MeatOnTheBone", "HpThreshold", "percentage", 1, 100);   // cap at 100 (%)
+Override("BlessedAntler", "Cards", "drawback", -1);               // the rules said +1: wrong
 ```
 
-Adding Twine and The Abacus would be:
+**Trigger tiers.** A power amount (a card's `PowerVar`, a relic's power, or the mod's own power effects like
+Dark Embrace's draw) is priced by how often the power pays out its `Amount`, read from the hooks where the
+power uses it; a relic value read in a hook, by how often that hook fires (`RuleEngine.HookTiers` maps all
+151 hooks the game's powers and relics use):
 
-```csharp
-Group("Twine TheAbacus", "Block", "block");
-```
+| Tier | Category | How often | Examples |
+|---|---|---|---|
+| A | `triggerConstant` | per card played, hit, Block gain, card drawn | Afterimage, Strength, Envenom |
+| B | `triggerTurn` | per turn, damage taken, power applied, energy/star spent, orb | Poison, Mayhem, Vulnerable's turns |
+| C | `triggerOccasional` | per Exhaust / discard, kill, potion | Dark Embrace, Feel No Pain |
+| D | `triggerCombat` | once a combat, or a turn hook that only fires on some turns | Vajra-like combat-start relics |
+| E | `triggerRun` | rooms, rewards, shop, rest sites | gold or reward relics |
 
-Pick the **family** that matches the kind of value. It sets how quickly the price rises as you buy more
-units (`src/Relic/Upgrades/Rules.cs`, `Families`). There is no per-family limit: the price just keeps
-rising with the size.
+The most frequent tier wins, but turn-start/end hooks only count when nothing else triggers (they're often
+bookkeeping). The numbers are in `content/balance.jsonc`; `tools/coverage/TIER_CHANGES.txt` lists what changed.
+
+Other values the engine handles get a cost **family** from where the value is used (`RuleEngine.Category`):
+energy read in `ModifyMaxEnergy` → persistentEnergy, a draw bonus read in `ModifyHandDraw` → persistentDraw,
+cards read in a turn hook → generation (selection if it asks you to choose), max HP gained after pickup →
+permanentGrowth; a hook that checks the turn number (first turn only, every N turns) doesn't count as every
+turn. Otherwise from the value's name and type (`Catalog.DefaultFamily`):
+Damage → damage, Block → block, Heal/Gold/Max HP/Stars/Forge/Summon → resource, Cards → draw, Energy →
+energy, hits → repeat, Strength/Dexterity/Focus → scaling, other powers → power, lower-is-better →
+threshold or drawback. Add an override when a value needs a different family, e.g. cards created only at combat start
+(`generation`), which the code can't tell from a one-off.
 
 | Family | Use for |
 |---|---|
@@ -113,35 +146,33 @@ rising with the size.
 | `drawback` (direction -1) | values that hurt you |
 | `generic` | anything else |
 
+**Fractions** (multipliers like Bowler Hat's ×1.25) are only upgraded through a `Stepped(...)` line, which
+sets the step (0.01), the "no effect" value that prices count from, and the limits.
+
 **Label**: the Workshop shows a name for the value from `Text.Attribute` in `src/Relic/Text/Text.cs`.
-Common names (Block, Damage, Cards, Energy, Strength, …) already have labels. For a new value name, add a
-`case` there with Spanish and English text, otherwise the raw name shows.
+Common names already have labels. For a new value name, add a `case` there (in English) and its
+translations in `src/Common/Text/Chinese.cs` and `src/Common/Text/Spanish.cs`.
 
-## Step 2b: add a card value (Card Upgrader)
+## Step 2b: a card override
 
-Card Upgrader finds a card's values automatically. It only offers a value if it knows the direction, which
-comes from `src/Card/Upgrades/VarDirections.cs`:
-
-- `Overrides`: hand-written entries with a reason. **Add yours here.**
-- `Generated`: a big table made by the original author's tool. Leave it alone.
+Card values work the same way: the engine decides, and `Overrides` in `src/Card/Upgrades/VarDirections.cs`
+holds the exceptions, each with a reason:
 
 ```csharp
-[("TwinStrike", "HitCount")] = (1, "hit count"),        // higher is better
-[("Pendulum", "Turns")]      = (-1, "every N turns"),     // lower is better
-[("SomeCard", "Damage")]     = (0, "rewritten when played"), // 0 = never offer this value
+[("Debt", "Gold")]          = (-1, "gold you lose"),               // the rules say +1 (it's a Gold value)
+[("Encore", "EncorePower")] = (1, "a cap on cards you may play"),  // looks like a debuff on you
+[("TheScythe", "Damage")]   = (0, "rewritten when played"),        // 0 = never offer this value
 ```
 
-The **family** (risk curve) for card values is picked by value name in
-`src/Common/Upgrades/BalanceFamilies.cs`, method `Of`. `Damage` → damage, `Block` → block,
-`Cards` → draw, `Energy` → energy, anything ending in `Power` → power, unknown names → generic. Per-card exceptions go in `CardAttributes.RiskFamily`. Add a
-`case` there if a new value name needs a better family (for example `"HitCount"` → `"repeat"`).
+The cost **family** for card values comes from the value's name (`src/Common/Upgrades/BalanceFamilies.cs`,
+`Of`); per-card exceptions are in `CardAttributes.RiskFamily`. Fractional card values (Tank's damage
+multipliers) are listed in `src/Card/Upgrades/SteppedValues.cs`.
 
-The tuning numbers for each family (weight, curve) live in the shipped `content/balance.jsonc`, so you can
-adjust card balance there without recompiling. Its `maxUnits` entries are no longer used (1.3.0 removed bet
-limits).
+The tuning numbers for each family (weight, curve) live in `content/balance.jsonc`, so you can adjust prices
+there without recompiling.
 
-Multi-hit attacks: `VarDirections.Hits` lists how many times a card hits, which makes Damage bets
-proportionally riskier. `2` means a fixed 2 hits; `-1` means "read it from the card's hit-count value".
+Multi-hit attacks: `VarDirections.Hits` lists cards that hit several times, which makes Damage upgrades
+pricier; the card's own hit count is used when it has one.
 
 ## Step 3: test it
 

@@ -13,6 +13,12 @@
   "strainFactor": 0.8,
 
   "families": {
+    // Trigger tiers (1.7.0): powers and relic hooks priced by how often they pay out (RuleEngine.HookTiers).
+    "triggerConstant":   { "weight": 2.2, "curve": 1.3,  "referenceFloor": 2 },  // per card played, hit, Block gain, card drawn
+    "triggerTurn":       { "weight": 1.7, "curve": 1.25, "referenceFloor": 2 },  // per turn, damage taken, orb, energy spent
+    "triggerOccasional": { "weight": 1.2, "curve": 1.2,  "referenceFloor": 2 },  // per Exhaust / discard, kill, potion
+    "triggerCombat":     { "weight": 1.0, "curve": 1.1,  "referenceFloor": 2 },  // once a combat (or turn 1 only)
+    "triggerRun":        { "weight": 1.5, "curve": 1.2,  "referenceFloor": 2 },  // rooms, rewards, shop, rest sites
     // Ampliación: separar acciones recurrentes y selección de los números planos.
     // percentage usa puntos porcentuales. protection tiene un máximo de 90 % en ejecución;
     // cambiar este JSON no puede eliminar ese tope.

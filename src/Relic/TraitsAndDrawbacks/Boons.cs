@@ -37,12 +37,12 @@ public static class Boons
 	{
 		return id switch
 		{
-			"Strength" => Text.T("Furiosa", "Fierce"), 
-			"Dexterity" => Text.T("Ágil", "Agile"), 
-			"Block" => Text.T("Protectora", "Protective"), 
-			"Heal" => Text.T("Vital", "Vital"), 
-			"Energy" => Text.T("Energizada", "Energized"), 
-			"Draw" => Text.T("Inspiradora", "Inspiring"), 
+			"Strength" => Text.T("Fierce"), 
+			"Dexterity" => Text.T("Agile"), 
+			"Block" => Text.T("Protective"), 
+			"Heal" => Text.T("Vital"), 
+			"Energy" => Text.T("Energized"), 
+			"Draw" => Text.T("Inspiring"), 
 			_ => id, 
 		};
 	}
@@ -51,12 +51,12 @@ public static class Boons
 	{
 		return id switch
 		{
-			"Strength" => Text.T("Al iniciar cada combate: ganas 1 Fuerza.", "At the start of each combat: gain 1 Strength."), 
-			"Dexterity" => Text.T("Al iniciar cada combate: ganas 1 Destreza.", "At the start of each combat: gain 1 Dexterity."), 
-			"Block" => Text.T("Al iniciar cada combate: ganas 4 de Bloqueo.", "At the start of each combat: gain 4 Block."), 
-			"Heal" => Text.T("Al iniciar cada combate: te curas 2 PV.", "At the start of each combat: heal 2 HP."), 
-			"Energy" => Text.T("En tu primer turno: ganas 1 Energía.", "On your first turn: gain 1 Energy."), 
-			"Draw" => Text.T("En tu primer turno: robas 1 carta más.", "On your first turn: draw 1 extra card."), 
+			"Strength" => Text.T("At the start of each combat: gain 1 Strength."), 
+			"Dexterity" => Text.T("At the start of each combat: gain 1 Dexterity."), 
+			"Block" => Text.T("At the start of each combat: gain 4 Block."), 
+			"Heal" => Text.T("At the start of each combat: heal 2 HP."), 
+			"Energy" => Text.T("On your first turn: gain 1 Energy."), 
+			"Draw" => Text.T("On your first turn: draw 1 extra card."), 
 			_ => id, 
 		};
 	}

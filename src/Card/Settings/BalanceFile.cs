@@ -32,8 +32,8 @@ internal static class BalanceFile
 		if (!File.Exists(path))
 		{
 			Current = balanceConfig;
-			ModEntry.Warn("No hay balance.jsonc junto al mod; se usan los valores por defecto.");
-			return "Sin balance.jsonc: valores por defecto.";
+			ModEntry.Warn("No balance.jsonc next to the mod; using the defaults.");
+			return "No balance.jsonc: defaults.";
 		}
 		List<string> list;
 		try
@@ -43,7 +43,7 @@ internal static class BalanceFile
 		}
 		catch (Exception ex)
 		{
-			list = new List<string> { "no se pudo leer: " + ex.Message };
+			list = new List<string> { "could not be read: " + ex.Message };
 		}
 		Current = balanceConfig;
 		Settings.Invalidate();
@@ -54,15 +54,15 @@ internal static class BalanceFile
 		ModEntry.Info("Balance cargado:" + Environment.NewLine + Describe(balanceConfig));
 		if (list.Count != 0)
 		{
-			return $"Balance recargado con {list.Count} aviso(s); los valores erróneos se ignoran (ver registro).";
+			return $"Balance reloaded with {list.Count} warning(s); bad values are ignored (see the log).";
 		}
-		return "Balance recargado sin avisos (detalle en el registro).";
+		return "Balance reloaded without warnings (details in the log).";
 	}
 
 	public static string Describe(BalanceConfig config)
 	{
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.Append($"  tensión {config.StrainFactor:0.##}");
+		stringBuilder.Append($"  strain {config.StrainFactor:0.##}");
 		foreach (KeyValuePair<string, AttributeBalance> family in config.Families)
 		{
 			AttributeBalance value = family.Value;

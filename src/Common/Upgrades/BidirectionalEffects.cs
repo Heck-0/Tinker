@@ -13,41 +13,40 @@ public static class BidirectionalEffects
 		string[] array = new string[4] { "Acrobatics", "DaggerThrow", "Survivor", "Prepared" };
 		foreach (string card in array)
 		{
-			yield return E(card, "extradown:discard", "extra:discard", "Descartes", "Discards");
+			yield return E(card, "extradown:discard", "extra:discard", "Discards");
 		}
-		yield return E("HiddenDaggers", "vardown:Cards", "var:Cards", "Descartes", "Discards");
-		yield return E("ThinkingAhead", "extradown:putBack", "extra:putBack", "Devoluciones al mazo", "Cards put back");
+		yield return E("HiddenDaggers", "vardown:Cards", "var:Cards", "Discards");
+		yield return E("ThinkingAhead", "extradown:putBack", "extra:putBack", "Cards put back");
 		array = new string[2] { "Glimmer", "PhotonCut" };
 		foreach (string card2 in array)
 		{
-			yield return E(card2, "vardown:PutBack", "var:PutBack", "Devoluciones al mazo", "Cards put back");
+			yield return E(card2, "vardown:PutBack", "var:PutBack", "Cards put back");
 		}
 		array = new string[2] { "Headbutt", "CosmicIndifference" };
 		foreach (string card3 in array)
 		{
-			yield return E(card3, "extra:selection", "extradown:selection", "Máximo de recuperaciones al mazo", "Maximum cards retrieved to draw pile");
+			yield return E(card3, "extra:selection", "extradown:selection", "Maximum cards retrieved to draw pile");
 		}
-		yield return E("Rebound", "extra:returnCount", "extradown:returnCount", "Devoluciones este turno", "Returns this turn");
-		BidirectionalEffect bidirectionalEffect = E("Nostalgia", "extra:returnCount", "extradown:returnCount", "Devoluciones por turno", "Returns per turn");
+		yield return E("Rebound", "extra:returnCount", "extradown:returnCount", "Returns this turn");
+		BidirectionalEffect bidirectionalEffect = E("Nostalgia", "extra:returnCount", "extradown:returnCount", "Returns per turn");
 		bidirectionalEffect.Family = "persistentRepeat";
 		yield return bidirectionalEffect;
 		array = new string[5] { "Brand", "BurningPact", "Scavenge", "Cleanse", "TrueGrit" };
 		foreach (string card4 in array)
 		{
-			yield return E(card4, "extra:exhaustMaximum", "extradown:exhaustMaximum", "Máximo de agotamientos", "Maximum Exhausts");
+			yield return E(card4, "extra:exhaustMaximum", "extradown:exhaustMaximum", "Maximum Exhausts");
 		}
-		yield return E("Purity", "var:Cards", "vardown:Cards", "Máximo de agotamientos", "Maximum Exhausts");
-		yield return E("Cinder", "extradown:randomExhaust", "extra:randomExhaust", "Agotamientos aleatorios", "Random Exhausts");
+		yield return E("Purity", "var:Cards", "vardown:Cards", "Maximum Exhausts");
+		yield return E("Cinder", "extradown:randomExhaust", "extra:randomExhaust", "Random Exhausts");
 	}
 
-	private static BidirectionalEffect E(string card, string canonical, string reverse, string es, string en)
+	private static BidirectionalEffect E(string card, string canonical, string reverse, string en)
 	{
 		return new BidirectionalEffect
 		{
 			Card = card,
 			Canonical = canonical,
 			Reverse = reverse,
-			Spanish = es,
 			English = en
 		};
 	}

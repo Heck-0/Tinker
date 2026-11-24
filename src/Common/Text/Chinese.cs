@@ -2,7 +2,7 @@
 
 namespace Tinker.Common;
 
-// Simplified Chinese for the whole mod: English text -> Chinese, used by Lang.T and Lang.Zh. Templates match
+// Simplified Chinese for the whole mod: English text -> Chinese, used by Lang.T. Templates match
 // text with numbers or names in it; "{0}" pieces are translated in turn.
 
 public static class Chinese
@@ -76,6 +76,16 @@ public static class Chinese
 		["Normal preserves the original rules. Easy and Hard change several settings. Editing a setting switches to Custom."] = "普通保持原始规则。简单和困难会调整多项设置。修改任一设置会切换为自定义。",
 		["Upgrade difficulty"] = "强化难度",
 		["General"] = "通用",
+		["Gold multiplier"] = "金币倍率",
+		["Max HP lost per turn"] = "每回合最多失去的生命",
+		["Nimble on rewards"] = "奖励上的灵巧",
+		["Swift on rewards"] = "奖励上的迅捷",
+		["Extra relics"] = "额外遗物",
+		["Elites required"] = "所需精英",
+		["Minimum damage"] = "最低伤害",
+		["Damage taken (lethal Doom)"] = "受到的伤害（致命灾厄）",
+		["Extra damage vs Vulnerable"] = "对易伤的额外伤害",
+		["Extra Weak reduction"] = "额外虚弱削减",
 		["After"] = "之后",
 		["Aim multiplier"] = "瞄准倍率",
 		["Amount"] = "数量",

@@ -236,7 +236,7 @@ public static class FixedEffects
 	{
 		if (!Supports(card, attribute))
 		{
-			throw new ArgumentException("Efecto no admitido por " + card);
+			throw new ArgumentException("Unsupported effect for " + card);
 		}
 		return checked(Native(card, attribute) + (state?.RawDelta(attribute) ?? 0));
 	}

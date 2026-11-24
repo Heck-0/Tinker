@@ -2,95 +2,226 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MegaCrit.Sts2.Core.Models;
+using Tinker.Common.Rules;
 
 namespace Tinker.Relic;
 
+/// <summary>
+/// Which relic values the Workshop upgrades, and how. The rule engine (<see cref="GameRules"/>) decides the
+/// direction from the relic's own code, and the cost category from where the value is used (energy or draw every
+/// turn, max HP that keeps growing: <see cref="RuleEngine.Category"/>), else from its name and type
+/// (<see cref="DefaultFamily"/>). <see cref="Overrides"/> holds the values where the mod knows better: a cost
+/// category the code doesn't show (e.g. cards created at combat start), a direction the rules can't tell, a
+/// maximum or label, or a fractional value (a multiplier) bought in steps.
+/// </summary>
 public static class Catalog
 {
-	private static readonly Dictionary<string, RelicAttribute[]> Entries = Build();
+	private static readonly Dictionary<(string Relic, string Key), RelicAttribute> Overrides = BuildOverrides();
 
-	public static IReadOnlyDictionary<string, RelicAttribute[]> Supported => Entries;
+	private static readonly Dictionary<Type, RelicAttribute[]> Cache = new Dictionary<Type, RelicAttribute[]>();
 
+	public static int OverrideCount => Overrides.Count;
+
+	/// <summary>The relic's values the Workshop can upgrade right now.</summary>
 	public static RelicAttribute[] For(RelicModel relic)
 	{
 		if (relic.IsMelted || relic.IsUsedUp || relic.HasBeenRemovedFromState)
 		{
 			return Array.Empty<RelicAttribute>();
 		}
-		return (Entries.GetValueOrDefault(relic.GetType().Name) ?? Array.Empty<RelicAttribute>()).Where((RelicAttribute a) => relic.DynamicVars.ContainsKey(a.Key) && a.Limit(relic) > 0).ToArray();
+		return All(relic).Where((RelicAttribute a) => relic.DynamicVars.ContainsKey(a.Key) && a.Limit(relic) > 0).ToArray();
 	}
 
-	private static Dictionary<string, RelicAttribute[]> Build()
+	/// <summary>One upgradable value of this relic's class, or null.</summary>
+	public static RelicAttribute? Find(RelicModel relic, string key)
 	{
-		Dictionary<string, RelicAttribute[]> result = new Dictionary<string, RelicAttribute[]>(StringComparer.Ordinal);
-		Group("BurningBlood BlackBlood BloodVial FakeBloodVial BookRepairKnife EternalFeather MealTicket MeatOnTheBone Pantograph Planisphere RegalPillow BookOfFiveRings", "Heal", "resource");
-		Group("Anchor FakeAnchor HornCleat CaptainsWheel Orichalcum FakeOrichalcum CloakClasp BoneFlute DaughterOfTheWind DiamondDiadem GalacticDust IntimidatingHelmet OrnamentalFan ParryingShield Permafrost Regalite RippleBasin Sai ToughBandages TuningFork", "Block", "block");
-		Group("CharonsAshes ForgottenSoul Kusarigama LetterOpener LostWisp MercuryHourglass Metronome MysticLighter ParryingShield ScreamingFlagon StoneCalendar Tingsha FestivePopper", "Damage", "damage");
-		Group("RoyalPoison", "Damage", "drawback", -1);
-		Group("MiniatureCannon InfusedCore FakeStrikeDummy StrikeDummy", "ExtraDamage", "damage");
-		Group("SelfFormingClay", "BlockNextTurn", "block");
-		Group("Vajra RedSkull SlingOfCourage Shuriken MiniRegent ReptileTrinket ToastyMittens RainbowRing SparklingRouge EmberTea", "StrengthPower", "scaling");
-		Group("OddlySmoothStone Kunai BeltBuckle HelicalDart RainbowRing SparklingRouge", "DexterityPower", "scaling");
-		Group("Akabeko", "VigorPower", "power");
-		Group("BronzeScales", "ThornsPower", "power");
-		Group("DataDisk", "FocusPower", "scaling");
-		Group("Gorget", "PlatingPower", "power");
-		Group("BagOfMarbles HandDrill", "VulnerablePower", "power");
-		Group("RedMask", "WeakPower", "power");
-		Group("TwistedFunnel SneckoSkull", "PoisonPower", "power");
-		Group("BoundPhylactery", "Summon", "power");
-		Group("PhylacteryUnbound", "StartOfCombat", "power");
-		Group("PhylacteryUnbound", "StartOfTurn", "power");
-		Group("Brimstone", "SelfStrength", "scaling");
-		Group("Brimstone", "EnemyStrength", "drawback", -1);
-		Group("ArtOfWar Candelabra Chandelier GremlinHorn HappyFlower FakeHappyFlower IvoryTile Lantern Nunchaku PaelsTears SealOfGold VenerableTeaSet FakeVenerableTeaSet VeryHotCocoa BoomingConch", "Energy", "energy");
-		Group("IntimidatingHelmet", "Energy", "threshold", -1);
-		Group("IvoryTile", "EnergyThreshold", "threshold", -1);
-		Group("BlessedAntler BloodSoakedRose Ectoplasm PaelsFlesh PhilosophersStone PrismaticGem Sozu SpikedGauntlets VelvetChoker WhisperingEarring PumpkinCandle", "Energy", "persistentEnergy");
-		Group("Bread", "GainEnergy", "persistentEnergy");
-		Group("Bread", "LoseEnergy", "drawback", -1);
-		Group("BagOfPreparation BoomingConch CentennialPuzzle GamePiece GremlinHorn Pocketwatch PollinousCore RingOfTheDrake RingOfTheSnake", "Cards", "draw");
-		Group("BigHat OrangeDough RadiantPearl", "Cards", "generation");
-		Group("ChoicesParadox PowerCell Toolbox", "Cards", "selection");
-		Group("PaelsBlood SneckoEye Fiddle", "Cards", "persistentDraw");
-		Group("BigMushroom", "Cards", "drawback", -1, 10000, "drawLoss");
-		Group("BookOfFiveRings BrilliantScarf IronClub Kunai Kusarigama LetterOpener Nunchaku OrnamentalFan Shuriken TuningFork EternalFeather", "Cards", "threshold", -1);
-		Group("HappyFlower FakeHappyFlower PollinousCore", "Turns", "threshold", -1);
-		Group("RingOfTheDrake", "Turns", "duration");
-		Group("StoneCalendar", "DamageTurn", "threshold", -1);
-		Group("JossPaper", "ExhaustAmount", "threshold", -1);
-		Group("Metronome", "OrbCount", "threshold", -1);
-		Group("VelvetChoker", "Cards", "drawback");
-		Group("MeatOnTheBone RedSkull", "HpThreshold", "percentage", 1, 100);
-		Group("TheCourier", "Discount", "percentage", 1, 100);
-		Group("MembershipCard", "Discount", "percentage", -1, 100);
-		Group("TungstenRod", "HpLossReduction", "protection");
-		Group("AmethystAubergine LuckyFysh MawBank", "Gold", "resource");
-		Group("SealOfGold", "Gold", "drawback", -1);
-		Group("DarkstonePeriapt ChosenCheese DragonFruit", "MaxHp", "permanentGrowth");
-		Group("DivineDestiny DivineRight LunarPastry", "Stars", "resource");
-		Group("GalacticDust", "Stars", "threshold", -1);
-		Group("CrackedCore InfusedCore", "Lightning", "repeat");
-		Group("RunicCapacitor", "Repeat", "repeat");
-		Group("NinjaScroll", "Shivs", "repeat");
-		Group("ChemicalX", "Increase", "repeat");
-		// Combined build: the Fool's relics (docs/FOOL_CANDIDATES.md).
-		Group("SongBow Storyteller WhittlingKnife", "AimPower", "power");
-		Group("Storyteller", "EndOfTurnAim", "power");
-		Group("ExerciseMat", "StretchPower", "power");
-		Group("Fertilizer", "StrengthPower", "scaling");
-		// Mighty Wings: a hit of at least DamageThreshold (30) damage gives StrengthPower (2) Strength.
-		Group("MightyWings", "DamageThreshold", "threshold", -1);
-		Group("MightyWings", "StrengthPower", "scaling");
-		Group("Twine", "Block", "block");
-		return result;
-		void Group(string names, string key, string family, int direction = 1, int maximum = 10000, string? labelKey = null)
+		return All(relic).FirstOrDefault((RelicAttribute a) => a.Key == key);
+	}
+
+	/// <summary>Every upgradable value of the relic's class (cached per class).</summary>
+	public static RelicAttribute[] All(RelicModel relic)
+	{
+		Type type = relic.GetType();
+		lock (Cache)
 		{
-			string[] array = names.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-			foreach (string key2 in array)
+			if (Cache.TryGetValue(type, out RelicAttribute[]? cached))
 			{
-				result[key2] = (result.GetValueOrDefault(key2) ?? Array.Empty<RelicAttribute>()).Append(new RelicAttribute(key, family, direction, maximum, labelKey)).ToArray();
+				return cached;
 			}
+			List<RelicAttribute> list = new List<RelicAttribute>();
+			foreach (VarInfo v in GameRules.Vars(relic))
+			{
+				if (Overrides.TryGetValue((type.Name, v.Name), out RelicAttribute? set))
+				{
+					list.Add(set);
+					continue;
+				}
+				// A fraction (a multiplier) needs a step size, which only an override gives.
+				if (relic.DynamicVars[v.Name].BaseValue % 1m != 0m)
+				{
+					continue;
+				}
+				Verdict verdict = GameRules.Decide(relic, v.Name);
+				if (verdict.Sign != 0)
+				{
+					list.Add(new RelicAttribute(v.Name, FamilyFor(relic, v, verdict), verdict.Sign));
+				}
+			}
+			RelicAttribute[] result = list.ToArray();
+			Cache[type] = result;
+			return result;
+		}
+	}
+
+	/// <summary>
+	/// The cost category for a value the engine decided: a usage category (energy / draw every turn, max HP growth),
+	/// else its trigger tier (for a power amount, how often the power pays out; else how often the relic's hook
+	/// fires), else by name and type. Lower-is-better values keep threshold / drawback.
+	/// </summary>
+	private static string FamilyFor(RelicModel relic, VarInfo v, Verdict verdict)
+	{
+		string family = GameRules.Category(relic, v.Name, verdict);
+		if (family == null && verdict.Sign > 0)
+		{
+			family = (v.Power != null) ? GameRules.PowerTriggerFamily(v.Power) : GameRules.TriggerFamily(relic, v.Name);
+		}
+		return family ?? DefaultFamily(v, verdict);
+	}
+
+	/// <summary>The cost category for a value the rules decided (tools/relic_overrides.py uses the same mapping).</summary>
+	public static string DefaultFamily(VarInfo v, Verdict verdict)
+	{
+		if (verdict.Sign < 0)
+		{
+			return (verdict.Why == "every N / threshold") ? "threshold" : "drawback";
+		}
+		switch (v.Name)
+		{
+		case "Damage":
+		case "OstyDamage":
+		case "ExtraDamage":
+			return "damage";
+		case "Block":
+			return "block";
+		case "Heal":
+		case "Gold":
+		case "MaxHp":
+		case "Stars":
+		case "Forge":
+		case "Summon":
+			return "resource";
+		case "Cards":
+			return "draw";
+		case "Energy":
+			return "energy";
+		case "Repeat":
+		case "HitCount":
+			return "repeat";
+		}
+		if (v.Power == "StrengthPower" || v.Power == "DexterityPower" || v.Power == "FocusPower")
+		{
+			return "scaling";
+		}
+		if (v.Power != null || v.Name.EndsWith("Power", StringComparison.Ordinal))
+		{
+			return "power";
+		}
+		return v.Class switch
+		{
+			"DamageVar" or "OstyDamageVar" or "ExtraDamageVar" => "damage",
+			"BlockVar" => "block",
+			"CardsVar" => "draw",
+			"EnergyVar" => "energy",
+			"HealVar" or "GoldVar" or "MaxHpVar" or "StarsVar" or "ForgeVar" or "SummonVar" => "resource",
+			"RepeatVar" or "HitCountVar" => "repeat",
+			_ => "generic"
+		};
+	}
+
+	private static Dictionary<(string, string), RelicAttribute> BuildOverrides()
+	{
+		Dictionary<(string, string), RelicAttribute> result = new Dictionary<(string, string), RelicAttribute>();
+		// Kept from the old hand-written catalog where the engine + DefaultFamily would differ (tools/relic_overrides.py).
+		Override("BigHat", "Cards", "generation");
+		Override("BigMushroom", "Cards", "drawback", -1, 10000, "drawLoss");
+		Override("BoundPhylactery", "Summon", "power");
+		Override("Bread", "GainEnergy", "persistentEnergy");
+		Override("BrilliantScarf", "Cards", "threshold", -1);
+		Override("Brimstone", "EnemyStrength", "drawback", -1);
+		Override("Brimstone", "SelfStrength", "scaling");
+		Override("ChemicalX", "Increase", "repeat");
+		Override("ChoicesParadox", "Cards", "selection");
+		Override("CrackedCore", "Lightning", "repeat");
+		Override("FakeStrikeDummy", "ExtraDamage", "damage");
+		Override("HandDrill", "VulnerablePower", "power");
+		Override("HelicalDart", "DexterityPower", "scaling");
+		Override("InfusedCore", "ExtraDamage", "damage");
+		Override("InfusedCore", "Lightning", "repeat");
+		Override("IntimidatingHelmet", "Energy", "threshold", -1);
+		Override("IvoryTile", "EnergyThreshold", "threshold", -1);
+		Override("MeatOnTheBone", "HpThreshold", "percentage", 1, 100);
+		Override("MembershipCard", "Discount", "percentage", -1, 100);
+		Override("Metronome", "OrbCount", "threshold", -1);
+		Override("MightyWings", "DamageThreshold", "threshold", -1);
+		Override("MiniatureCannon", "ExtraDamage", "damage");
+		Override("NinjaScroll", "Shivs", "repeat");
+		Override("OrangeDough", "Cards", "generation");
+		Override("PaelsFlesh", "Energy", "persistentEnergy");
+		Override("ParryingShield", "Block", "block");
+		Override("PhylacteryUnbound", "StartOfCombat", "power");
+		Override("PhylacteryUnbound", "StartOfTurn", "power");
+		Override("PollinousCore", "Turns", "threshold", -1);
+		Override("PowerCell", "Cards", "selection");
+		Override("RadiantPearl", "Cards", "generation");
+		Override("RedSkull", "HpThreshold", "percentage", 1, 100);
+		Override("RedSkull", "StrengthPower", "scaling");
+		Override("ReptileTrinket", "StrengthPower", "scaling");
+		Override("RingOfTheDrake", "Turns", "duration");
+		Override("SelfFormingClay", "BlockNextTurn", "block");
+		Override("SneckoSkull", "PoisonPower", "power");
+		Override("StoneCalendar", "DamageTurn", "threshold", -1);
+		Override("StrikeDummy", "ExtraDamage", "damage");
+		Override("TheCourier", "Discount", "percentage", 1, 100);
+		Override("Toolbox", "Cards", "selection");
+		Override("TungstenRod", "HpLossReduction", "protection");
+		Override("VelvetChoker", "Cards", "drawback");
+		// Reviewed in docs/COVERAGE_GAPS.md: the rules' guess is wrong or too generic.
+		Override("BlessedAntler", "Cards", "drawback", -1);
+		Override("FuneraryMask", "Cards", "generation");
+		Override("LizardTail", "Heal", "percentage", 1, 100);
+		Override("StoneCracker", "Cards", "generic");
+		Override("WarHammer", "Cards", "generic");
+		// Reviewed 1.7.0: the rules said "unknown" or "compared" (not upgraded); the relic's code says:
+		Override("BeatingRemnant", "MaxHpLoss", "protection", -1);   // a cap on HP lost per turn: lower is better
+		Override("FresnelLens", "NimbleAmount", "generic");          // Nimble put on card rewards
+		Override("LavaRock", "Relics", "deckRemoval");               // extra relics after the act 1 boss (priced like a removal)
+		Override("PaelsLegion", "Turns", "threshold", -1);           // cooldown between blocks
+		Override("SilverCrucible", "Cards", "generation");           // card rewards that come upgraded
+		Override("SwordOfStone", "Elites", "threshold", -1);         // elites to defeat before it transforms
+		Override("SymbioticVirus", "Dark", "orb");                   // Dark orbs channelled at combat start (a loop count)
+		Override("TheBoot", "DamageMinimum", "damage");              // low attacks are raised to this
+		Override("WingCharm", "SwiftAmount", "generic");             // Swift put on a card reward
+		// Left out on review: Bone Tea and Winged Boots (the value only mirrors a use counter), Cauldron, Punch
+		// Dagger and Fur Coat (used when picked up or when the map is made).
+		// Fractions, bought in steps of 0.01 (prices count steps from the "no effect" value).
+		Stepped("BowlerHat", "GoldIncrease", 1, neutral: 1m, minimum: 1m, maximum: 3m);
+		Stepped("UndyingSigil", "DamageDecrease", -1, neutral: 0m, minimum: 0.1m, maximum: 1m);
+		// Paper Phrog / Paper Krane: their hard-coded bonus becomes a value (PaperRelics).
+		Stepped("PaperPhrog", "VulnerableBonus", 1, neutral: 0m, minimum: 0m, maximum: 1m);
+		Stepped("PaperKrane", "WeakReduction", 1, neutral: 0m, minimum: 0m, maximum: 0.75m);
+		return result;
+		void Override(string relic, string key, string family, int direction = 1, decimal maximum = 10000m, string? labelKey = null)
+		{
+			result[(relic, key)] = new RelicAttribute(key, family, direction, maximum, labelKey);
+		}
+		void Stepped(string relic, string key, int direction, decimal neutral, decimal minimum, decimal maximum)
+		{
+			result[(relic, key)] = new RelicAttribute(key, "percentage", direction, maximum)
+			{
+				Step = 0.01m,
+				Neutral = neutral,
+				Minimum = minimum
+			};
 		}
 	}
 
@@ -104,9 +235,9 @@ public static class Catalog
 	public static double Exponent(RelicModel relic, RelicAttribute attribute, int units)
 	{
 		RelicState relicState = Store.For(relic);
-
-		UpgradeLedger valueOrDefault = relicState.Upgrades.GetValueOrDefault(attribute.Key);
-		double otherStrain = 0.8 * relicState.Upgrades.Where<KeyValuePair<string, UpgradeLedger>>((KeyValuePair<string, UpgradeLedger> p) => p.Key != attribute.Key).Sum((KeyValuePair<string, UpgradeLedger> p) => Rules.Risk(p.Value.Family, p.Value.Reference, p.Value.Gain));
-		return Rules.Exponent(attribute.Family, valueOrDefault?.Reference ?? attribute.Value(relic), valueOrDefault?.Gain ?? 0, units, otherStrain);
+		UpgradeLedger? own = relicState.Upgrades.GetValueOrDefault(attribute.Key);
+		double otherStrain = 0.8 * relicState.Upgrades.Where((KeyValuePair<string, UpgradeLedger> p) => p.Key != attribute.Key)
+			.Sum((KeyValuePair<string, UpgradeLedger> p) => Rules.Risk(p.Value.Family, Find(relic, p.Key)?.PriceReference(p.Value.Reference) ?? p.Value.Reference, p.Value.Gain));
+		return Rules.Exponent(attribute.Family, attribute.PriceReference(own?.Reference ?? attribute.Value(relic)), own?.Gain ?? 0, units, otherStrain);
 	}
 }

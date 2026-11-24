@@ -5,6 +5,7 @@ using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Cards;
+using Tinker.Common;
 
 namespace Tinker.Card;
 
@@ -51,11 +52,11 @@ public static class CardAttributes
 	{
 		return CalculationFamily(card) switch
 		{
-			"repeat" => Lines.Spanish ? "Golpes adicionales" : "Additional hits", 
-			"draw" => Lines.Spanish ? "Robo adicional" : "Additional draw", 
-			"scaling" => Lines.Spanish ? "Concentración adicional" : "Additional Focus", 
-			"block" => Lines.Spanish ? "Bloqueo adicional fijo" : "Additional flat Block", 
-			_ => Lines.Spanish ? "Daño adicional fijo" : "Additional flat damage", 
+			"repeat" => Lang.T("Additional hits"), 
+			"draw" => Lang.T("Additional draw"), 
+			"scaling" => Lang.T("Additional Focus"), 
+			"block" => Lang.T("Additional flat Block"), 
+			_ => Lang.T("Additional flat damage"), 
 		};
 	}
 
@@ -171,7 +172,7 @@ public static class CardAttributes
 				{
 					yield return AttributeKeys.Var(key);
 				}
-				else if (num < 0 && card.DynamicVars[key].IntValue > Minimum(card, AttributeKeys.VarDown(key)))
+				else if (num < 0 && CurrentValue(card, AttributeKeys.VarDown(key)) > Minimum(card, AttributeKeys.VarDown(key)))
 				{
 					yield return AttributeKeys.VarDown(key);
 				}
@@ -204,6 +205,10 @@ public static class CardAttributes
 	public static int Minimum(CardModel card, string attribute)
 	{
 		string text = AttributeKeys.VarName(attribute);
+		if (SteppedValues.TryGet(card, text, out SteppedValues.Stepped stepped))
+		{
+			return stepped.MinUnits;
+		}
 		if (!(text == "Turns") && !(text == "DoomThreshold"))
 		{
 			switch (attribute)
@@ -239,13 +244,46 @@ public static class CardAttributes
 		return ExpandedEffects.Maximum(attribute);
 	}
 
+	/// <summary>
+	/// A power amount's trigger tier (see <see cref="Tinker.Common.Rules.RuleEngine.HookTiers"/>): how often the power
+	/// pays out its Amount, for a card's PowerVar value or one of the mod's "extra:power" effects (Dark Embrace's
+	/// draw per Exhaust). Only for upgrades that raise the value.
+	/// </summary>
+	private static string TriggerFamily(CardModel card, string attribute)
+	{
+		if (card == null || attribute == null)
+		{
+			return null;
+		}
+		if (attribute.StartsWith("var:", StringComparison.Ordinal) && card.DynamicVars.TryGetValue(AttributeKeys.VarName(attribute), out DynamicVar value)
+			&& value.GetType().IsGenericType && value.GetType().Name.StartsWith("PowerVar", StringComparison.Ordinal))
+		{
+			return Tinker.Common.Rules.GameRules.PowerTriggerFamily(value.GetType().GetGenericArguments()[0].Name);
+		}
+		ExpandedEffect effect = ExpandedEffects.Find(card.GetType().Name, attribute);
+		if (effect != null && effect.Kind == "power" && effect.Family != null && effect.Family.StartsWith("persistent", StringComparison.Ordinal))
+		{
+			return Tinker.Common.Rules.GameRules.PowerTriggerFamily(effect.Target);
+		}
+		return null;
+	}
+
 	public static string RiskFamily(CardModel card, string attribute)
 	{
 		string text = card?.GetType().Name;
 		string text2 = AttributeKeys.VarName(attribute);
+		if (SteppedValues.TryGet(card, text2, out SteppedValues.Stepped stepped))
+		{
+			return stepped.Family;
+		}
 		if (attribute == AttributeKeys.Var("IntangiblePower"))
 		{
 			return "intangible";
+		}
+		string trigger = TriggerFamily(card, attribute);
+		if (trigger != null)
+		{
+			return trigger;
 		}
 		if (attribute == AttributeKeys.Var("AfterimagePower") || attribute == AttributeKeys.Var("MetallicizePower") || attribute == AttributeKeys.Var("PlatingPower"))
 		{
@@ -445,9 +483,9 @@ public static class CardAttributes
 
 		if (AttributeKeys.IsVar(attribute) && card.DynamicVars.TryGetValue(AttributeKeys.VarName(attribute), out DynamicVar value2))
 		{
-			return value2.IntValue;
+			return SteppedValues.TryGet(card, AttributeKeys.VarName(attribute), out SteppedValues.Stepped stepped) ? SteppedValues.Units(value2, stepped) : value2.IntValue;
 		}
-		throw new NotSupportedException("Atributo no soportado todavía: " + attribute);
+		throw new NotSupportedException("Attribute not supported yet: " + attribute);
 	}
 
 	public static void ApplyRaw(CardModel card, string attribute, int raw)
@@ -474,14 +512,14 @@ public static class CardAttributes
 		{
 			if (ExpandedEffects.Find(card.GetType().Name, attribute) == null)
 			{
-				throw new InvalidOperationException("Efecto no admitido: " + attribute);
+				throw new InvalidOperationException("Unsupported effect: " + attribute);
 			}
 		}
 		else if (FixedEffects.Known(attribute))
 		{
 			if (!FixedEffects.Supports(card.GetType().Name, attribute))
 			{
-				throw new InvalidOperationException("Efecto no admitido: " + attribute);
+				throw new InvalidOperationException("Unsupported effect: " + attribute);
 			}
 		}
 		else if (attribute == "cost")
@@ -489,7 +527,7 @@ public static class CardAttributes
 			int num = checked(CurrentValue(card, attribute) + raw);
 			if (card.EnergyCost.CostsX || num < 0 || num > 999)
 			{
-				throw new InvalidOperationException($"El cambio {raw:+#;-#} deja el coste fuera de rango en {card.Id}.");
+				throw new InvalidOperationException($"The change {raw:+#;-#} puts the cost out of range on {card.Id}.");
 			}
 			card.EnergyCost.SetCustomBaseCost(num);
 		}
@@ -500,12 +538,15 @@ public static class CardAttributes
 				string text = AttributeKeys.VarName(attribute);
 				if (!card.DynamicVars.TryGetValue(text, out DynamicVar value))
 				{
-					throw new InvalidOperationException($"{card.Id} no tiene la variable {text}.");
+					throw new InvalidOperationException($"{card.Id} has no variable {text}.");
 				}
-				decimal num2 = value.BaseValue + (decimal)raw;
-				if (num2 < (decimal)Minimum(card, attribute) || num2 > 999999999m)
+				// A fractional value moves by its step per unit; its minimum is in units too.
+				bool stepped = SteppedValues.TryGet(card, text, out SteppedValues.Stepped step);
+				decimal num2 = value.BaseValue + (stepped ? raw * step.Step : (decimal)raw);
+				decimal units = stepped ? (num2 - step.Neutral) / step.Step : num2;
+				if (units < (decimal)Minimum(card, attribute) - 0.0001m || num2 > 999999999m)
 				{
-					throw new InvalidOperationException($"El cambio {raw:+#;-#} deja {text} fuera de rango en {card.Id}.");
+					throw new InvalidOperationException($"The change {raw:+#;-#} puts {text} out of range on {card.Id}.");
 				}
 				value.BaseValue = num2;
 				card.DynamicVars.RecalculateForUpgradeOrEnchant();
@@ -518,7 +559,7 @@ public static class CardAttributes
 			}
 			else
 			{
-				ModEntry.Warn($"Atributo {attribute} sin aplicador; se ignora en {card.Id}.");
+				ModEntry.Warn($"Attribute {attribute} has no applier; ignored on {card.Id}.");
 			}
 		}
 	}
@@ -547,7 +588,7 @@ public static class CardAttributes
 				}
 				else if (state.RawDelta(item2) < 0)
 				{
-					throw new InvalidOperationException("Mejora de encantamiento negativa.");
+					throw new InvalidOperationException("Negative enchantment upgrade.");
 				}
 			}
 			else if (EnchantmentEffects.Known(item2))
@@ -558,7 +599,7 @@ public static class CardAttributes
 				}
 				else if (state.RawDelta(item2) < 0)
 				{
-					throw new InvalidOperationException("Mejora de encantamiento negativa.");
+					throw new InvalidOperationException("Negative enchantment upgrade.");
 				}
 			}
 			else if (FixedEffects.Known(item2))
@@ -569,7 +610,7 @@ public static class CardAttributes
 				}
 				else if (FixedEffects.Value(card.GetType().Name, item2, state) < FixedEffects.Native(card.GetType().Name, item2))
 				{
-					throw new InvalidOperationException("Cantidad de efecto fuera de rango: " + item2);
+					throw new InvalidOperationException("Effect amount out of range: " + item2);
 				}
 			}
 			else if (ExpandedEffects.Known(item2))
@@ -582,12 +623,12 @@ public static class CardAttributes
 				BidirectionalEffect bidirectionalEffect = BidirectionalEffects.Find(cardName, item2);
 				if (((bidirectionalEffect != null) ? ProjectedBase(bidirectionalEffect) : ExpandedEffectPatches.Native(card, ExpandedEffects.Find(cardName, item2))) + BidirectionalEffects.RawDelta(cardName, item2, state) < Minimum(card, item2))
 				{
-					throw new InvalidOperationException("Cantidad de efecto fuera de rango: " + item2);
+					throw new InvalidOperationException("Effect amount out of range: " + item2);
 				}
 				BidirectionalEffect bidirectionalEffect2 = BidirectionalEffects.Find(cardName, item2);
 				if (((bidirectionalEffect2 != null) ? ProjectedBase(bidirectionalEffect2) : ExpandedEffectPatches.Native(card, ExpandedEffects.Find(cardName, item2))) + BidirectionalEffects.RawDelta(cardName, item2, state) > ((ExpandedEffects.Find(cardName, item2)?.Kind == "chooseGenerated") ? ExpandedEffects.Maximum(item2) : Maximum(card, item2)))
 				{
-					throw new InvalidOperationException("Cantidad de efecto sobre el máximo: " + item2);
+					throw new InvalidOperationException("Effect amount over the maximum: " + item2);
 				}
 			}
 			else
@@ -607,14 +648,14 @@ public static class CardAttributes
 				if (!AttributeKeys.IsVar(item2) || (HasRewrittenBaseValue(card) && (!(AttributeKeys.VarName(item2) == "Increase") || (!(card is GeneticAlgorithm) && !(card is TheScythe))) && !RewrittenCardValues.Owns(card, item2)))
 				{
 					state.RemoveAttribute(item2);
-					ModEntry.Warn($"{card.Id}: se descarta el atributo {item2} porque esta versión no puede mantenerlo.");
+					ModEntry.Warn($"{card.Id}: dropping attribute {item2} because this version can't keep it.");
 					continue;
 				}
 				string key = AttributeKeys.VarName(item2);
 				if (!card.DynamicVars.TryGetValue(key, out DynamicVar value))
 				{
 					state.RemoveAttribute(item2);
-					ModEntry.Warn($"{card.Id}: se descarta el atributo {item2} ausente en la carta.");
+					ModEntry.Warn($"{card.Id}: dropping attribute {item2}, which the card doesn't have.");
 				}
 				else
 				{
@@ -633,7 +674,7 @@ public static class CardAttributes
 				int num = checked(CurrentValue(card, key3) + state.RawDelta(key3));
 				if (num < 0 || num > 999)
 				{
-					throw new InvalidOperationException($"{card.Id}: coste fuera de rango al reconstruir la carta.");
+					throw new InvalidOperationException($"{card.Id}: cost out of range when rebuilding the card.");
 				}
 			}
 			else if (AttributeKeys.IsVar(key3))
@@ -643,7 +684,7 @@ public static class CardAttributes
 				decimal num2 = (RewrittenCardValues.Owns(card, key3) ? ((decimal)RewrittenCardValues.Native(card)) : dynamicVar.BaseValue) + (decimal)BidirectionalEffects.RawDelta(cardName, key3, state);
 				if (num2 < (decimal)Minimum(card, key3) || num2 > 999999999m)
 				{
-					throw new InvalidOperationException($"{card.Id}: {key3} queda fuera de rango al reconstruir la carta.");
+					throw new InvalidOperationException($"{card.Id}: {key3} out of range when rebuilding the card.");
 				}
 			}
 		}

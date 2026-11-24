@@ -37,6 +37,15 @@ times its base gets very expensive (Strength 2 → 10: the next +1 costs about 2
 The categories' numbers come from the original roulette, where the same curve set a success chance with a
 3 % floor. That chance, its floor and its cap are gone (1.6.0): prices come straight from the curve.
 
+## Which values can be upgraded
+
+Decided at run time by the rule engine (`src/Common/Rules`): it reads each card's and relic's compiled code
+and applies generic rules (the game's own upgrade direction, thresholds, values that hurt you, value types,
+buffs and debuffs, values that are never read or only read on pickup). Hand-written overrides
+(`VarDirections.Overrides` for cards, `Catalog` overrides for relics) cover what the rules get wrong or can't
+tell, cost categories that differ from the default, and fractional values, which are bought in steps of
+0.01. Rules and overrides are listed in [ADDING_CARDS_AND_RELICS.md](ADDING_CARDS_AND_RELICS.md).
+
 ## Traits and boons
 
 Bought directly in the Workshop's right-hand panel, at a fixed price: *Trait price* (default 150 gold) for

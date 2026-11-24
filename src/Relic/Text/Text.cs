@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using Godot;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Localization.Fonts;
+using Tinker.Common;
 
 namespace Tinker.Relic;
 
@@ -12,9 +13,7 @@ public static class Text
 {
 	public static string Language => Lang.Current;
 
-	public static bool Spanish => Lang.IsSpanish(Language);
-
-	public static string T(string spanish, string english, bool? isSpanish = null) => Lang.T(spanish, english, isSpanish);
+	public static string T(string english) => Lang.T(english);
 
 	public static void Install(LocManager? manager = null)
 	{
@@ -33,8 +32,7 @@ public static class Text
 				["RELICUPGRADER_REWARD"] = "{label}",
 				["RELICUPGRADER_DESCRIPTION"] = "{original}\n\n{details}"
 			});
-			bool spanish = Spanish;
-			manager.GetTable("settings_ui").MergeWith(Lang.Zh(ConfigText.Values(spanish), manager.Language));
+			manager.GetTable("settings_ui").MergeWith(Lang.T(ConfigText.Values(), manager.Language));
 		}
 	}
 
@@ -44,83 +42,105 @@ public static class Text
 		switch (key)
 		{
 		case "Heal":
-			return T("Curación", "Healing");
+			return T("Healing");
 		case "Block":
 		case "BlockNextTurn":
-			return T("Bloqueo", "Block");
+			return T("Block");
 		case "Damage":
 		case "ExtraDamage":
-			return T("Daño", "Damage");
+			return T("Damage");
 		case "Cards":
-			return T("Cartas", "Cards");
+			return T("Cards");
 		case "Energy":
 		case "GainEnergy":
-			return T("Energía", "Energy");
+			return T("Energy");
 		case "DamageThreshold":
-			return T("Daño mínimo por golpe", "Damage needed in one hit");
+			return T("Damage needed in one hit");
+		case "MaxHpLoss":
+			return T("Max HP lost per turn");
+		case "NimbleAmount":
+			return T("Nimble on rewards");
+		case "SwiftAmount":
+			return T("Swift on rewards");
+		case "Relics":
+			return T("Extra relics");
+		case "Elites":
+			return T("Elites required");
+		case "Dark":
+			return T("Dark orbs");
+		case "DamageMinimum":
+			return T("Minimum damage");
+		case "GoldIncrease":
+			return T("Gold multiplier");
+		case "DamageDecrease":
+			return T("Damage taken (lethal Doom)");
+		case "VulnerableBonus":
+			return T("Extra damage vs Vulnerable");
+		case "WeakReduction":
+			return T("Extra Weak reduction");
 		case "EnergyThreshold":
-			return T("Umbral de energía", "Energy threshold");
+			return T("Energy threshold");
 		case "LoseEnergy":
-			return T("Energía perdida", "Energy lost");
+			return T("Energy lost");
 		case "AimPower":
-			return T("Puntería", "Aim");
+			return T("Aim");
 		case "EndOfTurnAim":
-			return T("Puntería al final del turno", "End-of-turn Aim");
+			return T("End-of-turn Aim");
 		case "StretchPower":
-			return T("Estiramiento", "Stretch");
+			return T("Stretch");
 		case "StrengthPower":
 		case "SelfStrength":
-			return T("Fuerza", "Strength");
+			return T("Strength");
 		case "EnemyStrength":
-			return T("Fuerza enemiga", "Enemy strength");
+			return T("Enemy strength");
 		case "DexterityPower":
-			return T("Destreza", "Dexterity");
+			return T("Dexterity");
 		case "FocusPower":
-			return T("Concentración", "Focus");
+			return T("Focus");
 		case "VigorPower":
-			return T("Vigor", "Vigor");
+			return T("Vigor");
 		case "ThornsPower":
-			return T("Espinas", "Thorns");
+			return T("Thorns");
 		case "PlatingPower":
-			return T("Blindaje", "Plating");
+			return T("Plating");
 		case "VulnerablePower":
-			return T("Vulnerable", "Vulnerable");
+			return T("Vulnerable");
 		case "WeakPower":
-			return T("Débil", "Weak");
+			return T("Weak");
 		case "PoisonPower":
-			return T("Veneno", "Poison");
+			return T("Poison");
 		case "Gold":
-			return T("Oro", "Gold");
+			return T("Gold");
 		case "MaxHp":
-			return T("PV máximos", "Max HP");
+			return T("Max HP");
 		case "Stars":
-			return T("Estrellas", "Stars");
+			return T("Stars");
 		case "Turns":
 		case "DamageTurn":
-			return T("Turnos necesarios", "Turns required");
+			return T("Turns required");
 		case "OrbCount":
-			return T("Orbes necesarios", "Orbs required");
+			return T("Orbs required");
 		case "ExhaustAmount":
-			return T("Cartas agotadas necesarias", "Exhausts required");
+			return T("Exhausts required");
 		case "Discount":
-			return T("Descuento (%)", "Discount (%)");
+			return T("Discount (%)");
 		case "HpThreshold":
-			return T("Umbral de vida (%)", "HP threshold (%)");
+			return T("HP threshold (%)");
 		case "HpLossReduction":
-			return T("Reducción de daño", "Damage reduction");
+			return T("Damage reduction");
 		case "Lightning":
-			return T("Rayos", "Lightning");
+			return T("Lightning");
 		case "Shivs":
-			return T("Dagas", "Shivs");
+			return T("Shivs");
 		case "Repeat":
-			return T("Espacios de orbe", "Orb slots");
+			return T("Orb slots");
 		case "Increase":
-			return T("Aumento de X", "X bonus");
+			return T("X bonus");
 		case "Summon":
 		case "StartOfTurn":
-			return T("Invocación", "Summon");
+			return T("Summon");
 		case "StartOfCombat":
-			return T("Invocación inicial", "Starting summon");
+			return T("Starting summon");
 		default:
 			return key;
 		}

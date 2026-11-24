@@ -275,7 +275,6 @@ internal sealed class Config : SimpleModConfig
         _container = container;
 
         MegaRichTextLabel note = ModConfig.CreateRawLabelControl(Lang.T(
-            "Los precios del taller salen de la dificultad y del oro por mejora. Las reglas de las reliquias se guardan con cada partida, así que sus cambios se aplican a partidas nuevas. En cooperativo manda el anfitrión.",
             "Workshop prices come from the difficulty and the gold per upgrade. Relic rules are saved with each run, so changes to them apply to new runs. Co-op uses the host's settings."), 23);
         note.AutowrapMode = TextServer.AutowrapMode.WordSmart;
         note.CustomMinimumSize = new Vector2(700f, 80f);

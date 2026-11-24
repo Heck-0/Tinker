@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Models;
+using Tinker.Common;
 
 namespace Tinker.Card;
 
@@ -10,26 +11,18 @@ public static class Lines
 {
 	private static readonly Dictionary<string, string> PowerTitles = new Dictionary<string, string>();
 
-	public static bool Spanish => Lang.Spanish;
+	public static string Before => T("Before");
 
-	public static string Before => T("Antes", "Before");
+	public static string After => T("After");
 
-	public static string After => T("Después", "After");
+	public static string PropertyNone => T("None fit this card");
 
-	public static string PropertyNone => T("Ninguna le sirve a esta carta", "None fit this card");
+	public static string TraitsOff => T("Traits are turned off in the settings");
 
-	public static string TraitsOff => T("Propiedades desactivadas en los ajustes", "Traits are turned off in the settings");
-
-	public static bool IsSpanish(string language) => Lang.IsSpanish(language);
-
-	private static string T(string es, string en) => Lang.T(es, en);
+	private static string T(string en) => Lang.T(en);
 
 	public static string Pct(int percent)
 	{
-		if (Spanish)
-		{
-			return $"{percent} %";
-		}
 		return $"{percent}%";
 	}
 
@@ -38,24 +31,24 @@ public static class Lines
 		switch (attribute)
 		{
 		case "effect:lightning":
-			return T("Orbes de Rayo", "Lightning orbs");
+			return T("Lightning orbs");
 		case "effect:frost":
-			return T("Orbes de Escarcha", "Frost orbs");
+			return T("Frost orbs");
 		case "effect:dark":
-			return T("Orbes de Oscuridad", "Dark orbs");
+			return T("Dark orbs");
 		case "effect:plasma":
-			return T("Orbes de Plasma", "Plasma orbs");
+			return T("Plasma orbs");
 		case "effect:frostPerEnemy":
-			return T("Escarcha por enemigo", "Frost per enemy");
+			return T("Frost per enemy");
 		case "effect:evokes":
-			return T("Descargas del orbe", "Orb evocations");
+			return T("Orb evocations");
 		case "effect:extraEvokes":
-			return T("Descargas adicionales", "Extra evocations");
+			return T("Extra evocations");
 		default:
 		{
 			if (attribute == "cost")
 			{
-				return T("Coste", "Cost");
+				return T("Cost");
 			}
 			string text = AttributeKeys.VarName(attribute);
 			if (text == null)
@@ -72,125 +65,125 @@ public static class Lines
 		switch (key)
 		{
 		case "Damage":
-			return T("Daño", "Damage");
+			return T("Damage");
 		case "Block":
-			return T("Bloqueo", "Block");
+			return T("Block");
 		case "Cards":
-			return T("Cartas", "Cards");
+			return T("Cards");
 		case "Energy":
-			return T("Energía", "Energy");
+			return T("Energy");
 		case "HpLoss":
-			return T("Pérdida de PV", "HP loss");
+			return T("HP loss");
 		case "Heal":
-			return T("Curación", "Heal");
+			return T("Heal");
 		case "Gold":
-			return T("Oro", "Gold");
+			return T("Gold");
 		case "MaxHp":
-			return T("PV máximos", "Max HP");
+			return T("Max HP");
 		case "Stars":
-			return T("Estrellas", "Stars");
+			return T("Stars");
 		case "Summon":
-			return T("Invocación", "Summon");
+			return T("Summon");
 		case "Forge":
-			return T("Forja", "Forge");
+			return T("Forge");
 		case "Repeat":
-			return T("Repeticiones", "Repeats");
+			return T("Repeats");
 		case "Sadness":
-			return T("Tristeza añadida", "Sadness added");
+			return T("Sadness added");
 		case "Joy":
-			return T("Cartas de Alegría", "Joy cards");
+			return T("Joy cards");
 		case "OnKillDamage":
-			return T("Daño al matar", "Damage on kill");
+			return T("Damage on kill");
 		case "AimMultiplier":
-			return T("Multiplicador de Puntería", "Aim multiplier");
+			return T("Aim multiplier");
 		case "BaseAim":
-			return T("Puntería base", "Base Aim");
+			return T("Base Aim");
 		case "HitCount":
-			return T("Golpes", "Hits");
+			return T("Hits");
 		case "ExtraDamage":
-			return T("Daño extra", "Extra damage");
+			return T("Extra damage");
 		case "OstyDamage":
-			return T("Daño de Osty", "Osty damage");
+			return T("Osty damage");
 		case "CalculationBase":
-			return T("Valor base", "Base value");
+			return T("Base value");
 		case "CalculationExtra":
-			return T("Valor por cada", "Value per");
+			return T("Value per");
 		case "Accelerant":
-			return T("Activaciones del Veneno", "Poison triggers");
+			return T("Poison triggers");
 		case "Attacks":
-			return T("Ataques repetidos", "Attacks repeated");
+			return T("Attacks repeated");
 		case "BlockForStars":
-			return T("Bloqueo por estrella", "Block per star");
+			return T("Block per star");
 		case "BlockNextTurn":
-			return T("Bloqueo del turno siguiente", "Next turn Block");
+			return T("Next turn Block");
 		case "BlockOnExhaust":
-			return T("Bloqueo por carta Etérea", "Block per Ethereal card");
+			return T("Block per Ethereal card");
 		case "BombDamage":
-			return T("Daño de la bomba", "Bomb damage");
+			return T("Bomb damage");
 		case "ChokingDamage":
-			return T("Daño de asfixia", "Choking damage");
+			return T("Choking damage");
 		case "CorrosiveWave":
-			return T("Veneno por robo", "Poison per draw");
+			return T("Poison per draw");
 		case "CreativeAi":
-			return T("Poderes por turno", "Powers per turn");
+			return T("Powers per turn");
 		case "CuriousReduction":
-			return T("Rebaja de coste", "Cost reduction");
+			return T("Cost reduction");
 		case "DamageBack":
-			return T("Daño devuelto", "Damage back");
+			return T("Damage back");
 		case "EchoForm":
-			return T("Cartas repetidas", "Cards repeated");
+			return T("Cards repeated");
 		case "EnemyStrength":
-			return T("Fuerza del enemigo", "Enemy Strength");
+			return T("Enemy Strength");
 		case "EnemyStrengthLoss":
-			return T("Fuerza que pierde el enemigo", "Enemy Strength loss");
+			return T("Enemy Strength loss");
 		case "StrengthLoss":
-			return T("Fuerza que pierde el enemigo", "Enemy Strength loss");
+			return T("Enemy Strength loss");
 		case "PlayerStrengthLoss":
-			return T("Fuerza que pierdes", "Strength you lose");
+			return T("Strength you lose");
 		case "EnergizedEnergy":
-			return T("Energía", "Energy");
+			return T("Energy");
 		case "ExpertiseDexterity":
-			return T("Destreza", "Dexterity");
+			return T("Dexterity");
 		case "ExpertiseStrength":
-			return T("Fuerza", "Strength");
+			return T("Strength");
 		case "ExtraBlock":
-			return T("Bloqueo extra", "Extra Block");
+			return T("Extra Block");
 		case "ExtraCost":
-			return T("Coste extra", "Extra cost");
+			return T("Extra cost");
 		case "Frail":
-			return T("Frágil", "Frail");
+			return T("Frail");
 		case "SappingVulnerable":
-			return T("Vulnerable", "Vulnerable");
+			return T("Vulnerable");
 		case "SappingWeak":
-			return T("Débil", "Weak");
+			return T("Weak");
 		case "Increase":
-			return T("Aumento de daño", "Damage increase");
+			return T("Damage increase");
 		case "Loop":
-			return T("Activaciones del orbe", "Orb triggers");
+			return T("Orb triggers");
 		case "OrbSlots":
-			return T("Huecos de orbe perdidos", "Orb slots lost");
+			return T("Orb slots lost");
 		case "PanacheDamage":
-			return T("Daño a todos", "Damage to all");
+			return T("Damage to all");
 		case "PlayMax":
-			return T("Límite de cartas", "Card limit");
+			return T("Card limit");
 		case "PoisonPerTurn":
-			return T("Veneno por turno", "Poison per turn");
+			return T("Poison per turn");
 		case "Replay":
-			return T("Repetición", "Replay");
+			return T("Replay");
 		case "Shivs":
-			return T("Navajas", "Shivs");
+			return T("Shivs");
 		case "Skills":
-			return T("Habilidades repetidas", "Skills repeated");
+			return T("Skills repeated");
 		case "StarsPerTurn":
-			return T("Estrellas por turno", "Stars per turn");
+			return T("Stars per turn");
 		case "Turns":
-			return T("Turnos", "Turns");
+			return T("Turns");
 		case "ViolenceHits":
-			return T("Golpes", "Hits");
+			return T("Hits");
 		case "WisdomCards":
-			return T("Cartas", "Cards");
+			return T("Cards");
 		case "Power":
-			return T("Cantidad", "Amount");
+			return T("Amount");
 		default:
 			if (key.EndsWith("Power", StringComparison.Ordinal))
 			{
@@ -225,7 +218,7 @@ public static class Lines
 	}
 	public static string PropertyAlready(string name)
 	{
-		return T("Ya tiene " + name, "Has " + name);
+		return T("Has " + name);
 	}
 
 }

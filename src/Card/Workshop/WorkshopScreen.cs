@@ -211,10 +211,10 @@ internal sealed class WorkshopScreen
 		BuildParchment();
 		GoldOutline(_canvas, LeftSlotCenter, SlotSize, 14f, 3f);
 		GoldOutline(_canvas, RightSlotCenter, SlotSize, 14f, 3f);
-		PlaceCentered(MakeLabel(40, Ink, Lang.T("Taller", "Workshop")), new Vector2(735f, 90f), new Vector2(660f, 56f));
+		PlaceCentered(MakeLabel(40, Ink, Lang.T("Workshop")), new Vector2(735f, 90f), new Vector2(660f, 56f));
 		PlaceCentered(MakeLabel(27, Ink, Lines.Before), new Vector2(LeftSlotCenter.X, 122f), new Vector2(260f, 37f));
 		PlaceCentered(MakeLabel(27, Ink, Lines.After), new Vector2(RightSlotCenter.X, 122f), new Vector2(260f, 37f));
-		_leftHint = MakeLabel(26, Ink, Lang.T("Elige una carta o una reliquia", "Pick a card or a relic"));
+		_leftHint = MakeLabel(26, Ink, Lang.T("Pick a card or a relic"));
 		PlaceCentered(_leftHint, LeftSlotCenter, new Vector2(SlotSize.X - 30f, 120f));
 		_rightHint = MakeLabel(40, Ink, "?");
 		PlaceCentered(_rightHint, RightSlotCenter, new Vector2(SlotSize.X - 30f, 120f));
@@ -353,7 +353,7 @@ internal sealed class WorkshopScreen
 		ColorRect panel = BluePanel(new Vector2(1505f, 612f), new Vector2(240f, 456f), 12f);
 		_canvas.AddChild(panel, forceReadableName: false, Node.InternalMode.Disabled);
 		GoldOutline(panel, new Vector2(120f, 228f), new Vector2(226f, 442f), 10f, 2f);
-		Label heading = MakeLabel(22, Ink, Lang.T("Reliquias", "Relics"));
+		Label heading = MakeLabel(22, Ink, Lang.T("Relics"));
 		heading.HorizontalAlignment = HorizontalAlignment.Center;
 		heading.Position = new Vector2(0f, 12f);
 		heading.Size = new Vector2(240f, 30f);
@@ -402,7 +402,7 @@ internal sealed class WorkshopScreen
 		}
 		if (_relicRows.Count == 0)
 		{
-			Label none = MakeLabel(16, FadedInk, Lang.T("Ninguna reliquia se puede mejorar.", "None of your relics can be upgraded."));
+			Label none = MakeLabel(16, FadedInk, Lang.T("None of your relics can be upgraded."));
 			none.AutowrapMode = TextServer.AutowrapMode.WordSmart;
 			none.HorizontalAlignment = HorizontalAlignment.Center;
 			none.CustomMinimumSize = new Vector2(204f, 80f);
@@ -418,7 +418,7 @@ internal sealed class WorkshopScreen
 		_back.Enable();
 		if (cards.Count == 0 && _relicRows.Count == 0)
 		{
-			_leftHint.Text = Lang.T("Nada se puede mejorar todavía.", "Nothing can be upgraded yet.");
+			_leftHint.Text = Lang.T("Nothing can be upgraded yet.");
 		}
 		Refresh();
 		try
@@ -434,7 +434,7 @@ internal sealed class WorkshopScreen
 		}
 		catch (Exception ex)
 		{
-			ModEntry.Warn("No se pudo volver a elegir la carta o reliquia: " + ex.Message);
+			ModEntry.Warn("Could not reselect the card or relic: " + ex.Message);
 		}
 		return _choice.Task;
 	}
@@ -606,7 +606,7 @@ internal sealed class WorkshopScreen
 		Tinker.Relic.RelicAttribute attribute = _relicOptions[_attributeIndex];
 		ResolveSpend();
 		decimal before = attribute.Value(_relic);
-		decimal after = before + attribute.Direction * _units;
+		decimal after = attribute.After(before, _units);
 		_attributeLabel.Text = attribute.Label;
 		_attributeLabel.AddThemeColorOverride("font_color", Ink);
 		ShowSpend($"{before} → {after}", attribute.Direction);
@@ -622,7 +622,7 @@ internal sealed class WorkshopScreen
 		_centerBig.Text = change;
 		_centerBig.AddThemeColorOverride("font_color", Ink);
 		_amountLabel.Text = ((sign < 0) ? "−" : "+") + _units;
-		_costLabel.Text = (_spend == int.MaxValue) ? Lang.T("Demasiado caro", "Too expensive") : Lang.T($"{_spend:N0} de oro", $"{_spend:N0} gold");
+		_costLabel.Text = (_spend == int.MaxValue) ? Lang.T("Too expensive") : Lang.T($"{_spend:N0} gold");
 		_costLabel.AddThemeColorOverride("font_color", affordable ? AffordableInk : UnaffordableInk);
 		if (affordable)
 		{
@@ -636,8 +636,7 @@ internal sealed class WorkshopScreen
 
 	private IHoverTip PriceTip()
 	{
-		return LegendTips.Make(Lang.T("Precio", "Price"), Lang.T(
-			"Lo que cuesta esta mejora: verde si te llega el oro, rojo si no. Las mejoras grandes, y las de cartas o reliquias ya mejoradas, cuestan más.",
+		return LegendTips.Make(Lang.T("Price"), Lang.T(
 			"What this upgrade costs: green if you have enough gold, red if not. Bigger upgrades, and upgrades on cards or relics that are already upgraded, cost more."));
 	}
 
@@ -712,7 +711,7 @@ internal sealed class WorkshopScreen
 		}
 		catch (Exception ex)
 		{
-			ModEntry.Warn("No se pudo leer el papel del mapa: " + ex.Message);
+			ModEntry.Warn("Could not read the map paper: " + ex.Message);
 			Image image2 = Image.CreateEmpty(4, 4, useMipmaps: false, Image.Format.Rgba8);
 			image2.Fill(new Color(0.75f, 0.75f, 0.75f));
 			_paperGrain = ImageTexture.CreateFromImage(image2);
@@ -905,7 +904,7 @@ internal sealed class WorkshopScreen
 		}
 		catch (Exception ex)
 		{
-			ModEntry.Warn("No se pudo previsualizar la reliquia mejorada: " + ex.Message);
+			ModEntry.Warn("Could not preview the upgraded relic: " + ex.Message);
 			return relic;
 		}
 	}
@@ -933,14 +932,14 @@ internal sealed class WorkshopScreen
 		}
 		else
 		{
-			_extrasHeading.Text = Lang.T("Propiedades y bufos", "Traits and boons");
-			_extrasLine.Text = Lang.T("Elige una carta o una reliquia", "Pick a card or a relic");
+			_extrasHeading.Text = Lang.T("Traits and boons");
+			_extrasLine.Text = Lang.T("Pick a card or a relic");
 		}
 	}
 
 	private void RefreshTraits()
 	{
-		_extrasHeading.Text = Lang.T("Propiedades", "Traits");
+		_extrasHeading.Text = Lang.T("Traits");
 		ExceptionalDefinition owned = ExceptionalEffects.PropertyOf(_card);
 		if (owned != null)
 		{
@@ -973,18 +972,18 @@ internal sealed class WorkshopScreen
 
 	private void RefreshBoons()
 	{
-		_extrasHeading.Text = Lang.T("Bufos", "Boons");
+		_extrasHeading.Text = Lang.T("Boons");
 		string owned = Tinker.Relic.Store.For(_relic).Boon;
 		if (owned != null)
 		{
 			string name = Tinker.Relic.Boons.Name(owned);
-			ShowOwned(Lang.T("Tiene el bufo " + name + ".", "Has the " + name + " boon."), Tinker.Relic.Boons.Description(owned));
+			ShowOwned(Lang.T("Has the " + name + " boon."), Tinker.Relic.Boons.Description(owned));
 			return;
 		}
 		string[] forSale = Tinker.Relic.Boons.ForSale(_relic);
 		if (forSale.Length == 0)
 		{
-			_extrasLine.Text = Lang.T("Bufos desactivados en los ajustes", "Boons are turned off in the settings");
+			_extrasLine.Text = Lang.T("Boons are turned off in the settings");
 			return;
 		}
 		int price = WorkshopOptions.BoonPrice;
@@ -1011,7 +1010,7 @@ internal sealed class WorkshopScreen
 	/// <summary>The price line above the buttons: green if the player can afford one, red if not.</summary>
 	private void ShowEachPrice(int price)
 	{
-		_extrasLine.Text = Lang.T($"{price:N0} de oro cada una", $"{price:N0} gold each");
+		_extrasLine.Text = Lang.T($"{price:N0} gold each");
 		_extrasLine.AddThemeColorOverride("font_color", (price <= _gold) ? AffordableInk : UnaffordableInk);
 	}
 
@@ -1200,7 +1199,7 @@ internal sealed class WorkshopScreen
 		CardStateStore.Set(cardModel, cardMachineState);
 		if (AttributeKeys.IsVar(Attribute) && cardModel.DynamicVars.TryGetValue(AttributeKeys.VarName(Attribute), out DynamicVar value))
 		{
-			value.UpgradeValueBy(num);
+			value.UpgradeValueBy(SteppedValues.TryGet(cardModel, AttributeKeys.VarName(Attribute), out SteppedValues.Stepped stepped) ? num * stepped.Step : num);
 		}
 		else if (Attribute == "cost")
 		{

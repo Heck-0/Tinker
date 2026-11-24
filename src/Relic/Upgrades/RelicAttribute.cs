@@ -4,8 +4,27 @@ using MegaCrit.Sts2.Core.Models;
 
 namespace Tinker.Relic;
 
-public sealed record RelicAttribute(string Key, string Family, int Direction = 1, int Maximum = 10000, string? LabelKey = null)
+/// <summary>
+/// An upgradable relic value. Most count in whole units; a fraction (a multiplier like Bowler Hat's ×1.25) moves
+/// by <see cref="Step"/> per unit, and its price counts units from <see cref="Neutral"/>, the "no effect" value.
+/// </summary>
+public sealed record RelicAttribute(string Key, string Family, int Direction = 1, decimal Maximum = 10000m, string? LabelKey = null)
 {
+	/// <summary>How much one unit changes the value.</summary>
+	public decimal Step { get; init; } = 1m;
+
+	/// <summary>The value that means "no effect": prices measure the value's distance from it, in units.</summary>
+	public decimal Neutral { get; init; }
+
+	/// <summary>The lowest value (for "lower is better" values, and the save check).</summary>
+	public decimal Minimum { get; init; } = 1m;
+
+	/// <summary>The value as the price formula's reference: units away from <see cref="Neutral"/>.</summary>
+	public decimal PriceReference(decimal value) => Math.Abs(value - Neutral) / Step;
+
+	/// <summary>The value after buying <paramref name="units"/> units.</summary>
+	public decimal After(decimal value, int units) => value + Direction * units * Step;
+
 
 	public string Label
 	{
@@ -29,29 +48,28 @@ public sealed record RelicAttribute(string Key, string Family, int Direction = 1
 										{
 											return Text.Attribute(Key);
 										}
-										return Text.T("Duración (turnos)", "Duration (turns)");
+										return Text.T("Duration (turns)");
 									}
-									return Text.T("Daño propio", "Self damage");
+									return Text.T("Self damage");
 								}
-								return Text.T("Cartas necesarias", "Cards required");
+								return Text.T("Cards required");
 							}
-							return Text.T("Energía necesaria", "Energy required");
+							return Text.T("Energy required");
 						}
-						return Text.T("Oro pagado", "Gold paid");
+						return Text.T("Gold paid");
 					}
-					return Text.T("Estrellas necesarias", "Stars required");
+					return Text.T("Stars required");
 				}
-				return Text.T("Precio (%)", "Price (%)");
+				return Text.T("Price (%)");
 			}
-			return Text.T("Cartas no robadas", "Cards lost");
+			return Text.T("Cards lost");
 		}
 	}
 
 	public int Limit(RelicModel relic)
 	{
 		decimal baseValue = relic.DynamicVars[Key].BaseValue;
-
-		return (int)Math.Max(0m, (Direction < 0) ? (baseValue - 1m) : ((decimal)Maximum - baseValue));
+		return (int)Math.Max(0m, Math.Floor(((Direction < 0) ? (baseValue - Minimum) : (Maximum - baseValue)) / Step));
 	}
 
 	public decimal Value(RelicModel relic)
