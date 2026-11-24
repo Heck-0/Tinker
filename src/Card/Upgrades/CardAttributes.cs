@@ -171,7 +171,7 @@ public static class CardAttributes
 				{
 					yield return AttributeKeys.Var(key);
 				}
-				else if (num < 0 && card.DynamicVars[key].IntValue > Minimum(card, AttributeKeys.VarDown(key)))
+				else if (num < 0 && CurrentValue(card, AttributeKeys.VarDown(key)) > Minimum(card, AttributeKeys.VarDown(key)))
 				{
 					yield return AttributeKeys.VarDown(key);
 				}
@@ -204,6 +204,10 @@ public static class CardAttributes
 	public static int Minimum(CardModel card, string attribute)
 	{
 		string text = AttributeKeys.VarName(attribute);
+		if (SteppedValues.TryGet(card, text, out SteppedValues.Stepped stepped))
+		{
+			return stepped.MinUnits;
+		}
 		if (!(text == "Turns") && !(text == "DoomThreshold"))
 		{
 			switch (attribute)
@@ -243,6 +247,10 @@ public static class CardAttributes
 	{
 		string text = card?.GetType().Name;
 		string text2 = AttributeKeys.VarName(attribute);
+		if (SteppedValues.TryGet(card, text2, out SteppedValues.Stepped stepped))
+		{
+			return stepped.Family;
+		}
 		if (attribute == AttributeKeys.Var("IntangiblePower"))
 		{
 			return "intangible";
@@ -445,7 +453,7 @@ public static class CardAttributes
 
 		if (AttributeKeys.IsVar(attribute) && card.DynamicVars.TryGetValue(AttributeKeys.VarName(attribute), out DynamicVar value2))
 		{
-			return value2.IntValue;
+			return SteppedValues.TryGet(card, AttributeKeys.VarName(attribute), out SteppedValues.Stepped stepped) ? SteppedValues.Units(value2, stepped) : value2.IntValue;
 		}
 		throw new NotSupportedException("Atributo no soportado todavía: " + attribute);
 	}
@@ -502,8 +510,11 @@ public static class CardAttributes
 				{
 					throw new InvalidOperationException($"{card.Id} no tiene la variable {text}.");
 				}
-				decimal num2 = value.BaseValue + (decimal)raw;
-				if (num2 < (decimal)Minimum(card, attribute) || num2 > 999999999m)
+				// A fractional value moves by its step per unit; its minimum is in units too.
+				bool stepped = SteppedValues.TryGet(card, text, out SteppedValues.Stepped step);
+				decimal num2 = value.BaseValue + (stepped ? raw * step.Step : (decimal)raw);
+				decimal units = stepped ? (num2 - step.Neutral) / step.Step : num2;
+				if (units < (decimal)Minimum(card, attribute) - 0.0001m || num2 > 999999999m)
 				{
 					throw new InvalidOperationException($"El cambio {raw:+#;-#} deja {text} fuera de rango en {card.Id}.");
 				}

@@ -31,7 +31,7 @@ public static class Evolution
 			string text = key;
 			UpgradeLedger upgradeLedger = value2;
 			string target = ((text == value.Item2) ? value.Item3 : text);
-			RelicAttribute relicAttribute = Catalog.Supported.GetValueOrDefault(value.Item1)?.FirstOrDefault((RelicAttribute a) => a.Key == target);
+			RelicAttribute relicAttribute = Catalog.Find(next, target);
 			if (relicAttribute == null || !next.DynamicVars.ContainsKey(target))
 			{
 				throw new InvalidOperationException("Unmapped relic evolution attribute " + text);

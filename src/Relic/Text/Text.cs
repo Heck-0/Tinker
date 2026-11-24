@@ -58,6 +58,14 @@ public static class Text
 			return T("Energía", "Energy");
 		case "DamageThreshold":
 			return T("Daño mínimo por golpe", "Damage needed in one hit");
+		case "GoldIncrease":
+			return T("Multiplicador de oro", "Gold multiplier");
+		case "DamageDecrease":
+			return T("Daño recibido (Condena letal)", "Damage taken (lethal Doom)");
+		case "VulnerableBonus":
+			return T("Daño extra contra Vulnerable", "Extra damage vs Vulnerable");
+		case "WeakReduction":
+			return T("Reducción extra de Débil", "Extra Weak reduction");
 		case "EnergyThreshold":
 			return T("Umbral de energía", "Energy threshold");
 		case "LoseEnergy":

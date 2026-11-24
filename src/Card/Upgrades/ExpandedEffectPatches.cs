@@ -1186,6 +1186,10 @@ internal static class ExpandedEffectPatches
 
 	internal static string DisplayValue(CardModel card, string attribute, int value)
 	{
+		if (AttributeKeys.IsVar(attribute) && SteppedValues.TryGet(card, AttributeKeys.VarName(attribute), out SteppedValues.Stepped stepped))
+		{
+			return SteppedValues.Display(stepped, value);
+		}
 		ExpandedEffect expandedEffect = ExpandedEffects.Find(card.GetType().Name, attribute);
 		return FinalCardEffects.DisplayValue(attribute, (expandedEffect == null) ? value : TextValue(card, expandedEffect, value));
 	}

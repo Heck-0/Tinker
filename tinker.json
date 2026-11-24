@@ -3,7 +3,7 @@
   "name": "Tinker",
   "author": "Card Upgrader + Relic Upgrader (combined local build)",
   "description": "Tinker (formerly Upgrader Combined): Card Upgrader 0.9.2 and Relic Upgrader 0.5.1 in one mod, rebuilt for game v0.113.0. Disable the separate Card Upgrader, Relic Upgrader and Upgrader Combined mods while this is enabled.",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "has_dll": true,
   "has_pck": false,
   "affects_gameplay": true,

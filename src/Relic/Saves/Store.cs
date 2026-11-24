@@ -96,13 +96,13 @@ public static class Store
 			upgrade.Deconstruct(out var key, out var value);
 			string key2 = key;
 			UpgradeLedger upgradeLedger = value;
-			RelicAttribute relicAttribute = Catalog.Supported.GetValueOrDefault(relic.GetType().Name)?.FirstOrDefault((RelicAttribute a) => a.Key == key2);
+			RelicAttribute relicAttribute = Catalog.Find(relic, key2);
 			if (relicAttribute == null || relicAttribute.Direction != upgradeLedger.Direction || relicAttribute.Family != upgradeLedger.Family || !relic.DynamicVars.TryGetValue(key2, out DynamicVar value2))
 			{
 				throw new FormatException("Unknown upgraded relic attribute " + key2);
 			}
-			decimal num = upgradeLedger.Reference + (decimal)(upgradeLedger.Direction * upgradeLedger.Gain);
-			if (num < 1m || num > (decimal)relicAttribute.Maximum)
+			decimal num = relicAttribute.After(upgradeLedger.Reference, upgradeLedger.Gain);
+			if (num < Math.Min(relicAttribute.Minimum, upgradeLedger.Reference) || num > Math.Max(relicAttribute.Maximum, upgradeLedger.Reference))
 			{
 				throw new FormatException("Out-of-range relic attribute " + key2);
 			}
@@ -131,6 +131,6 @@ public static class Store
 			relicState.Upgrades[attribute.Key] = value;
 		}
 		value.Gain += units;
-		relic.DynamicVars[attribute.Key].BaseValue = value.Reference + (decimal)(value.Direction * value.Gain);
+		relic.DynamicVars[attribute.Key].BaseValue = attribute.After(value.Reference, value.Gain);
 	}
 }

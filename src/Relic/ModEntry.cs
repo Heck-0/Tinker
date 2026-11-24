@@ -16,6 +16,6 @@ public static class ModEntry
 		Settings.Initialize();
 		// Combined build: shared Harmony instance, patching only this half's namespace.
 		Patching.PatchNamespace("Tinker.Relic", "[Tinker Relic] ");
-		GD.Print("[Tinker Relic] Loaded ", "0.5.1", "; ", Catalog.Supported.Count, " relic definitions.");
+		GD.Print("[Tinker Relic] Loaded; relic values come from the rule engine, with ", Catalog.OverrideCount, " overrides.");
 	}
 }

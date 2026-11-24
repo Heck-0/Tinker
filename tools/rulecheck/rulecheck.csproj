@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Runs the mod's RuleEngine on the game's compiled code (Mono.Cecil) and compares with tools/divergence.py.
+       Run: dotnet run (project tools/rulecheck), arguments: sts2.dll, decompiled game source, tools/coverage, optional out.tsv -->
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><Nullable>disable</Nullable><ImplicitUsings>disable</ImplicitUsings></PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Mono.Cecil" Version="0.11.5" />
+    <Compile Include="../../src/Common/Rules/RuleEngine.cs" />
+  </ItemGroup>
+</Project>

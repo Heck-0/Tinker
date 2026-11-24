@@ -74,6 +74,7 @@ internal static class WorkshopFlow
         _busy = true;
         try
         {
+            Tinker.Common.Rules.GameRules.DumpIfRequested();
             CardModel lastCard = null;
             RelicModel lastRelic = null;
             while (true)

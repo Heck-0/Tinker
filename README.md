@@ -37,8 +37,10 @@ Needs the .NET 8 SDK, the game, and BaseLib (Workshop). Paths are set at the top
 - [docs/COVERAGE_GAPS.md](docs/COVERAGE_GAPS.md) - what the current game has that isn't covered yet.
 - [docs/MODIFICATIONS.md](docs/MODIFICATIONS.md) - every upgrade the mod can make, by how many cards it fits.
 - `tools/coverage.ps1` - regenerates the coverage lists (VS Code task *Coverage report*).
-- `tools/divergence.py` - compares generic upgrade rules (from the game's own code) with the mod's hand-written
-  tables and writes `tools/coverage/DIVERGENCE.md` (VS Code task *Divergence report*).
+- `tools/divergence.py` - the generic upgrade rules on the decompiled game source, compared with the mod's
+  overrides; writes `tools/coverage/DIVERGENCE.md` (VS Code task *Divergence report*).
+- `tools/rulecheck` - runs the mod's own rule engine on the game's compiled code (Mono.Cecil) and compares
+  it with `divergence.py` (`dotnet run --project tools/rulecheck`, arguments in its project file).
 
 ## Layout
 
@@ -48,10 +50,12 @@ Needs the .NET 8 SDK, the game, and BaseLib (Workshop). Paths are set at the top
 - `src/HostSettingsMessages.cs` - co-op: the host's settings, sent to the other players.
 - `src/Card/Workshop/` - the Workshop: page (`WorkshopScreen`), purchases (`WorkshopFlow`), prices
   (`WorkshopOptions`, `CardCost`), co-op message, the Dial click and handing out the Dial.
-- `src/Card/` (`Tinker.Card`) - card upgrades: which values can change and how (`Upgrades/`), traits, card
-  state saves, card texts.
-- `src/Relic/` (`Tinker.Relic`) - relic upgrades (`Upgrades/Catalog.cs`), boons, relic state saves, relic
-  settings and texts.
+- `src/Common/Rules/` - the rule engine: which card and relic values can be upgraded, and which way, read from
+  the game's compiled code at run time (`RuleEngine` = the rules, `GameRules` = reading the game through Harmony).
+- `src/Card/` (`Tinker.Card`) - card upgrades: how values change (`Upgrades/`; direction overrides in
+  `VarDirections.cs`, fractional values in `SteppedValues.cs`), traits, card state saves, card texts.
+- `src/Relic/` (`Tinker.Relic`) - relic upgrades (`Upgrades/Catalog.cs`: engine + overrides, cost categories,
+  fractional `Stepped` values; `PaperRelics.cs`), boons, relic state saves, relic settings and texts.
 - `src/Common/` (`Tinker.Common`) - shared rules: price curve (`Upgrades/RiskCurve.cs`, `UpgradeCost.cs`), balance
   (`BalanceConfig`, loaded from `content/balance.jsonc`), the Workshop price, card state, text system,
   `Patching`.
@@ -73,6 +77,14 @@ removes no code.
 
 ## History
 
+- **1.7.0** - The rule engine: which values are upgradable, and which way, now comes from the game's own
+  compiled code at run time (a port of `tools/divergence.py`'s rules to IL, with three new rules: not read,
+  only on pickup, loop bounds aren't limits). The hand-written tables shrank to overrides: cards from
+  ~1,000 lines (`VarDirections` Overrides + Generated) to 52 entries; relics from the full catalog to 68
+  overrides. Every previously upgradable value keeps its exact direction, category and limits (checked
+  value by value); 59 card values and 19 relic values become upgradable. Fractional values are bought in
+  steps of 0.01: Bowler Hat (gold ×1.25), Undying Sigil (×0.5), Tank (×1.5 / ×0.5, now copied onto its
+  powers), and Paper Phrog / Paper Krane, whose hard-coded bonus became a value.
 - **1.6.0** - Dropped old-save support: the retired item classes and their icons, the roulette's loss and
   drawback-repair bookkeeping (card state is now just units bought per value), the original Card Upgrader's
   save key, the Dial offer for runs started without it, the settings copy from `UpgraderCombined.cfg`, and

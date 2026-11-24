@@ -606,7 +606,7 @@ internal sealed class WorkshopScreen
 		Tinker.Relic.RelicAttribute attribute = _relicOptions[_attributeIndex];
 		ResolveSpend();
 		decimal before = attribute.Value(_relic);
-		decimal after = before + attribute.Direction * _units;
+		decimal after = attribute.After(before, _units);
 		_attributeLabel.Text = attribute.Label;
 		_attributeLabel.AddThemeColorOverride("font_color", Ink);
 		ShowSpend($"{before} → {after}", attribute.Direction);
@@ -1200,7 +1200,7 @@ internal sealed class WorkshopScreen
 		CardStateStore.Set(cardModel, cardMachineState);
 		if (AttributeKeys.IsVar(Attribute) && cardModel.DynamicVars.TryGetValue(AttributeKeys.VarName(Attribute), out DynamicVar value))
 		{
-			value.UpgradeValueBy(num);
+			value.UpgradeValueBy(SteppedValues.TryGet(cardModel, AttributeKeys.VarName(Attribute), out SteppedValues.Stepped stepped) ? num * stepped.Step : num);
 		}
 		else if (Attribute == "cost")
 		{

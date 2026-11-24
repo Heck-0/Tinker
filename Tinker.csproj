@@ -47,6 +47,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- tools/ holds separate programs (e.g. tools/rulecheck); they are not part of the mod. -->
+    <Compile Remove="tools/**" />
+    <Compile Remove="bin/**;obj/**" />
     <None Include="tinker.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="content\**\*" Link="%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <!-- The built-in balance (BalanceConfig); the copy next to the DLL overrides it. -->

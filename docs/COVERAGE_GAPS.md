@@ -1,5 +1,9 @@
 # Coverage gaps (game v0.113.0, not yet re-checked against v0.113.1)
 
+> **1.7.0:** most of this predates the rule engine, which now covers any value its rules can decide (it
+> added 59 card and 19 relic values, and Bowler Hat, Undying Sigil, Tank, Paper Phrog and Paper Krane through
+> steps). What's left is what the rules can't tell; `tools/rulecheck` lists every value with its verdict.
+
 What the game has that Tinker can't upgrade yet, and which gaps are worth filling.
 Generated from `tools/coverage.ps1` (full lists: `tools/coverage/cards.csv`, `relics.csv`). Re-run it after
 a game update. How to add things: [ADDING_CARDS_AND_RELICS.md](ADDING_CARDS_AND_RELICS.md).
