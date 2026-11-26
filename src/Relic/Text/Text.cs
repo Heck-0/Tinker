@@ -11,8 +11,6 @@ namespace Tinker.Relic;
 
 public static class Text
 {
-	public static string Language => Lang.Current;
-
 	public static string T(string english) => Lang.T(english);
 
 	public static void Install(LocManager? manager = null)
@@ -32,7 +30,6 @@ public static class Text
 				["RELICUPGRADER_REWARD"] = "{label}",
 				["RELICUPGRADER_DESCRIPTION"] = "{original}\n\n{details}"
 			});
-			manager.GetTable("settings_ui").MergeWith(Lang.T(ConfigText.Values(), manager.Language));
 		}
 	}
 

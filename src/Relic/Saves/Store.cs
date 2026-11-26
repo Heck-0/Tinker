@@ -103,12 +103,12 @@ public static class Store
 			}
 			// The cost category only prices future purchases: a save from before a category change takes the current one.
 			upgradeLedger.Family = relicAttribute.Family;
-			decimal num = relicAttribute.After(upgradeLedger.Reference, upgradeLedger.Gain);
-			if (num < Math.Min(relicAttribute.Minimum, upgradeLedger.Reference) || num > Math.Max(relicAttribute.Maximum, upgradeLedger.Reference))
+			decimal after = relicAttribute.After(upgradeLedger.Reference, upgradeLedger.Gain);
+			if (after < Math.Min(relicAttribute.Minimum, upgradeLedger.Reference) || after > Math.Max(relicAttribute.Maximum, upgradeLedger.Reference))
 			{
 				throw new FormatException("Out-of-range relic attribute " + key2);
 			}
-			value2.BaseValue = num;
+			value2.BaseValue = after;
 		}
 		Relics.Remove(relic);
 		Relics.Add(relic, relicState);

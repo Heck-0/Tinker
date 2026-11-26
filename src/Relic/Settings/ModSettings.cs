@@ -21,9 +21,9 @@ public sealed class ModSettings
 
 	public static ModSettings FromJson(string json)
 	{
-		ModSettings? obj = JsonSerializer.Deserialize<ModSettings>(json) ?? throw new FormatException("Empty settings");
-		obj.Validate();
-		return obj;
+		ModSettings? modSettings = JsonSerializer.Deserialize<ModSettings>(json) ?? throw new FormatException("Empty settings");
+		modSettings.Validate();
+		return modSettings;
 	}
 
 	public void Validate()

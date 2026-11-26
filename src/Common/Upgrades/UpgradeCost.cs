@@ -15,11 +15,11 @@ public static class UpgradeCost
 	{
 		if (request.Units <= 0)
 		{
-			throw new ArgumentOutOfRangeException("request", "Units debe ser > 0");
+			throw new ArgumentOutOfRangeException("request", "Units must be > 0");
 		}
 		if (request.ExistingGain < 0)
 		{
-			throw new ArgumentOutOfRangeException("request", "ExistingGain debe ser >= 0");
+			throw new ArgumentOutOfRangeException("request", "ExistingGain must be >= 0");
 		}
 		AttributeBalance family = config.For(request.Attribute, request.RiskFamily);
 		double risk = RiskCurve.Risk(family, request.Multiplier * (request.ExistingGain + (double)request.Units), request.ReferenceValue);

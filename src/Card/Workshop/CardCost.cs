@@ -26,8 +26,8 @@ internal static class CardCost
 			throw new ArgumentOutOfRangeException("units", "The cost can't go below zero.");
 		}
 		CardMachineState cardMachineState = CardStateStore.Get(card);
-		int num = CardAttributes.CurrentValue(card, attribute);
-		return new UpgradeRequest(attribute, num, units, CardAttributes.NativeReferenceValue(card, attribute), BidirectionalEffects.Gain(card.GetType().Name, attribute, cardMachineState), Multiplier(attribute), UpgradeCost.Strain(cardMachineState, attribute, Reference, Multiplier, Balance, (string a) => CardAttributes.RiskFamily(card, a), (string a) => BidirectionalEffects.Axis(card.GetType().Name, a)), CardAttributes.RiskFamily(card, attribute));
+		int currentValue = CardAttributes.CurrentValue(card, attribute);
+		return new UpgradeRequest(attribute, currentValue, units, CardAttributes.NativeReferenceValue(card, attribute), BidirectionalEffects.Gain(card.GetType().Name, attribute, cardMachineState), Multiplier(attribute), UpgradeCost.Strain(cardMachineState, attribute, Reference, Multiplier, Balance, (string a) => CardAttributes.RiskFamily(card, a), (string a) => BidirectionalEffects.Axis(card.GetType().Name, a)), CardAttributes.RiskFamily(card, attribute));
 		double Multiplier(string a)
 		{
 			if (!(BalanceFamilies.Of(a) == "damage"))

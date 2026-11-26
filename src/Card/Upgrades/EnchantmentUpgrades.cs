@@ -30,14 +30,14 @@ public static class EnchantmentUpgrades
 		{
 			if (__instance.HasCard)
 			{
-				int num = Delta(__instance);
+				int delta = Delta(__instance);
 				if (__instance is Spiral || __instance is Glam)
 				{
-					__result["Times"].BaseValue = 1 + num;
+					__result["Times"].BaseValue = 1 + delta;
 				}
 				else if (__instance is Inky)
 				{
-					__result.Weak.BaseValue = 1 + num;
+					__result.Weak.BaseValue = 1 + delta;
 				}
 				else if (__instance is Adroit)
 				{

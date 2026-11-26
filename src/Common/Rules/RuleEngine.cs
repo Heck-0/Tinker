@@ -64,10 +64,16 @@ public sealed class VarInfo
 	public string Power;
 }
 
-/// <summary>A card or relic class's code: every method of the class and its nested (compiler-generated) types.</summary>
+/// <summary>
+/// A card or relic class's code: every method of the class and its nested (compiler-generated) types, and for a
+/// mod's class also those of its base classes from the same mod (mods often keep the logic in a shared base).
+/// </summary>
 public sealed class ItemCode
 {
 	public string Name = "";
+
+	/// <summary>From a mod, not the game: the name rule for plain values applies (see <see cref="RuleEngine.NameSign"/>).</summary>
+	public bool Modded;
 
 	public List<MethodCode> Methods = new List<MethodCode>();
 
@@ -79,7 +85,7 @@ public readonly record struct Verdict(int Sign, string Why);
 
 /// <summary>
 /// The generic upgrade rules: from a card's or relic's own code, which way each of its values should be upgraded.
-/// A port of tools/divergence.py working on compiled IL instead of decompiled source, so it follows game updates.
+/// Works on compiled IL (not decompiled source), so it follows game updates; tools/tests checks it on the game.
 /// Rules, first match wins:
 /// <list type="number">
 /// <item>derived: computed values (CalculatedDamage, ...) are never upgraded.</item>
@@ -88,6 +94,7 @@ public readonly record struct Verdict(int Sign, string Why);
 /// <item>upgrade: the game's own OnUpgrade raises (+1) or lowers (-1) it (cards).</item>
 /// <item>every N / threshold: it divides something (x % N, x / N) or is a *Threshold property: -1.</item>
 /// <item>hurts you: named Lose*, passed to PlayerCmd.Lose*, or the amount of damage dealt to the owner: -1.</item>
+/// <item>name (mods only): a plain DynamicVar's name, e.g. HealPercent +1, TurnsNeeded -1 (see <see cref="NameSign"/>).</item>
 /// <item>subtracted (x - N) or compared (x &gt;= N, not a loop counter): 0, a cost or a limit can't be told apart.</item>
 /// <item>type: Damage, Block, Cards, Energy, Heal, Gold, ... +1; HpLoss -1.</item>
 /// <item>power: a buff applied to yourself or a debuff to enemies +1, the reverse -1.</item>
@@ -179,6 +186,27 @@ public static class RuleEngine
 		{
 			return new Verdict(-1, "hurts you");
 		}
+		// Mods often use plain DynamicVar("HealPercent", ...) where the game uses a typed value (HealVar); the name then
+		// says which way is better. The game's own plain values were reviewed by hand (overrides), so this is mods only.
+		if (item.Modded && v.Class == "DynamicVar")
+		{
+			// A plain value used as a power's amount (Apply<WeakPower>(enemies, DynamicVars["Weak"]...)) is a power value.
+			foreach (Read r in uses)
+			{
+				(string applied, string on) = AppliedPower(r);
+				int kind = (applied == null) ? 0 : powerType(applied);
+				if (kind != 0 && on != "?")
+				{
+					bool good = (kind == 1) == (on == "self");
+					return new Verdict(good ? 1 : -1, "power amount (" + applied + " on " + on + ")");
+				}
+			}
+			int byName = NameSign(v.Name);
+			if (byName != 0)
+			{
+				return new Verdict(byName, "name");
+			}
+		}
 		if (reads.Any(r => NextOp(r, IsSubtract)))
 		{
 			return new Verdict(0, "subtracted (cost or discount?)");
@@ -203,6 +231,70 @@ public static class RuleEngine
 			return new Verdict(0, kind != 0 ? "power (target unclear)" : "power (type unclear)");
 		}
 		return new Verdict(0, "unknown");
+	}
+
+	// ------------------------------------------------------------------ rule: a plain value's name (mods)
+
+	/// <summary>Words that mark a requirement or a cost: fewer is better.</summary>
+	private static readonly string[] WorseWords = { "Needed", "Required", "Threshold", "Interval", "Cooldown", "Delay", "Lost", "Loss", "Penalty" };
+
+	/// <summary>Words that mark something you get: more is better.</summary>
+	private static readonly string[] BetterWords =
+	{
+		"Percent", "Multiplier", "Bonus", "Count", "Replays", "Repeat", "Times", "Stacks", "Charges", "Chance", "Heal", "Hp",
+		"Plating", "Lightning", "Orbs", "Slots", "Arrows", "Souls", "Shivs", "Stars", "Forge", "Summon", "Gain", "Damage",
+		"Block", "Energy", "Gold", "Cards", "Draw", "Potion", "Doom", "Strength", "Dexterity", "Focus", "Vigor", "Thorns",
+		"Regen", "Artifact", "Hits"
+	};
+
+	/// <summary>Before "Per": what has to happen for each reward (AttacksPerEnergy = attacks for each energy): fewer is better.</summary>
+	private static readonly string[] RequirementNouns = { "Attacks", "Plays", "Turns", "EnemyMaxHp", "CardsPlayed" };
+
+	/// <summary>
+	/// +1 / -1 from a plain value's name, 0 if the name doesn't say: requirements (…Needed, …Threshold, …Interval,
+	/// …Lost, a …Cost other than CostReduction) -1; Reduction alone and other Min… names can't be told (MinCost is a
+	/// threshold, MinimumDoom a floor); "A per B" goes by A; else a reward word (…Percent, …Multiplier, …Count, Heal…,
+	/// Cards…) +1.
+	/// </summary>
+	public static int NameSign(string name)
+	{
+		bool Has(string w) => name.IndexOf(w, StringComparison.Ordinal) >= 0;
+		if (Has("Hp") && Has("Threshold"))
+		{
+			return 0;
+		}
+		if (WorseWords.Any(Has))
+		{
+			return -1;
+		}
+		if (name == "CostReduction" || Has("Discount"))
+		{
+			return 1;
+		}
+		// Whose reduction; a visual size; an HP threshold (heal below X% wants it high, unlike a counter's threshold).
+		if (Has("Reduction") || Has("Scale") || (Has("Hp") && Has("Threshold")))
+		{
+			return 0;
+		}
+		if (Has("Cost"))
+		{
+			return -1;
+		}
+		if (name.StartsWith("Min", StringComparison.Ordinal))
+		{
+			return 0;
+		}
+		int per = name.IndexOf("Per", StringComparison.Ordinal);
+		if (per > 0 && per + 3 < name.Length && char.IsUpper(name[per + 3]))
+		{
+			string before = name.Substring(0, per);
+			if (RequirementNouns.Contains(before))
+			{
+				return -1;
+			}
+			return BetterWords.Any(w => before.IndexOf(w, StringComparison.Ordinal) >= 0) ? 1 : 0;
+		}
+		return BetterWords.Any(Has) ? 1 : 0;
 	}
 
 	// ------------------------------------------------------------------ trigger tiers
@@ -255,8 +347,22 @@ public static class RuleEngine
 		return tiers;
 	}
 
-	/// <summary>The trigger tier of a hook, or null if it isn't a hook (OnPlay, a helper method, ...).</summary>
-	public static string HookTier(string hook) => (hook != null && HookTiers.TryGetValue(hook, out string t)) ? t : null;
+	/// <summary>
+	/// The trigger tier of a hook, or null if it isn't a hook (OnPlay, a helper method, ...). A mod's wrapper named
+	/// after the hook plus "Compat" (Hextech Runes: ModifyDamageMultiplicativeCompat) counts as the hook.
+	/// </summary>
+	public static string HookTier(string hook)
+	{
+		if (hook == null)
+		{
+			return null;
+		}
+		if (HookTiers.TryGetValue(hook, out string t))
+		{
+			return t;
+		}
+		return (hook.EndsWith("Compat", StringComparison.Ordinal) && HookTiers.TryGetValue(hook.Substring(0, hook.Length - 6), out t)) ? t : null;
+	}
 
 	/// <summary>Turn-start / turn-end hooks: often bookkeeping (resets, end-of-turn batches) next to the real trigger.</summary>
 	private static readonly HashSet<string> TurnPhaseHooks = new HashSet<string>
@@ -668,29 +774,44 @@ public static class RuleEngine
 
 	// ------------------------------------------------------------------ rule: powers
 
-	/// <summary>"self", "enemy", or null when the PowerCmd.Apply&lt;P&gt; calls disagree or can't be read.</summary>
+	/// <summary>
+	/// "self", "enemy", or null when the calls that apply the power disagree or can't be read. Those calls are the
+	/// game's PowerCmd.Apply&lt;P&gt;, a mod's wrapper of it (a *PowerCmd* class's Apply&lt;P&gt;, e.g. Hextech Runes'
+	/// HextechPowerCmdCompat), or a generic helper of the item's own (from a base class) called with &lt;P&gt;, whose
+	/// body applies its type parameter (Hextech's forges: ApplyStackedPowerAtCombatStart&lt;P&gt;).
+	/// </summary>
 	public static string PowerTarget(ItemCode item, string power)
 	{
 		HashSet<string> targets = new HashSet<string>();
+		HashSet<string> helpers = new HashSet<string>(item.Methods.Select(m => m.Name));
 		foreach (MethodCode m in item.Methods)
 		{
 			List<Instr> b = m.Body;
 			for (int i = 0; i < b.Count; i++)
 			{
 				Instr x = b[i];
-				if (!(x.IsCall && x.Type == "PowerCmd" && x.Method == "Apply" && x.GenericArgs.Length == 1 && x.GenericArgs[0] == power) || x.ParamTypes.Length < 2)
+				if (!x.IsCall || x.GenericArgs.Length != 1 || x.GenericArgs[0] != power)
 				{
 					continue;
 				}
-				(int s, int e) span = ArgSpan(b, i, ArgIndex(x, 1));
-				string target = span.s < 0 ? "?" : Classify(b, span.s, span.e);
-				// An unnamed loop variable (foreach (Creature item in ...HittableEnemies)): an enemy if the method walks an enemy list.
-				if (target == "?" && span.s >= 0 && span.s == span.e && b[span.s].Op.StartsWith("ldloc", StringComparison.Ordinal)
-					&& b.Any(y => y.IsCall && y.Method != null && y.Method.IndexOf("nem", StringComparison.Ordinal) >= 0))
+				if (IsApplyPower(x))
 				{
-					target = "enemy";
+					targets.Add(ApplyTarget(b, i));
 				}
-				targets.Add(target);
+				else if (x.Method != null && helpers.Contains(x.Method))
+				{
+					// The helper's own Apply calls (it and its async body), whatever they name the type parameter.
+					foreach (MethodCode h in item.Methods.Where(h => h.Name == x.Method || h.Owner == x.Method))
+					{
+						for (int j = 0; j < h.Body.Count; j++)
+						{
+							if (h.Body[j].IsCall && h.Body[j].GenericArgs.Length == 1 && IsApplyPower(h.Body[j]))
+							{
+								targets.Add(ApplyTarget(h.Body, j));
+							}
+						}
+					}
+				}
 			}
 		}
 		if (targets.Count == 1 && !targets.Contains("?"))
@@ -698,6 +819,57 @@ public static class RuleEngine
 			return targets.First();
 		}
 		return null;
+	}
+
+	/// <summary>
+	/// The power a read value is the amount of (the next power Apply call takes it as its amount, the argument after
+	/// the target) and its target, or (null, null).
+	/// </summary>
+	private static (string Power, string Target) AppliedPower(Read r)
+	{
+		List<Instr> b = r.Method.Body;
+		for (int i = r.End + 1; i < b.Count && i <= r.End + 30; i++)
+		{
+			Instr x = b[i];
+			if (!x.IsCall || x.GenericArgs.Length != 1 || !IsApplyPower(x))
+			{
+				continue;
+			}
+			int target = Array.FindIndex(x.ParamTypes, p => p == "Creature" || p == "IEnumerable");
+			(int s, int e) amount = (target < 0 || target + 1 >= x.ParamTypes.Length) ? (-1, -1) : ArgSpan(b, i, target + 1);
+			if (amount.s >= 0 && amount.s <= r.Start && r.End <= amount.e)
+			{
+				return (x.GenericArgs[0], ApplyTarget(b, i));
+			}
+			return (null, null);
+		}
+		return (null, null);
+	}
+
+	/// <summary>PowerCmd.Apply&lt;P&gt;, or a mod's PowerCmd wrapper of it.</summary>
+	private static bool IsApplyPower(Instr x)
+	{
+		return x.Method == "Apply" && x.Type != null && x.Type.IndexOf("PowerCmd", StringComparison.Ordinal) >= 0 && x.ParamTypes.Length >= 2;
+	}
+
+	/// <summary>Who an Apply call at <paramref name="i"/> targets: its first Creature (or list of creatures) argument.</summary>
+	private static string ApplyTarget(List<Instr> b, int i)
+	{
+		Instr x = b[i];
+		int arg = Array.FindIndex(x.ParamTypes, p => p == "Creature" || p == "IEnumerable");
+		if (arg < 0)
+		{
+			return "?";
+		}
+		(int s, int e) span = ArgSpan(b, i, arg);
+		string target = span.s < 0 ? "?" : Classify(b, span.s, span.e);
+		// An unnamed loop variable (foreach (Creature item in ...HittableEnemies)): an enemy if the method walks an enemy list.
+		if (target == "?" && span.s >= 0 && span.s == span.e && b[span.s].Op.StartsWith("ldloc", StringComparison.Ordinal)
+			&& b.Any(y => y.IsCall && y.Method != null && y.Method.IndexOf("nem", StringComparison.Ordinal) >= 0))
+		{
+			target = "enemy";
+		}
+		return target;
 	}
 
 	private static string Classify(List<Instr> b, int s, int e)

@@ -81,7 +81,7 @@
     "RoyallyApproved":   { "price": 240, "amount": 1 },  // Attack / Skill: Innate and Retain
     "Nimble":            { "price": 240, "amount": 3 },  // Block card: +3 Block per play
     "Sharp":             { "price": 240, "amount": 2 },  // Attack: +2 damage per play
-    "Clone":             { "price": 240, "amount": 4, "relic": "PaelsGrowth" },  // copied at rest sites (Pael's Growth)
+    "Clone":             { "price": 240, "amount": 4 },  // can be copied at rest sites
     "Swift":             { "price": 200, "amount": 2 },  // first play each combat: draw 2
     "SoulsPower":        { "price": 200, "amount": 1 },  // removes Exhaust
     "Corrupted":         { "price": 200, "amount": 1 },  // Attack: ×1.5 damage, you take 2 damage per play

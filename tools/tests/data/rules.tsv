@@ -1,0 +1,1258 @@
+kind	item	value	type	sign	why	category	tier
+card	Abrasive	ThornsPower	PowerVar<ThornsPower>	1	upgrade		triggerTurn
+card	Abrasive	DexterityPower	PowerVar<DexterityPower>	1	power (buff on self)		triggerConstant
+card	Accelerant	Accelerant	DynamicVar	1	upgrade		
+card	Accuracy	AccuracyPower	PowerVar<AccuracyPower>	1	upgrade		triggerConstant
+card	Acrobatics	Cards	CardsVar	1	upgrade		
+card	AdaptiveStrike	Damage	DamageVar	1	upgrade		
+card	Adrenaline	Energy	EnergyVar	1	upgrade		
+card	Adrenaline	Cards	CardsVar	1	type		
+card	Afterimage	AfterimagePower	PowerVar<AfterimagePower>	1	power (buff on self)		triggerConstant
+card	Afterlife	Summon	SummonVar	1	upgrade		
+relic	Akabeko	VigorPower	PowerVar<VigorPower>	1	power (buff on self)		triggerConstant
+relic	AlchemicalCoffer	PotionSlots	DynamicVar	0	only on pickup		
+card	Alignment	Energy	EnergyVar	1	upgrade		
+card	AllForOne	Damage	DamageVar	1	upgrade		
+card	AllIsWell	AllIsWellPower	PowerVar<AllIsWellPower>	1	upgrade		triggerConstant
+relic	AmethystAubergine	Gold	GoldVar	1	type		triggerRun
+card	Amnesia	AmnesiaPower	PowerVar<AmnesiaPower>	-1	power (debuff on self)		
+card	Amnesia	Cards	CardsVar	0	not read		
+card	Amnesia	Energy	EnergyVar	0	not read		
+relic	Anchor	Block	BlockVar	1	type		triggerCombat
+card	Anger	Damage	DamageVar	1	upgrade		
+card	Anguish	CalculationBase	CalculationBaseVar	1	upgrade		
+card	Anguish	ExtraDamage	ExtraDamageVar	1	upgrade		
+card	Anguish	CalculatedDamage	CalculatedDamageVar	0	derived		
+card	Anticipate	DexterityPower	PowerVar<DexterityPower>	1	upgrade		triggerConstant
+card	Apparition	IntangiblePower	PowerVar<IntangiblePower>	1	power (buff on self)		
+relic	ArcaneScroll	Cards	CardsVar	0	only on pickup		
+card	Archery	AimPower	PowerVar<AimPower>	1	upgrade		triggerConstant
+card	Armaments	Block	BlockVar	1	type		
+card	ArrowStab	Damage	DamageVar	1	upgrade		
+card	ArrowStab	AimPower	PowerVar<AimPower>	1	upgrade		triggerConstant
+card	Arsenal	ArsenalPower	PowerVar<ArsenalPower>	1	power (buff on self)		triggerConstant
+relic	ArtOfWar	Energy	EnergyVar	1	type		triggerCombat
+card	AshenStrike	CalculationBase	CalculationBaseVar	1	type		
+card	AshenStrike	ExtraDamage	ExtraDamageVar	1	upgrade		
+card	AshenStrike	CalculatedDamage	CalculatedDamageVar	0	derived		
+card	Assassinate	Damage	DamageVar	1	upgrade		
+card	Assassinate	VulnerablePower	PowerVar<VulnerablePower>	1	upgrade		
+card	AstralPulse	Damage	DamageVar	1	upgrade		
+card	AstralPulse	HitCount	HitCountVar	1	type		
+relic	Astrolabe	Cards	CardsVar	0	only on pickup		
+card	Automation	Energy	EnergyVar	1	type		
+card	Backflip	Block	BlockVar	1	upgrade		
+card	Backflip	Cards	CardsVar	1	type		
+card	Backstab	Damage	DamageVar	1	upgrade		
+card	BadLuck	HpLoss	HpLossVar	-1	hurts you		
+relic	BagOfMarbles	VulnerablePower	PowerVar<VulnerablePower>	1	power (debuff on enemy)		
+relic	BagOfPreparation	Cards	CardsVar	1	type		triggerCombat
+card	BallLightning	Damage	DamageVar	1	upgrade		
+card	BansheesCry	Damage	DamageVar	1	type		
+card	BansheesCry	Energy	EnergyVar	1	type		
+card	Barrage	Damage	DamageVar	1	upgrade		
+card	Barrage	CalculationBase	CalculationBaseVar	1	type		
+card	Barrage	CalculationExtra	CalculationExtraVar	1	type		
+card	Barrage	CalculatedHits	CalculatedHitCountVar	0	unknown		
+card	Bash	Damage	DamageVar	1	upgrade		
+card	Bash	VulnerablePower	PowerVar<VulnerablePower>	1	upgrade		
+relic	BathTowel	Heal	HealVar	1	type		triggerCombat
+card	BattleTrance	Cards	CardsVar	1	upgrade		
+card	BeamCell	Damage	DamageVar	1	upgrade		
+card	BeamCell	VulnerablePower	PowerVar<VulnerablePower>	1	upgrade		
+card	BeatDown	Cards	CardsVar	1	upgrade		
+card	BeatIntoShape	Damage	DamageVar	1	upgrade		
+card	BeatIntoShape	CalculationBase	CalculationBaseVar	1	upgrade		
+card	BeatIntoShape	CalculationExtra	CalculationExtraVar	1	upgrade		
+card	BeatIntoShape	CalculatedForge	CalculatedVar	0	unknown		
+relic	BeatingRemnant	MaxHpLoss	DynamicVar	0	unknown		triggerTurn
+relic	BeautifulBracelet	Cards	CardsVar	0	only on pickup		
+relic	BeautifulBracelet	Swift	DynamicVar	0	unknown		
+card	Beckon	HpLoss	HpLossVar	-1	hurts you		
+card	BelieveInYou	Energy	EnergyVar	1	upgrade		
+relic	BeltBuckle	DexterityPower	PowerVar<DexterityPower>	1	power (buff on self)		triggerConstant
+card	BiasedCognition	FocusPower	PowerVar<FocusPower>	1	upgrade		triggerTurn
+card	BiasedCognition	BiasedCognitionPower	PowerVar<BiasedCognitionPower>	-1	power (debuff on self)		triggerTurn
+card	BigBang	Cards	CardsVar	1	type		
+card	BigBang	Energy	EnergyVar	1	type		
+card	BigBang	Stars	StarsVar	1	type		
+card	BigBang	Forge	ForgeVar	1	type		
+relic	BigHat	Cards	CardsVar	1	type		triggerCombat
+relic	BigMushroom	MaxHp	MaxHpVar	0	only on pickup		
+relic	BigMushroom	Cards	CardsVar	0	subtracted (cost or discount?)		triggerCombat
+relic	BiiigHug	Cards	CardsVar	0	only on pickup		
+relic	BlackBlood	Heal	HealVar	1	type		triggerCombat
+card	BlackHole	BlackHolePower	PowerVar<BlackHolePower>	1	upgrade		
+card	BladeDance	Cards	CardsVar	1	upgrade		
+card	BladeOfInk	Cards	CardsVar	1	upgrade		
+card	BladeSymphony	Cards	CardsVar	1	type		
+card	Blaze	StrengthPower	PowerVar<StrengthPower>	1	upgrade		triggerConstant
+relic	BlessedAntler	Energy	EnergyVar	1	type	persistentEnergy	triggerTurn
+relic	BlessedAntler	Cards	CardsVar	1	type		triggerCombat
+card	BlightStrike	Damage	DamageVar	1	upgrade		
+relic	BloodSoakedRose	Energy	EnergyVar	1	type	persistentEnergy	triggerTurn
+relic	BloodVial	Heal	HealVar	1	type		triggerCombat
+card	BloodWall	HpLoss	HpLossVar	-1	hurts you		
+card	BloodWall	Block	BlockVar	1	upgrade		
+card	Bloodletting	HpLoss	HpLossVar	-1	hurts you		
+card	Bloodletting	Energy	EnergyVar	1	upgrade		
+card	BlossomShot	Damage	DamageVar	1	upgrade		
+card	Bludgeon	Damage	DamageVar	1	upgrade		
+card	Blur	Block	BlockVar	1	upgrade		
+card	Blur	Blur	DynamicVar	0	unknown		
+card	BodySlam	CalculationBase	CalculationBaseVar	1	type		
+card	BodySlam	ExtraDamage	ExtraDamageVar	1	type		
+card	BodySlam	CalculatedDamage	CalculatedDamageVar	0	derived		
+card	Bodyguard	Summon	SummonVar	1	upgrade		
+card	Bolas	Damage	DamageVar	1	upgrade		
+card	Bombardment	Damage	DamageVar	1	upgrade		
+relic	BoneFlute	Block	BlockVar	1	type		triggerConstant
+card	BoneShards	OstyDamage	OstyDamageVar	1	upgrade		
+card	BoneShards	Block	BlockVar	1	upgrade		
+relic	BoneTea	Combats	DynamicVar	0	unknown		
+relic	BookOfFiveRings	Cards	CardsVar	-1	every N / threshold		
+relic	BookOfFiveRings	Heal	HealVar	1	type		triggerConstant
+relic	BookRepairKnife	Heal	HealVar	1	type		triggerOccasional
+relic	BoomingConch	Cards	CardsVar	1	type		triggerCombat
+relic	BoomingConch	Energy	EnergyVar	1	type		triggerCombat
+card	BoostAway	Block	BlockVar	1	upgrade		
+card	BootSequence	Block	BlockVar	1	upgrade		
+card	BorrowedTime	Energy	EnergyVar	1	upgrade		
+card	BorrowedTime	ExtraCost	EnergyVar	1	type		
+card	Bounce	StretchPower	PowerVar<StretchPower>	1	upgrade		triggerConstant
+card	BouncingFlask	PoisonPower	PowerVar<PoisonPower>	1	power (debuff on enemy)		
+card	BouncingFlask	Repeat	RepeatVar	1	upgrade		
+relic	BoundPhylactery	Summon	SummonVar	1	type		
+card	BowSmack	Damage	DamageVar	1	upgrade		
+card	BowSmack	Energy	EnergyVar	1	type		
+relic	BowlerHat	GoldIncrease	DynamicVar	0	unknown		triggerRun
+card	Brace	AimPower	PowerVar<AimPower>	1	upgrade		triggerConstant
+card	Brand	HpLoss	HpLossVar	-1	hurts you		
+card	Brand	StrengthPower	PowerVar<StrengthPower>	1	upgrade		triggerConstant
+relic	Bread	GainEnergy	EnergyVar	1	type		triggerCombat
+relic	Bread	LoseEnergy	EnergyVar	-1	hurts you		triggerCombat
+card	Break	Damage	DamageVar	1	upgrade		
+card	Break	VulnerablePower	PowerVar<VulnerablePower>	1	upgrade		
+card	Breakthrough	Damage	DamageVar	1	upgrade		
+card	Breakthrough	HpLoss	HpLossVar	-1	hurts you		
+card	BrightenUp	Joy	DynamicVar	1	upgrade		
+card	BrightenUp	Sadness	DynamicVar	0	unknown		
+card	BrightestFlame	MaxHp	MaxHpVar	1	type		
+card	BrightestFlame	Energy	EnergyVar	1	upgrade		
+card	BrightestFlame	Cards	CardsVar	1	upgrade		
+relic	BrilliantScarf	Cards	CardsVar	0	compared (threshold or limit?)		
+relic	Brimstone	SelfStrength	PowerVar<StrengthPower>	0	power (target unclear)		triggerConstant
+relic	Brimstone	EnemyStrength	PowerVar<StrengthPower>	0	power (target unclear)		triggerConstant
+relic	BronzeScales	ThornsPower	PowerVar<ThornsPower>	1	power (buff on self)		triggerTurn
+card	BubbleBubble	PoisonPower	PowerVar<PoisonPower>	1	upgrade		
+card	Buffer	BufferPower	PowerVar<BufferPower>	1	upgrade		
+card	BulkUp	OrbSlots	DynamicVar	0	unknown		
+card	BulkUp	StrengthPower	PowerVar<StrengthPower>	1	upgrade		triggerConstant
+card	BulkUp	DexterityPower	PowerVar<DexterityPower>	1	upgrade		triggerConstant
+card	Bully	CalculationBase	CalculationBaseVar	1	type		
+card	Bully	ExtraDamage	ExtraDamageVar	1	upgrade		
+card	Bully	CalculatedDamage	CalculatedDamageVar	0	derived		
+card	Bulwark	Block	BlockVar	1	upgrade		
+card	Bulwark	Forge	ForgeVar	1	upgrade		
+card	BundleOfJoy	Cards	CardsVar	1	upgrade		
+card	Burn	Damage	DamageVar	-1	hurts you		
+relic	BurningBlood	Heal	HealVar	1	type		triggerCombat
+card	BurningPact	Cards	CardsVar	1	upgrade		
+card	Burst	Skills	DynamicVar	1	upgrade		
+card	Bury	Damage	DamageVar	1	upgrade		
+card	ByrdSwoop	Damage	DamageVar	1	upgrade		
+relic	Byrdpip	Repeat	RepeatVar	0	not read		
+card	Cacophony	Cards	CardsVar	0	not read		
+card	Cacophony	Damage	DamageVar	1	upgrade		
+card	Calcify	CalcifyPower	PowerVar<CalcifyPower>	1	upgrade		triggerConstant
+card	CallOfTheVoid	Cards	CardsVar	1	type		
+relic	CallingBell	Relics	DynamicVar	0	not read		
+card	Caltrops	ThornsPower	PowerVar<ThornsPower>	1	upgrade		triggerTurn
+relic	Candelabra	Energy	EnergyVar	1	type		triggerCombat
+card	Capacitor	Repeat	RepeatVar	1	upgrade		
+relic	CaptainsWheel	Block	BlockVar	1	type		triggerCombat
+card	CaptureSpirit	Damage	DamageVar	1	upgrade		
+card	CaptureSpirit	Cards	CardsVar	1	upgrade		
+card	Catastrophe	Cards	CardsVar	1	upgrade		
+relic	Cauldron	Potions	DynamicVar	0	unknown		
+card	CelestialMight	Damage	DamageVar	1	type		
+card	CelestialMight	HitCount	HitCountVar	1	upgrade		
+relic	CentennialPuzzle	Cards	CardsVar	1	type		triggerTurn
+relic	Chandelier	Energy	EnergyVar	1	type		triggerCombat
+card	Chaos	Repeat	RepeatVar	1	upgrade		
+card	Charge	Cards	CardsVar	1	type		
+card	ChargeBattery	Block	BlockVar	1	upgrade		
+card	ChargeBattery	Energy	EnergyVar	1	type		
+relic	CharonsAshes	Damage	DamageVar	1	type		triggerOccasional
+relic	ChemicalX	Increase	DynamicVar	0	unknown		triggerConstant
+card	ChildOfTheStars	BlockForStars	DynamicVar	1	upgrade		
+card	ChoBarbs	Block	BlockVar	1	upgrade		
+card	ChoBarbs	ChoBarbsPower	PowerVar<ChoBarbsPower>	1	upgrade		
+card	ChoChorus	Block	BlockVar	1	upgrade		
+card	ChoFirm	Block	BlockVar	1	upgrade		
+card	ChoKi	Block	BlockVar	1	upgrade		
+card	ChoLimbs	Block	BlockVar	1	upgrade		
+card	ChoReady	Block	BlockVar	1	upgrade		
+card	ChoReady	AimPower	PowerVar<AimPower>	1	upgrade		triggerConstant
+relic	ChoicesParadox	Cards	CardsVar	1	type		triggerCombat
+relic	ChosenCheese	MaxHp	MaxHpVar	1	type	permanentGrowth	triggerCombat
+card	Cinder	Damage	DamageVar	1	upgrade		
+card	Clash	Damage	DamageVar	1	upgrade		
+card	Claw	Damage	DamageVar	1	upgrade		
+card	Claw	Increase	DynamicVar	1	upgrade		
+relic	Claws	Cards	CardsVar	0	only on pickup		
+card	Cleanse	Summon	SummonVar	1	upgrade		
+card	CloakAndDagger	Block	BlockVar	1	type		
+card	CloakAndDagger	Cards	CardsVar	1	upgrade		
+relic	CloakClasp	Block	BlockVar	1	type		triggerTurn
+card	CloakOfStars	Block	BlockVar	1	upgrade		
+card	Coda	Damage	DamageVar	1	upgrade		
+card	ColdSnap	Damage	DamageVar	1	upgrade		
+card	CollisionCourse	Damage	DamageVar	1	upgrade		
+card	Colossus	Block	BlockVar	1	upgrade		
+card	Colossus	Colossus	DynamicVar	0	unknown		
+card	Comet	Damage	DamageVar	1	upgrade		
+card	Comet	VulnerablePower	PowerVar<VulnerablePower>	1	power (debuff on enemy)		
+card	Comet	WeakPower	PowerVar<WeakPower>	1	power (debuff on enemy)		
+card	Compact	Block	BlockVar	1	upgrade		
+card	CompileDriver	Damage	DamageVar	1	upgrade		
+card	CompileDriver	CalculationBase	CalculationBaseVar	1	type		
+card	CompileDriver	CalculationExtra	CalculationExtraVar	1	type		
+card	CompileDriver	CalculatedCards	CalculatedVar	0	unknown		
+card	Compost	Energy	EnergyVar	1	upgrade		
+card	Concoct	ConcoctPower	PowerVar<ConcoctPower>	1	upgrade		triggerConstant
+card	Conflagration	Damage	DamageVar	1	type		
+card	Conflagration	HitCount	HitCountVar	1	upgrade		
+card	Conqueror	Forge	ForgeVar	1	upgrade		
+card	Constellation	Cards	CardsVar	1	type		
+card	Constellation	Energy	EnergyVar	1	type		
+card	Constellation	Block	BlockVar	1	upgrade		
+card	ConsumingShadow	Repeat	RepeatVar	1	upgrade		
+card	ConsumingShadow	ConsumingShadowPower	PowerVar<ConsumingShadowPower>	1	power (buff on self)		triggerTurn
+card	Convergence	Energy	EnergyVar	1	type		
+card	Convergence	Stars	StarsVar	1	upgrade		
+card	Coolant	CoolantPower	PowerVar<CoolantPower>	1	upgrade		triggerTurn
+card	Coolheaded	Cards	CardsVar	1	upgrade		
+card	Coordinate	StrengthPower	PowerVar<StrengthPower>	1	upgrade		triggerConstant
+card	CorrosiveWave	CorrosiveWave	DynamicVar	1	upgrade		
+card	Corruption	Power	DynamicVar	0	unknown		
+card	CosmicIndifference	Block	BlockVar	1	upgrade		
+card	Countdown	CountdownPower	PowerVar<CountdownPower>	1	upgrade		triggerTurn
+card	CoveringFire	CoveringFirePower	PowerVar<CoveringFirePower>	1	upgrade		triggerTurn
+relic	CrackedCore	Lightning	DynamicVar	0	unknown		triggerCombat
+card	CrashLanding	Damage	DamageVar	1	upgrade		
+card	CreativeAi	CreativeAi	DynamicVar	0	unknown		
+card	CrescentSpear	CalculationBase	CalculationBaseVar	1	type		
+card	CrescentSpear	ExtraDamage	ExtraDamageVar	1	upgrade		
+card	CrescentSpear	CalculatedDamage	CalculatedDamageVar	0	derived		
+card	CrimsonMantle	CrimsonMantlePower	PowerVar<CrimsonMantlePower>	1	upgrade		triggerTurn
+card	Cruelty	CrueltyPower	PowerVar<CrueltyPower>	1	upgrade		
+card	CrushUnder	Damage	DamageVar	1	upgrade		
+card	CrushUnder	StrengthLoss	DynamicVar	1	upgrade		
+relic	CursedPearl	Gold	GoldVar	0	only on pickup		
+card	DaggerSpray	Damage	DamageVar	1	upgrade		
+card	DaggerSpray	HitCount	HitCountVar	1	type		
+card	DaggerThrow	Damage	DamageVar	1	upgrade		
+card	DanseMacabre	DanseMacabrePower	PowerVar<DanseMacabrePower>	1	upgrade		triggerConstant
+card	DanseMacabre	Energy	EnergyVar	0	not read		
+card	DarkShackles	StrengthLoss	DynamicVar	1	upgrade		
+relic	DarkstonePeriapt	MaxHp	MaxHpVar	1	type	permanentGrowth	triggerConstant
+card	Dash	Damage	DamageVar	1	upgrade		
+card	Dash	Block	BlockVar	1	upgrade		
+relic	DataDisk	FocusPower	PowerVar<FocusPower>	1	power (buff on self)		triggerTurn
+relic	DaughterOfTheWind	Block	BlockVar	1	type		triggerConstant
+card	DeadlyPoison	PoisonPower	PowerVar<PoisonPower>	1	upgrade		
+card	Death	DoomPower	PowerVar<DoomPower>	1	upgrade		
+card	DeathMarch	CalculationBase	CalculationBaseVar	1	upgrade		
+card	DeathMarch	ExtraDamage	ExtraDamageVar	1	upgrade		
+card	DeathMarch	CalculatedDamage	CalculatedDamageVar	0	derived		
+card	Deathbringer	DoomPower	PowerVar<DoomPower>	1	upgrade		
+card	Deathbringer	WeakPower	PowerVar<WeakPower>	1	power (debuff on enemy)		
+card	DeathsDoor	Block	BlockVar	1	upgrade		
+card	DeathsDoor	Repeat	RepeatVar	1	type		
+card	Debilitate	Damage	DamageVar	1	upgrade		
+card	Debilitate	DebilitatePower	PowerVar<DebilitatePower>	1	upgrade		
+card	Debt	Gold	GoldVar	1	type		
+card	Decay	Damage	DamageVar	-1	hurts you		
+card	DecisionsDecisions	Cards	CardsVar	1	upgrade		
+card	DecisionsDecisions	Repeat	RepeatVar	1	type		
+card	DeepStretch	Cards	CardsVar	1	type		
+card	DeepStretch	StretchPower	PowerVar<StretchPower>	1	upgrade		triggerConstant
+card	DefendDefect	Block	BlockVar	1	upgrade		
+card	DefendFool	Block	BlockVar	1	upgrade		
+card	DefendIronclad	Block	BlockVar	1	upgrade		
+card	DefendNecrobinder	Block	BlockVar	1	upgrade		
+card	DefendRegent	Block	BlockVar	1	upgrade		
+card	DefendSilent	Block	BlockVar	1	upgrade		
+card	Defile	Damage	DamageVar	1	upgrade		
+card	Deflect	Block	BlockVar	1	upgrade		
+card	Defragment	FocusPower	PowerVar<FocusPower>	1	upgrade		triggerTurn
+card	Defy	Block	BlockVar	1	upgrade		
+card	Defy	WeakPower	PowerVar<WeakPower>	1	power (debuff on enemy)		
+card	Delay	Block	BlockVar	1	upgrade		
+card	Delay	Energy	EnergyVar	1	upgrade		
+card	Demesne	Energy	EnergyVar	0	not read		
+card	Demesne	Cards	CardsVar	1	type		
+card	DemonForm	StrengthPower	PowerVar<StrengthPower>	1	upgrade		triggerConstant
+card	DemonicShield	CalculationBase	CalculationBaseVar	1	type		
+card	DemonicShield	HpLoss	HpLossVar	-1	hurts you		
+card	DemonicShield	CalculationExtra	CalculationExtraVar	1	type		
+card	DemonicShield	CalculatedBlock	CalculatedBlockVar	0	derived		
+card	Devastate	Damage	DamageVar	1	upgrade		
+card	DevourLife	DevourLifePower	PowerVar<DevourLifePower>	1	upgrade		triggerConstant
+relic	DiamondDiadem	Block	BlockVar	1	type		triggerCombat
+card	DingyDagger	Damage	DamageVar	1	upgrade		
+card	Dirge	Summon	SummonVar	1	upgrade		
+card	Disintegration	DisintegrationPower	PowerVar<DisintegrationPower>	-1	power (debuff on self)		triggerTurn
+card	DislikeYou	Damage	DamageVar	1	upgrade		
+card	DislikeYou	DislikeYouPower	PowerVar<DislikeYouPower>	1	upgrade		triggerConstant
+card	Dismantle	Damage	DamageVar	1	upgrade		
+card	Dismantle	HitCount	HitCountVar	1	type		
+relic	DistinguishedCape	Curses	DynamicVar	0	only on pickup		
+relic	DistinguishedCape	Cards	CardsVar	0	only on pickup		
+relic	DivineDestiny	Stars	StarsVar	1	type		triggerCombat
+relic	DivineRight	Stars	StarsVar	1	type		triggerRun
+card	DivineShot	Damage	DamageVar	1	upgrade		
+card	DodgeAndRoll	Block	BlockVar	1	upgrade		
+card	Dominate	VulnerablePower	PowerVar<VulnerablePower>	1	upgrade		
+card	Dominate	StrengthPerVulnerable	DynamicVar	0	not read		
+card	Doubt	WeakPower	PowerVar<WeakPower>	-1	power (debuff on self)		
+card	Dowsing	Rooms	DynamicVar	0	unknown		
+relic	DragonFruit	MaxHp	MaxHpVar	1	type	permanentGrowth	triggerRun
+card	DrainPower	Damage	DamageVar	1	upgrade		
+card	DrainPower	Cards	CardsVar	1	upgrade		
+card	DramaticEntrance	Damage	DamageVar	1	upgrade		
+card	Dredge	Cards	CardsVar	1	type		
+card	DrumOfBattle	Cards	CardsVar	1	type		
+card	DrumOfBattle	Energy	EnergyVar	1	upgrade		
+card	DualWield	Cards	CardsVar	1	upgrade		
+card	DyingStar	Damage	DamageVar	1	upgrade		
+card	DyingStar	StrengthLoss	DynamicVar	1	upgrade		
+card	EchoForm	EchoForm	DynamicVar	0	unknown		
+card	EchoingSlash	Damage	DamageVar	1	upgrade		
+card	Ecstasy	Cards	CardsVar	1	type		
+relic	Ectoplasm	Energy	EnergyVar	1	type	persistentEnergy	triggerTurn
+relic	EmberTea	Combats	DynamicVar	0	unknown		
+relic	EmberTea	StrengthPower	PowerVar<StrengthPower>	1	power (buff on self)		triggerConstant
+relic	EmptyCage	Cards	CardsVar	0	only on pickup		
+card	Encore	Energy	EnergyVar	1	type		
+card	Encore	Cards	CardsVar	1	upgrade		
+card	Encore	EncorePower	PowerVar<EncorePower>	-1	power (debuff on self)		triggerConstant
+card	EndOfDays	DoomPower	PowerVar<DoomPower>	1	upgrade		
+card	EnergySurge	Energy	EnergyVar	1	upgrade		
+card	EnfeeblingTouch	StrengthLoss	DynamicVar	1	upgrade		
+card	Ennui	EnnuiPower	PowerVar<EnnuiPower>	1	upgrade		triggerTurn
+card	Enrapture	VigorPower	PowerVar<VigorPower>	1	upgrade		triggerConstant
+card	Enrapture	StretchPower	PowerVar<StretchPower>	1	upgrade		triggerConstant
+card	Ensemble	Cards	CardsVar	1	upgrade		
+card	Entropy	Cards	CardsVar	1	type		
+card	Envenom	EnvenomPower	PowerVar<EnvenomPower>	1	upgrade		triggerConstant
+card	EpicRetrieval	Damage	DamageVar	1	upgrade		
+card	EpicRetrieval	Energy	EnergyVar	1	upgrade		
+card	Equilibrium	Block	BlockVar	1	upgrade		
+card	Equilibrium	Equilibrium	DynamicVar	0	unknown		
+card	Eradicate	Damage	DamageVar	1	upgrade		
+card	EscapePlan	Block	BlockVar	1	upgrade		
+card	EternalArmor	PlatingPower	PowerVar<PlatingPower>	1	upgrade		triggerTurn
+relic	EternalFeather	Cards	CardsVar	-1	every N / threshold		triggerRun
+relic	EternalFeather	Heal	HealVar	1	type		triggerRun
+card	EvilEye	Block	BlockVar	1	upgrade		
+relic	ExerciseMat	StretchPower	PowerVar<StretchPower>	1	power (buff on self)		triggerConstant
+card	ExpectAFight	Block	BlockVar	1	upgrade		
+card	ExpectAFight	Energy	EnergyVar	1	type		
+card	Expertise	Cards	CardsVar	1	upgrade		
+card	ExplosiveArrows	ExplosiveArrowsPower	PowerVar<ExplosiveArrowsPower>	1	upgrade		triggerTurn
+card	Expose	Power	DynamicVar	1	upgrade		
+card	Exterminate	Damage	DamageVar	1	upgrade		
+card	Exterminate	HitCount	HitCountVar	1	type		
+card	Fade	DexterityPower	PowerVar<DexterityPower>	1	upgrade		triggerConstant
+relic	FakeAnchor	Block	BlockVar	1	type		triggerCombat
+relic	FakeBloodVial	Heal	HealVar	1	type		triggerCombat
+relic	FakeHappyFlower	Energy	EnergyVar	1	type		
+relic	FakeHappyFlower	Turns	DynamicVar	-1	every N / threshold		triggerCombat
+relic	FakeLeesWaffle	Heal	HealVar	0	only on pickup		
+relic	FakeMango	MaxHp	MaxHpVar	0	only on pickup		
+relic	FakeOrichalcum	Block	BlockVar	1	type		triggerTurn
+relic	FakeStrikeDummy	ExtraDamage	DynamicVar	0	unknown		triggerConstant
+relic	FakeVenerableTeaSet	Energy	EnergyVar	1	type		triggerTurn
+card	FallingStar	Damage	DamageVar	1	upgrade		
+card	FallingStar	VulnerablePower	PowerVar<VulnerablePower>	1	power (debuff on enemy)		
+card	FallingStar	WeakPower	PowerVar<WeakPower>	1	power (debuff on enemy)		
+card	FanOfKnives	Shivs	CardsVar	1	upgrade		
+card	Fasten	ExtraBlock	DynamicVar	1	upgrade		
+card	Fear	Damage	DamageVar	1	upgrade		
+card	Fear	VulnerablePower	PowerVar<VulnerablePower>	1	upgrade		
+card	Feed	Damage	DamageVar	1	upgrade		
+card	Feed	MaxHp	MaxHpVar	1	upgrade	permanentGrowth	
+card	FeedingFrenzy	StrengthPower	PowerVar<StrengthPower>	1	upgrade		triggerConstant
+card	FeelNoPain	Power	DynamicVar	1	upgrade		
+relic	FencingManual	Forge	ForgeVar	1	type		triggerCombat
+card	Feral	FeralPower	PowerVar<FeralPower>	1	power (buff on self)		triggerConstant
+relic	Fertilizer	StrengthPower	PowerVar<StrengthPower>	1	power (buff on self)		triggerConstant
+relic	FestivePopper	Damage	DamageVar	1	type		triggerCombat
+card	Fetch	OstyDamage	OstyDamageVar	1	upgrade		
+card	Fetch	Cards	CardsVar	1	type		
+relic	Fiddle	Cards	CardsVar	1	type	persistentDraw	triggerTurn
+card	FiendFire	Damage	DamageVar	1	upgrade		
+card	FiendFire	CalculationBase	CalculationBaseVar	1	type		
+card	FiendFire	CalculationExtra	CalculationExtraVar	1	type		
+card	FiendFire	CalculatedHits	CalculatedHitCountVar	0	not read		
+card	FightMe	Damage	DamageVar	1	upgrade		
+card	FightMe	HitCount	HitCountVar	1	type		
+card	FightMe	StrengthPower	PowerVar<StrengthPower>	1	upgrade		triggerConstant
+card	FightMe	EnemyStrength	DynamicVar	0	unknown		
+card	FightThrough	Block	BlockVar	1	upgrade		
+card	Finesse	Block	BlockVar	1	upgrade		
+card	Finesse	Cards	CardsVar	1	type		
+card	Finisher	Damage	DamageVar	1	upgrade		
+card	Finisher	CalculationBase	CalculationBaseVar	1	type		
+card	Finisher	CalculationExtra	CalculationExtraVar	1	type		
+card	Finisher	CalculatedHits	CalculatedHitCountVar	0	unknown		
+relic	FishingRod	Combats	DynamicVar	-1	every N / threshold		triggerCombat
+card	Fisticuffs	Damage	DamageVar	1	upgrade		
+card	FlakCannon	Damage	DamageVar	1	upgrade		
+card	FlakCannon	CalculationBase	CalculationBaseVar	1	type		
+card	FlakCannon	CalculationExtra	CalculationExtraVar	1	type		
+card	FlakCannon	CalculatedHits	CalculatedHitCountVar	0	unknown		
+card	FlameBarrier	Block	BlockVar	1	upgrade		
+card	FlameBarrier	DamageBack	DynamicVar	1	upgrade		
+card	FlashOfSteel	Damage	DamageVar	1	upgrade		
+card	FlashOfSteel	Cards	CardsVar	1	type		
+card	Flatten	OstyDamage	OstyDamageVar	1	upgrade		
+card	Flechettes	Damage	DamageVar	1	upgrade		
+card	Flechettes	CalculationBase	CalculationBaseVar	1	type		
+card	Flechettes	CalculationExtra	CalculationExtraVar	1	type		
+card	Flechettes	CalculatedHits	CalculatedHitCountVar	0	unknown		
+card	FlickFlack	Damage	DamageVar	1	upgrade		
+card	FocusedStrike	Damage	DamageVar	1	upgrade		
+card	FocusedStrike	FocusPower	PowerVar<FocusPower>	1	upgrade		triggerTurn
+card	FoolishShot	Damage	DamageVar	1	upgrade		
+card	Footwork	DexterityPower	PowerVar<DexterityPower>	1	upgrade		triggerConstant
+card	ForegoneConclusion	Cards	CardsVar	1	upgrade		
+card	ForgottenRitual	Energy	EnergyVar	1	upgrade		
+relic	ForgottenSoul	Damage	DamageVar	1	type		triggerOccasional
+relic	FragrantMushroom	HpLoss	HpLossVar	0	only on pickup		
+relic	FragrantMushroom	Cards	CardsVar	0	only on pickup		
+relic	FresnelLens	NimbleAmount	DynamicVar	0	unknown		
+card	Friendship	StrengthPower	PowerVar<StrengthPower>	-1	upgrade		triggerConstant
+card	Friendship	Energy	EnergyVar	1	type		
+card	Ftl	Damage	DamageVar	1	upgrade		
+card	Ftl	PlayMax	IntVar	1	upgrade		
+card	Ftl	Cards	CardsVar	1	type		
+card	Fuel	Energy	EnergyVar	1	upgrade		
+relic	FuneraryMask	Cards	CardsVar	1	type		triggerCombat
+relic	FurCoat	Combats	DynamicVar	0	unknown		
+card	Furnace	Forge	ForgeVar	1	upgrade		
+relic	GalacticDust	Stars	StarsVar	-1	every N / threshold		triggerTurn
+relic	GalacticDust	Block	BlockVar	1	type		triggerTurn
+relic	GamePiece	Cards	CardsVar	1	type		triggerConstant
+card	GammaBlast	Damage	DamageVar	1	upgrade		
+card	GammaBlast	VulnerablePower	PowerVar<VulnerablePower>	1	power (debuff on enemy)		
+card	GammaBlast	WeakPower	PowerVar<WeakPower>	1	power (debuff on enemy)		
+card	GangUp	CalculationBase	CalculationBaseVar	1	type		
+card	GangUp	ExtraDamage	ExtraDamageVar	1	upgrade		
+card	GangUp	CalculatedDamage	CalculatedDamageVar	0	derived		
+card	GatherLight	Block	BlockVar	1	upgrade		
+card	GatherLight	Stars	StarsVar	1	type		
+card	Genesis	StarsPerTurn	DynamicVar	1	upgrade		
+card	GeneticAlgorithm	Block	BlockVar	1	type		
+card	GeneticAlgorithm	Increase	IntVar	1	upgrade		
+card	GiantRock	Damage	DamageVar	1	upgrade		
+card	Glacier	Block	BlockVar	1	upgrade		
+card	Glasswork	Block	BlockVar	1	upgrade		
+card	Glimmer	Cards	CardsVar	1	upgrade		
+card	Glimmer	PutBack	DynamicVar	0	unknown		
+card	GlimpseBeyond	Cards	CardsVar	1	upgrade		
+card	Glitterstream	Block	BlockVar	1	upgrade		
+card	Glitterstream	BlockNextTurn	BlockVar	1	upgrade		
+card	Glow	Stars	StarsVar	1	upgrade		
+card	Glow	Cards	CardsVar	1	type		
+relic	GnarledHammer	Cards	CardsVar	0	only on pickup		
+relic	GnarledHammer	SharpAmount	DynamicVar	0	unknown		
+card	GoForTheEyes	Damage	DamageVar	1	upgrade		
+card	GoForTheEyes	WeakPower	PowerVar<WeakPower>	1	upgrade		
+card	GodByrd	Damage	DamageVar	1	upgrade		
+card	GoldAxe	CalculationBase	CalculationBaseVar	1	type		
+card	GoldAxe	ExtraDamage	ExtraDamageVar	1	type		
+card	GoldAxe	CalculatedDamage	CalculatedDamageVar	0	derived		
+relic	GoldenPearl	Gold	GoldVar	0	only on pickup		
+relic	Gorget	PlatingPower	PowerVar<PlatingPower>	1	power (buff on self)		triggerTurn
+card	GrandFinale	Damage	DamageVar	1	upgrade		
+card	GraveWarden	Block	BlockVar	1	upgrade		
+card	GraveWarden	Cards	CardsVar	1	type		
+card	Graveblast	Damage	DamageVar	1	upgrade		
+relic	GremlinHorn	Energy	EnergyVar	1	type		triggerOccasional
+relic	GremlinHorn	Cards	CardsVar	1	type		triggerOccasional
+card	Growth	Block	BlockVar	1	upgrade		
+card	GuidingStar	Damage	DamageVar	1	upgrade		
+card	GuidingStar	Cards	CardsVar	1	upgrade		
+card	Guilty	Combats	DynamicVar	0	unknown		
+card	GunkUp	Damage	DamageVar	1	upgrade		
+card	GunkUp	HitCount	HitCountVar	1	type		
+card	Hailstorm	HailstormPower	PowerVar<HailstormPower>	1	upgrade		triggerTurn
+relic	HandDrill	VulnerablePower	PowerVar<VulnerablePower>	0	power (target unclear)		
+card	HandOfGreed	Damage	DamageVar	1	upgrade		
+card	HandOfGreed	Gold	DynamicVar	1	upgrade		
+card	HandTrick	Block	BlockVar	1	upgrade		
+card	Hang	Damage	DamageVar	1	upgrade		
+relic	HappyFlower	Energy	EnergyVar	1	type		
+relic	HappyFlower	Turns	DynamicVar	-1	every N / threshold		triggerCombat
+card	HarmonicShield	CalculationBase	CalculationBaseVar	1	upgrade		
+card	HarmonicShield	CalculationExtra	CalculationExtraVar	1	upgrade		
+card	HarmonicShield	CalculatedBlock	CalculatedBlockVar	0	derived		
+card	Haunt	HpLoss	HpLossVar	1	upgrade		
+card	Haze	PoisonPower	PowerVar<PoisonPower>	1	upgrade		
+card	Haze	WeakPower	PowerVar<WeakPower>	1	upgrade		
+card	Headbutt	Damage	DamageVar	1	upgrade		
+card	HeavenlyDrill	Damage	DamageVar	1	upgrade		
+card	HeavenlyDrill	Energy	EnergyVar	0	compared (threshold or limit?)		
+card	HeavyShot	Damage	DamageVar	1	upgrade		
+card	HeavyShot	AimMultiplier	DynamicVar	1	upgrade		
+relic	HeftyTablet	Cards	CardsVar	0	only on pickup		
+card	Hegemony	Damage	DamageVar	1	upgrade		
+card	Hegemony	Energy	EnergyVar	1	upgrade		
+card	HeirloomHammer	Damage	DamageVar	1	upgrade		
+card	HeirloomHammer	Repeat	RepeatVar	1	type		
+relic	HelicalDart	DexterityPower	PowerVar<DexterityPower>	0	power (target unclear)		triggerConstant
+card	HelixDrill	Damage	DamageVar	1	upgrade		
+card	HelixDrill	CalculationBase	CalculationBaseVar	1	type		
+card	HelixDrill	CalculationExtra	CalculationExtraVar	1	type		
+card	HelixDrill	CalculatedHits	CalculatedHitCountVar	0	unknown		
+card	Hemokinesis	HpLoss	HpLossVar	-1	hurts you		
+card	Hemokinesis	Damage	DamageVar	1	upgrade		
+card	Hibernate	Repeat	RepeatVar	1	upgrade		
+card	HiddenCache	Stars	StarsVar	1	type		
+card	HiddenCache	StarNextTurnPower	PowerVar<StarNextTurnPower>	1	upgrade		triggerTurn
+card	HiddenDaggers	Cards	CardsVar	1	type		
+card	HiddenDaggers	Shivs	DynamicVar	0	unknown		
+card	HiddenGem	Replay	IntVar	1	upgrade		
+card	HiddenRoots	HiddenRootsPower	PowerVar<HiddenRootsPower>	1	upgrade		triggerTurn
+card	HighFive	OstyDamage	OstyDamageVar	1	upgrade		
+card	HighFive	VulnerablePower	PowerVar<VulnerablePower>	1	upgrade		
+card	HobblingShot	Damage	DamageVar	1	upgrade		
+card	HobblingShot	Power	DynamicVar	1	upgrade		
+card	Hologram	Block	BlockVar	1	upgrade		
+card	Honing	HoningPower	PowerVar<HoningPower>	1	power (buff on self)		triggerConstant
+relic	HornCleat	Block	BlockVar	1	type		triggerCombat
+card	Hotfix	FocusPower	PowerVar<FocusPower>	0	power (target unclear)		triggerTurn
+card	HowlFromBeyond	Damage	DamageVar	1	upgrade		
+card	HuddleUp	Cards	CardsVar	1	upgrade		
+card	Hyperbeam	Damage	DamageVar	1	upgrade		
+card	Hyperbeam	FocusPower	PowerVar<FocusPower>	0	power (target unclear)		triggerTurn
+card	IAmInvincible	Block	BlockVar	1	upgrade		
+card	IceLance	Damage	DamageVar	1	upgrade		
+card	IceLance	Repeat	RepeatVar	1	type		
+card	ImitationLearning	ImitationLearningPower	PowerVar<ImitationLearningPower>	1	upgrade		
+card	Impatience	Cards	CardsVar	1	upgrade		
+card	Impervious	Block	BlockVar	1	upgrade		
+card	Infection	Damage	DamageVar	-1	hurts you		
+card	Inferno	InfernoPower	PowerVar<InfernoPower>	1	upgrade		triggerTurn
+card	Inflame	StrengthPower	PowerVar<StrengthPower>	1	upgrade		triggerConstant
+relic	InfusedCore	Lightning	DynamicVar	0	unknown		triggerCombat
+relic	InfusedCore	ExtraDamage	DynamicVar	0	unknown		triggerTurn
+card	Intercept	Block	BlockVar	1	upgrade		
+relic	IntimidatingHelmet	Block	BlockVar	1	type		triggerConstant
+relic	IntimidatingHelmet	Energy	EnergyVar	0	compared (threshold or limit?)		triggerConstant
+card	Invoke	Summon	SummonVar	1	upgrade		
+card	Invoke	Energy	EnergyVar	1	upgrade		
+relic	IronClub	Cards	CardsVar	-1	every N / threshold		triggerConstant
+card	IronWave	Damage	DamageVar	1	upgrade		
+card	IronWave	Block	BlockVar	1	upgrade		
+card	Iteration	IterationPower	PowerVar<IterationPower>	1	upgrade		triggerConstant
+relic	IvoryTile	Energy	EnergyVar	1	type		triggerConstant
+relic	IvoryTile	EnergyThreshold	EnergyVar	0	compared (threshold or limit?)		triggerConstant
+card	JackOfAllTrades	Cards	CardsVar	1	upgrade		
+card	Jackpot	Damage	DamageVar	1	upgrade		
+card	Jackpot	Cards	CardsVar	1	type		
+card	Jest	Block	BlockVar	1	upgrade		
+card	Jest	Cards	CardsVar	1	type		
+relic	JossPaper	ExhaustAmount	DynamicVar	-1	every N / threshold		
+relic	JossPaper	Cards	CardsVar	0	not read		
+card	Joy	Energy	EnergyVar	1	upgrade		
+card	Joy	Cards	CardsVar	1	type		
+card	Judgement	Threshold	IntVar	1	upgrade		
+card	Juggernaut	JuggernautPower	PowerVar<JuggernautPower>	1	upgrade		triggerConstant
+card	Justice	Damage	DamageVar	1	upgrade		
+relic	Kaleidoscope	Cards	CardsVar	0	only on pickup		
+card	KiChant	Cards	CardsVar	1	upgrade		
+card	KiHop	Damage	DamageVar	1	upgrade		
+card	KiHop	Cards	CardsVar	1	upgrade		
+card	KiRest	Energy	EnergyVar	1	upgrade		
+card	KiVerse	KiVersePower	PowerVar<KiVersePower>	1	upgrade		
+card	KiWhip	Damage	DamageVar	1	upgrade		
+card	KiWhip	Energy	EnergyVar	1	upgrade		
+relic	Kifuda	Cards	CardsVar	0	only on pickup		
+card	KinglyKick	Damage	DamageVar	1	upgrade		
+card	KinglyPunch	Damage	DamageVar	1	upgrade		
+card	KinglyPunch	Increase	DynamicVar	1	upgrade		
+card	KnifeTrap	CalculationBase	CalculationBaseVar	1	type		
+card	KnifeTrap	CalculationExtra	CalculationExtraVar	1	type		
+card	KnifeTrap	CalculatedShivs	CalculatedVar	0	not read		
+card	Knockdown	Damage	DamageVar	1	upgrade		
+card	Knockdown	KnockdownPower	PowerVar<KnockdownPower>	1	upgrade		triggerConstant
+card	KnockoutBlow	Damage	DamageVar	1	upgrade		
+card	KnockoutBlow	Stars	StarsVar	1	type		
+card	KnowThyPlace	WeakPower	PowerVar<WeakPower>	1	power (debuff on enemy)		
+card	KnowThyPlace	VulnerablePower	PowerVar<VulnerablePower>	1	power (debuff on enemy)		
+relic	Kunai	Cards	CardsVar	-1	every N / threshold		triggerConstant
+relic	Kunai	DexterityPower	PowerVar<DexterityPower>	1	power (buff on self)		triggerConstant
+relic	Kusarigama	Cards	CardsVar	-1	every N / threshold		triggerConstant
+relic	Kusarigama	Damage	DamageVar	1	type		triggerConstant
+relic	Lantern	Energy	EnergyVar	1	type		triggerCombat
+relic	LargeCapsule	Relics	IntVar	0	only on pickup		
+relic	LavaRock	Relics	DynamicVar	0	unknown		triggerRun
+card	LeadingStrike	Shivs	CardsVar	1	type		
+card	LeadingStrike	Damage	DamageVar	1	upgrade		
+relic	LeafyPoultice	MaxHp	MaxHpVar	0	only on pickup		
+card	Leap	Block	BlockVar	1	upgrade		
+relic	LeesWaffle	MaxHp	MaxHpVar	0	only on pickup		
+card	LegSweep	Block	BlockVar	1	upgrade		
+card	LegSweep	WeakPower	PowerVar<WeakPower>	1	upgrade		
+card	LegionOfBone	Summon	SummonVar	1	upgrade		
+card	Lethality	LethalityPower	PowerVar<LethalityPower>	1	upgrade		triggerConstant
+relic	LetterOpener	Cards	CardsVar	-1	every N / threshold		triggerConstant
+relic	LetterOpener	Damage	DamageVar	1	type		triggerConstant
+card	Lift	Block	BlockVar	1	upgrade		
+card	LightningRod	Block	BlockVar	1	upgrade		
+card	LightningRod	LightningRodPower	PowerVar<LightningRodPower>	1	power (buff on self)		
+relic	LizardTail	Heal	HealVar	1	type		triggerOccasional
+relic	LoomingFruit	MaxHp	MaxHpVar	0	only on pickup		
+card	Loop	Loop	DynamicVar	1	upgrade		
+card	LostLute	LostLutePower	PowerVar<LostLutePower>	1	power (buff on self)		triggerConstant
+relic	LostWisp	Damage	DamageVar	1	type		triggerConstant
+relic	LuckyFysh	Gold	GoldVar	1	type		triggerConstant
+card	Lullaby	LullabyPower	PowerVar<LullabyPower>	1	upgrade		triggerConstant
+card	Luminesce	Energy	EnergyVar	1	upgrade		
+card	LunarBlast	Damage	DamageVar	1	upgrade		
+card	LunarBlast	CalculationBase	CalculationBaseVar	1	type		
+card	LunarBlast	CalculationExtra	CalculationExtraVar	1	type		
+card	LunarBlast	CalculatedHits	CalculatedHitCountVar	0	unknown		
+relic	LunarPastry	Stars	StarsVar	1	type		triggerTurn
+card	MachineLearning	Cards	CardsVar	1	type		
+card	MadScience	Damage	DamageVar	1	type		
+card	MadScience	Block	BlockVar	1	type		
+card	MadScience	SappingWeak	PowerVar<WeakPower>	0	power (target unclear)		
+card	MadScience	SappingVulnerable	PowerVar<VulnerablePower>	0	power (target unclear)		
+card	MadScience	ViolenceHits	HitCountVar	1	type		
+card	MadScience	ChokingDamage	PowerVar<StranglePower>	0	power (target unclear)		triggerConstant
+card	MadScience	EnergizedEnergy	EnergyVar	1	type		
+card	MadScience	WisdomCards	CardsVar	1	type		
+card	MadScience	ExpertiseStrength	PowerVar<StrengthPower>	1	power (buff on self)		triggerConstant
+card	MadScience	ExpertiseDexterity	PowerVar<DexterityPower>	1	power (buff on self)		triggerConstant
+card	MadScience	CuriousReduction	DynamicVar	0	unknown		
+card	MakeItSo	Damage	DamageVar	1	upgrade		
+card	MakeItSo	Cards	CardsVar	-1	every N / threshold		
+card	Mangle	Damage	DamageVar	1	upgrade		
+card	Mangle	StrengthLoss	DynamicVar	1	upgrade		
+relic	Mango	MaxHp	MaxHpVar	0	only on pickup		
+card	ManifestAuthority	Block	BlockVar	1	upgrade		
+card	MasterOfStrategy	Cards	CardsVar	1	upgrade		
+card	Maul	Damage	DamageVar	1	upgrade		
+card	Maul	HitCount	HitCountVar	1	type		
+card	Maul	Increase	DynamicVar	1	upgrade		
+relic	MawBank	Gold	GoldVar	1	type		triggerRun
+relic	MealTicket	Heal	HealVar	1	type		triggerRun
+relic	MeatOnTheBone	HpThreshold	DynamicVar	0	unknown		
+relic	MeatOnTheBone	Heal	HealVar	1	type		triggerCombat
+card	Melancholy	Block	BlockVar	1	upgrade		
+card	Melancholy	Energy	EnergyVar	1	type		
+card	MelodicShot	Damage	DamageVar	1	upgrade		
+card	MelodicShot	CalculationBase	CalculationBaseVar	1	type		
+card	MelodicShot	CalculationExtra	CalculationExtraVar	1	type		
+card	MelodicShot	CalculatedHits	CalculatedHitCountVar	0	unknown		
+relic	MembershipCard	Discount	DynamicVar	0	unknown		triggerRun
+card	MementoMori	Damage	DamageVar	1	upgrade		
+relic	MercuryHourglass	Damage	DamageVar	1	type		triggerTurn
+card	Metamorphosis	Cards	CardsVar	1	upgrade		
+card	MeteorShower	Damage	DamageVar	1	upgrade		
+card	MeteorShower	VulnerablePower	PowerVar<VulnerablePower>	1	power (debuff on enemy)		
+card	MeteorShower	WeakPower	PowerVar<WeakPower>	1	power (debuff on enemy)		
+card	MeteorStrike	Damage	DamageVar	1	upgrade		
+relic	Metronome	Damage	DamageVar	1	type		triggerTurn
+relic	Metronome	OrbCount	DynamicVar	0	compared (threshold or limit?)		triggerTurn
+card	Midnight	Damage	DamageVar	1	upgrade		
+card	MightyShield	Block	BlockVar	1	upgrade		
+card	MightyShield	Cards	CardsVar	1	type		
+card	MightyWeapon	Damage	DamageVar	1	upgrade		
+card	MightyWeapon	Cards	CardsVar	1	type		
+relic	MightyWings	DamageThreshold	DynamicVar	0	compared (threshold or limit?)		triggerConstant
+relic	MightyWings	StrengthPower	PowerVar<StrengthPower>	1	power (buff on self)		triggerConstant
+card	Mimic	CalculationBase	CalculationBaseVar	1	type		
+card	Mimic	CalculationExtra	CalculationExtraVar	1	type		
+card	Mimic	CalculatedBlock	CalculatedBlockVar	0	derived		
+card	MindBlast	CalculationBase	CalculationBaseVar	1	type		
+card	MindBlast	ExtraDamage	ExtraDamageVar	1	type		
+card	MindBlast	CalculatedDamage	CalculatedDamageVar	0	derived		
+card	MindRot	MindRotPower	PowerVar<MindRotPower>	-1	power (debuff on self)		triggerTurn
+relic	MiniRegent	StrengthPower	PowerVar<StrengthPower>	1	power (buff on self)		triggerConstant
+relic	MiniatureCannon	ExtraDamage	DynamicVar	0	unknown		triggerConstant
+card	MinionDiveBomb	Damage	DamageVar	1	upgrade		
+card	MinionSacrifice	Block	BlockVar	1	upgrade		
+card	MinionStrike	Damage	DamageVar	1	upgrade		
+card	MinionStrike	Cards	CardsVar	1	type		
+card	Mirage	CalculationBase	CalculationBaseVar	1	type		
+card	Mirage	CalculationExtra	CalculationExtraVar	1	type		
+card	Mirage	CalculatedBlock	CalculatedBlockVar	0	derived		
+card	Misery	Damage	DamageVar	1	upgrade		
+card	Modded	Repeat	RepeatVar	1	type		
+card	Modded	Cards	CardsVar	1	upgrade		
+card	MoltenFist	Damage	DamageVar	1	upgrade		
+card	MomentumStrike	Damage	DamageVar	1	upgrade		
+card	MonarchsGaze	StrengthLoss	DynamicVar	0	unknown		
+card	Monologue	Power	DynamicVar	0	unknown		
+card	Motif	MotifPower	PowerVar<MotifPower>	1	power (buff on self)		triggerConstant
+card	MourningBlow	Damage	DamageVar	1	upgrade		
+card	Murder	CalculationBase	CalculationBaseVar	1	type		
+card	Murder	ExtraDamage	ExtraDamageVar	1	type		
+card	Murder	CalculatedDamage	CalculatedDamageVar	0	derived		
+card	MyShinies	Damage	DamageVar	1	upgrade		
+card	MyShinies	CalculationBase	CalculationBaseVar	1	type		
+card	MyShinies	Gold	GoldVar	-1	every N / threshold		
+card	MyShinies	CalculationExtra	CalculationExtraVar	1	type		
+card	MyShinies	CalculatedHits	CalculatedHitCountVar	0	unknown		
+relic	MysticLighter	Damage	DamageVar	1	type		triggerConstant
+card	Nail	Damage	DamageVar	1	upgrade		
+card	Nail	Power	DynamicVar	1	upgrade		
+card	NecroMastery	Summon	SummonVar	1	upgrade		
+card	NegativePulse	Block	BlockVar	1	upgrade		
+card	NegativePulse	DoomPower	PowerVar<DoomPower>	1	upgrade		
+relic	NeowsBones	Relics	DynamicVar	0	only on pickup		
+relic	NeowsBones	Curses	DynamicVar	0	only on pickup		
+card	NeowsFury	Damage	DamageVar	1	upgrade		
+card	NeowsFury	Cards	CardsVar	1	upgrade		
+card	Neurosurge	NeurosurgePower	PowerVar<NeurosurgePower>	-1	power (debuff on self)		triggerTurn
+card	Neurosurge	Energy	EnergyVar	1	upgrade		
+card	Neurosurge	Cards	CardsVar	1	type		
+card	Neutralize	Damage	DamageVar	1	upgrade		
+card	Neutralize	WeakPower	PowerVar<WeakPower>	1	upgrade		
+card	NeutronAegis	PlatingPower	PowerVar<PlatingPower>	1	upgrade		triggerTurn
+relic	NewLeaf	Cards	CardsVar	0	only on pickup		
+relic	NinjaScroll	Shivs	DynamicVar	0	unknown		triggerCombat
+card	NoEscape	DoomThreshold	DynamicVar	0	unknown		
+card	NoEscape	CalculationBase	CalculationBaseVar	1	upgrade		
+card	NoEscape	CalculationExtra	CalculationExtraVar	1	type		
+card	NoEscape	CalculatedDoom	CalculatedVar	0	unknown		
+card	Nock	AimPower	PowerVar<AimPower>	1	upgrade		triggerConstant
+card	Normality	CalculationBase	CalculationBaseVar	1	type		
+card	Normality	CalculationExtra	CalculationExtraVar	1	type		
+card	Normality	CalculatedCards	CalculatedVar	0	not read		
+card	NotYet	Heal	HealVar	1	upgrade		
+card	NoxiousFumes	PoisonPerTurn	DynamicVar	1	upgrade		
+card	Null	Damage	DamageVar	1	upgrade		
+card	Null	WeakPower	PowerVar<WeakPower>	1	upgrade		
+relic	Nunchaku	Cards	CardsVar	-1	every N / threshold		triggerConstant
+relic	Nunchaku	Energy	EnergyVar	1	type		triggerConstant
+relic	NutritiousOyster	MaxHp	MaxHpVar	0	only on pickup		
+card	Oblivion	DoomPower	PowerVar<DoomPower>	1	upgrade		
+relic	ObsidianVice	Damage	DamageVar	1	type		triggerTurn
+relic	OddlySmoothStone	DexterityPower	PowerVar<DexterityPower>	1	power (buff on self)		triggerConstant
+card	Offering	HpLoss	HpLossVar	-1	hurts you		
+card	Offering	Energy	EnergyVar	1	type		
+card	Offering	Cards	CardsVar	1	upgrade		
+relic	OldCoin	Gold	GoldVar	0	only on pickup		
+card	Omnislice	Damage	DamageVar	1	upgrade		
+card	OneForAll	OneForAllPower	PowerVar<OneForAllPower>	1	upgrade		triggerConstant
+card	OneTwoPunch	Attacks	DynamicVar	1	upgrade		
+relic	OrangeDough	Cards	CardsVar	1	type		triggerCombat
+card	Orbit	Energy	EnergyVar	1	type		
+relic	Orichalcum	Block	BlockVar	1	type		triggerTurn
+relic	OrnamentalFan	Cards	CardsVar	-1	every N / threshold		triggerConstant
+relic	OrnamentalFan	Block	BlockVar	1	type		triggerConstant
+relic	Orrery	Cards	CardsVar	0	only on pickup		
+card	Outbreak	PoisonPower	PowerVar<PoisonPower>	1	upgrade		
+card	Outmaneuver	Energy	EnergyVar	1	upgrade		
+card	Outrage	Damage	DamageVar	1	upgrade		
+card	Overclock	Cards	CardsVar	1	upgrade		
+card	PactsEnd	Damage	DamageVar	1	upgrade		
+card	PactsEnd	Cards	CardsVar	0	compared (threshold or limit?)		
+relic	PaelsBlood	Cards	CardsVar	1	type	persistentDraw	triggerTurn
+relic	PaelsClaw	Cards	CardsVar	0	not read		
+relic	PaelsFlesh	Energy	EnergyVar	1	type		triggerCombat
+relic	PaelsLegion	Turns	DynamicVar	0	unknown		triggerConstant
+relic	PaelsTears	Energy	EnergyVar	1	type		triggerTurn
+relic	PaelsTooth	Cards	CardsVar	0	only on pickup		
+relic	PaelsWing	Sacrifices	DynamicVar	-1	every N / threshold		
+card	Pagestorm	Cards	CardsVar	1	type		
+card	PaleBlueDot	Cards	CardsVar	1	upgrade		
+card	PaleBlueDot	CardPlay	DynamicVar	0	not read		
+card	Panache	PanacheDamage	DynamicVar	1	upgrade		
+card	PanicButton	Block	BlockVar	1	upgrade		
+card	PanicButton	Turns	DynamicVar	0	unknown		
+relic	Pantograph	Heal	HealVar	1	type		triggerCombat
+card	Parry	ParryPower	PowerVar<ParryPower>	1	upgrade		
+relic	ParryingShield	Block	BlockVar	0	compared (threshold or limit?)		triggerTurn
+relic	ParryingShield	Damage	DamageVar	1	type		triggerTurn
+card	Parse	Cards	CardsVar	1	upgrade		
+card	ParticleWall	Block	BlockVar	1	upgrade		
+card	Patter	Block	BlockVar	1	upgrade		
+card	Patter	VigorPower	PowerVar<VigorPower>	1	upgrade		triggerConstant
+relic	Pear	MaxHp	MaxHpVar	0	only on pickup		
+card	Peck	Damage	DamageVar	1	type		
+card	Peck	HitCount	HitCountVar	1	upgrade		
+relic	Pendulum	Cards	CardsVar	1	type		triggerCombat
+relic	Pendulum	Turns	DynamicVar	-1	every N / threshold		triggerCombat
+card	PerfectedStrike	CalculationBase	CalculationBaseVar	1	type		
+card	PerfectedStrike	ExtraDamage	ExtraDamageVar	1	upgrade		
+card	PerfectedStrike	CalculatedDamage	CalculatedDamageVar	0	derived		
+relic	Permafrost	Block	BlockVar	1	type		triggerConstant
+card	PhantomBlades	PhantomBladesPower	PowerVar<PhantomBladesPower>	1	upgrade		triggerConstant
+relic	PhialHolster	PotionSlots	DynamicVar	0	only on pickup		
+relic	PhialHolster	Potions	DynamicVar	0	only on pickup		
+relic	PhilosophersStone	StrengthPower	PowerVar<StrengthPower>	0	power (target unclear)		triggerConstant
+relic	PhilosophersStone	Energy	EnergyVar	1	type	persistentEnergy	triggerTurn
+card	PhotonCut	Damage	DamageVar	1	upgrade		
+card	PhotonCut	Cards	CardsVar	1	upgrade		
+card	PhotonCut	PutBack	DynamicVar	0	unknown		
+relic	PhylacteryUnbound	StartOfCombat	SummonVar	1	type		triggerCombat
+relic	PhylacteryUnbound	StartOfTurn	SummonVar	1	type		triggerTurn
+card	PiercingWail	StrengthLoss	DynamicVar	1	upgrade		
+card	Pillage	Damage	DamageVar	1	upgrade		
+card	PillarOfCreation	Block	BlockVar	1	upgrade		
+card	Pinpoint	Damage	DamageVar	1	upgrade		
+relic	Planisphere	Heal	HealVar	1	type		triggerRun
+card	Plot	Cards	CardsVar	1	upgrade		
+relic	Pocketwatch	CardThreshold	DynamicVar	0	compared (threshold or limit?)		triggerCombat
+relic	Pocketwatch	Cards	CardsVar	1	type		triggerCombat
+card	PoisonedStab	Damage	DamageVar	1	upgrade		
+card	PoisonedStab	PoisonPower	PowerVar<PoisonPower>	1	upgrade		
+card	Poke	OstyDamage	OstyDamageVar	1	upgrade		
+relic	PollinousCore	Cards	CardsVar	1	type		triggerCombat
+relic	PollinousCore	Turns	DynamicVar	0	compared (threshold or limit?)		triggerCombat
+relic	Pomander	Cards	CardsVar	0	only on pickup		
+card	PommelStrike	Damage	DamageVar	1	upgrade		
+card	PommelStrike	Cards	CardsVar	1	upgrade		
+relic	PotionBelt	PotionSlots	DynamicVar	0	only on pickup		
+card	Pounce	Damage	DamageVar	1	upgrade		
+relic	PowerCell	Cards	CardsVar	1	type		triggerCombat
+relic	PrecariousShears	Cards	CardsVar	0	only on pickup		
+relic	PrecariousShears	Damage	DamageVar	0	only on pickup		
+card	PreciseCut	CalculationBase	CalculationBaseVar	1	upgrade		
+card	PreciseCut	ExtraDamage	ExtraDamageVar	1	type		
+card	PreciseCut	CalculatedDamage	CalculatedDamageVar	0	derived		
+relic	PreciseScissors	Cards	CardsVar	0	only on pickup		
+card	Predator	Damage	DamageVar	1	upgrade		
+card	PrepTime	PrepTimePower	PowerVar<PrepTimePower>	1	upgrade		triggerTurn
+card	Prepared	Cards	CardsVar	1	upgrade		
+relic	PreservedFog	Cards	CardsVar	0	only on pickup		
+relic	PrismaticGem	Energy	EnergyVar	1	type	persistentEnergy	triggerTurn
+card	Production	Energy	EnergyVar	1	upgrade		
+card	Prophesize	Cards	CardsVar	1	upgrade		
+card	Protector	CalculationBase	CalculationBaseVar	1	upgrade		
+card	Protector	ExtraDamage	ExtraDamageVar	1	type		
+card	Protector	CalculatedDamage	CalculatedDamageVar	0	derived		
+card	Prowess	StrengthPower	PowerVar<StrengthPower>	1	upgrade		triggerConstant
+card	Prowess	DexterityPower	PowerVar<DexterityPower>	1	upgrade		triggerConstant
+card	PullAggro	Summon	SummonVar	1	upgrade		
+card	PullAggro	Block	BlockVar	1	upgrade		
+card	PullFromBelow	Damage	DamageVar	1	upgrade		
+card	PullFromBelow	CalculationBase	CalculationBaseVar	1	type		
+card	PullFromBelow	CalculationExtra	CalculationExtraVar	1	type		
+card	PullFromBelow	CalculatedHits	CalculatedHitCountVar	0	unknown		
+relic	PumpkinCandle	CombatCount	DynamicVar	0	not read		
+relic	PumpkinCandle	Energy	EnergyVar	1	type	persistentEnergy	triggerTurn
+relic	PunchDagger	Momentum	DynamicVar	0	unknown		
+card	PunchOfJoy	Damage	DamageVar	1	upgrade		
+card	PunchOfJoy	Cards	CardsVar	1	upgrade		
+card	Purity	Cards	CardsVar	1	upgrade		
+card	Putrefy	Power	DynamicVar	1	upgrade		
+card	Pyre	Energy	EnergyVar	1	upgrade		
+card	Quadcast	Repeat	RepeatVar	1	type		
+card	QuickShot	Damage	DamageVar	1	upgrade		
+card	Quietus	QuietusPower	PowerVar<QuietusPower>	1	upgrade		triggerConstant
+card	Quiver	Repeat	RepeatVar	1	type		
+relic	RadiantPearl	Cards	CardsVar	1	type		triggerCombat
+card	Radiate	Damage	DamageVar	1	upgrade		
+card	Radiate	Stars	StarsVar	0	not read		
+card	Radiate	CalculationBase	CalculationBaseVar	1	type		
+card	Radiate	CalculationExtra	CalculationExtraVar	1	type		
+card	Radiate	CalculatedHits	CalculatedHitCountVar	0	unknown		
+card	Rage	Power	DynamicVar	1	upgrade		
+card	RainShot	Damage	DamageVar	1	upgrade		
+relic	RainbowRing	StrengthPower	PowerVar<StrengthPower>	1	power (buff on self)		triggerConstant
+relic	RainbowRing	DexterityPower	PowerVar<DexterityPower>	1	power (buff on self)		triggerConstant
+card	Rally	Block	BlockVar	1	upgrade		
+card	Rampage	Damage	DamageVar	1	type		
+card	Rampage	Increase	DynamicVar	1	upgrade		
+card	Rattle	OstyDamage	OstyDamageVar	1	upgrade		
+card	Rattle	CalculationBase	CalculationBaseVar	1	type		
+card	Rattle	CalculationExtra	CalculationExtraVar	1	type		
+card	Rattle	CalculatedHits	CalculatedHitCountVar	0	unknown		
+card	Reanimate	Summon	SummonVar	1	upgrade		
+card	Reap	Damage	DamageVar	1	upgrade		
+card	Reave	Damage	DamageVar	1	upgrade		
+card	Reave	Cards	CardsVar	1	type		
+card	Reboot	Cards	CardsVar	1	upgrade		
+card	Rebound	Damage	DamageVar	1	upgrade		
+relic	RedMask	WeakPower	PowerVar<WeakPower>	1	power (debuff on enemy)		
+relic	RedSkull	HpThreshold	DynamicVar	0	unknown		
+relic	RedSkull	StrengthPower	PowerVar<StrengthPower>	0	power (target unclear)		triggerConstant
+card	RefineBlade	Forge	ForgeVar	1	upgrade		
+card	RefineBlade	Energy	EnergyVar	1	type		
+card	Reflect	Block	BlockVar	1	upgrade		
+card	Reflex	Cards	CardsVar	1	upgrade		
+card	Refract	Repeat	RepeatVar	1	type		
+card	Refract	Damage	DamageVar	1	upgrade		
+card	Refract	HitCount	HitCountVar	1	type		
+relic	RegalPillow	Heal	HealVar	1	type		triggerRun
+relic	Regalite	Block	BlockVar	1	type		triggerConstant
+card	Relax	Block	BlockVar	1	upgrade		
+card	Relax	Cards	CardsVar	1	upgrade		
+card	Relax	Energy	EnergyVar	1	upgrade		
+card	Rend	CalculationBase	CalculationBaseVar	1	upgrade		
+card	Rend	ExtraDamage	ExtraDamageVar	1	upgrade		
+card	Rend	CalculatedDamage	CalculatedDamageVar	0	derived		
+card	RepeatShot	Damage	DamageVar	1	upgrade		
+relic	ReptileTrinket	StrengthPower	PowerVar<StrengthPower>	0	power (target unclear)		triggerConstant
+card	Resonance	StrengthPower	PowerVar<StrengthPower>	1	upgrade		triggerConstant
+card	Restlessness	Cards	CardsVar	1	upgrade		
+card	Restlessness	Energy	EnergyVar	1	upgrade		
+card	RhythmStrike	Damage	DamageVar	1	upgrade		
+card	RhythmStrike	CalculationBase	CalculationBaseVar	1	type		
+card	RhythmStrike	CalculationExtra	CalculationExtraVar	1	type		
+card	RhythmStrike	CalculatedHits	CalculatedHitCountVar	0	unknown		
+card	Ricochet	Damage	DamageVar	1	type		
+card	Ricochet	HitCount	HitCountVar	1	upgrade		
+card	RightHandHand	OstyDamage	OstyDamageVar	1	upgrade		
+card	RightHandHand	Energy	EnergyVar	0	compared (threshold or limit?)		
+relic	RingOfTheDrake	Cards	CardsVar	1	type		triggerCombat
+relic	RingOfTheDrake	Turns	DynamicVar	0	compared (threshold or limit?)		triggerCombat
+relic	RingOfTheSnake	Cards	CardsVar	1	type		triggerCombat
+card	RipAndTear	Damage	DamageVar	1	upgrade		
+card	RipAndTear	HitCount	HitCountVar	1	type		
+relic	RippleBasin	Block	BlockVar	1	type		triggerTurn
+card	RocketPunch	Damage	DamageVar	1	upgrade		
+card	RocketPunch	Cards	CardsVar	1	upgrade		
+card	RollingBoulder	RollingBoulderPower	PowerVar<RollingBoulderPower>	1	upgrade		triggerTurn
+card	RollingBoulder	IncrementAmount	DynamicVar	0	not read		
+card	RoyalGamble	Stars	StarsVar	1	type		
+relic	RoyalPoison	Damage	DamageVar	-1	hurts you		triggerCombat
+relic	RoyalStamp	Cards	CardsVar	0	not read		
+card	Royalties	Gold	GoldVar	1	upgrade		
+card	Rummage	Cards	CardsVar	1	upgrade		
+relic	RunicCapacitor	Repeat	RepeatVar	1	type		triggerCombat
+card	Rupture	StrengthPower	PowerVar<StrengthPower>	1	upgrade		triggerConstant
+card	Sacrifice	CalculationBase	CalculationBaseVar	1	type		
+card	Sacrifice	CalculationExtra	CalculationExtraVar	1	type		
+card	Sacrifice	CalculatedBlock	CalculatedBlockVar	0	derived		
+relic	Sai	Block	BlockVar	1	type		triggerTurn
+card	Salvo	Damage	DamageVar	1	upgrade		
+relic	SandCastle	Cards	CardsVar	0	only on pickup		
+card	Scavenge	Energy	EnergyVar	1	upgrade		
+card	Scourge	DoomPower	PowerVar<DoomPower>	1	upgrade		
+card	Scourge	Cards	CardsVar	1	upgrade		
+card	Scrape	Damage	DamageVar	1	upgrade		
+card	Scrape	Cards	CardsVar	1	upgrade		
+relic	ScreamingFlagon	Damage	DamageVar	1	type		triggerTurn
+card	SculptingStrike	Damage	DamageVar	1	upgrade		
+relic	SeaGlass	Cards	CardsVar	0	only on pickup		
+relic	SealOfGold	Energy	EnergyVar	1	type		triggerTurn
+relic	SealOfGold	Gold	GoldVar	-1	hurts you		triggerTurn
+card	Seance	Cards	CardsVar	1	type		
+card	SecondWind	Block	BlockVar	1	upgrade		
+card	SeekerStrike	Damage	DamageVar	1	upgrade		
+card	SeekerStrike	Cards	CardsVar	1	type		
+card	SeekingEdge	Forge	ForgeVar	1	upgrade		
+card	SelfDeprecate	Joy	DynamicVar	1	upgrade		
+card	SelfDeprecate	Sadness	DynamicVar	0	unknown		
+relic	SelfFormingClay	BlockNextTurn	DynamicVar	0	unknown		triggerTurn
+card	SentryMode	SentryModePower	PowerVar<SentryModePower>	1	power (buff on self)		triggerTurn
+relic	SereTalon	HpLoss	HpLossVar	0	only on pickup		
+relic	SereTalon	Wishes	DynamicVar	0	only on pickup		
+card	SerpentForm	SerpentFormPower	PowerVar<SerpentFormPower>	1	upgrade		triggerConstant
+card	SerratedArrows	SerratedArrowsPower	PowerVar<SerratedArrowsPower>	1	upgrade		triggerConstant
+card	SetupStrike	Damage	DamageVar	1	upgrade		
+card	SetupStrike	StrengthPower	PowerVar<StrengthPower>	1	upgrade		triggerConstant
+card	SevenStars	Damage	DamageVar	1	type		
+card	SevenStars	HitCount	HitCountVar	1	type		
+card	Severance	Damage	DamageVar	1	upgrade		
+card	ShadowShield	Block	BlockVar	1	upgrade		
+card	ShadowStep	Cards	CardsVar	0	not read		
+card	Shadowmeld	Power	DynamicVar	0	unknown		
+card	Shame	Frail	DynamicVar	0	unknown		
+card	SharedFate	EnemyStrengthLoss	DynamicVar	1	upgrade		
+card	SharedFate	PlayerStrengthLoss	DynamicVar	0	unknown		
+card	Shatter	Damage	DamageVar	1	upgrade		
+card	ShiningStrike	Damage	DamageVar	1	upgrade		
+card	ShiningStrike	Stars	StarsVar	1	type		
+card	Shiv	Damage	DamageVar	1	upgrade		
+card	Shockwave	Power	DynamicVar	1	upgrade		
+card	ShowOff	BaseAim	IntVar	0	unknown		
+card	ShowOff	AimPower	PowerVar<AimPower>	1	power (buff on self)		triggerConstant
+card	ShowOff	ShowOffPower	PowerVar<ShowOffPower>	1	upgrade		triggerOccasional
+card	Shroud	Block	BlockVar	1	upgrade		
+card	ShrugItOff	Block	BlockVar	1	upgrade		
+card	ShrugItOff	Cards	CardsVar	1	type		
+relic	Shuriken	Cards	CardsVar	-1	every N / threshold		triggerConstant
+relic	Shuriken	StrengthPower	PowerVar<StrengthPower>	1	power (buff on self)		triggerConstant
+card	SicEm	OstyDamage	OstyDamageVar	1	upgrade		
+card	SicEm	SicEmPower	PowerVar<SicEmPower>	1	upgrade		triggerConstant
+card	Sidestep	Energy	EnergyVar	1	upgrade		
+card	SignalBoost	SignalBoostPower	PowerVar<SignalBoostPower>	1	power (buff on self)		
+relic	SignetRing	Gold	GoldVar	0	only on pickup		
+relic	SilverCrucible	Cards	CardsVar	0	compared (threshold or limit?)		triggerRun
+card	Simpleton	SimpletonPower	PowerVar<SimpletonPower>	1	upgrade		triggerTurn
+card	Skewer	Damage	DamageVar	1	upgrade		
+card	Skim	Cards	CardsVar	1	upgrade		
+card	SkyShot	Damage	DamageVar	1	upgrade		
+card	SleightOfFlesh	SleightOfFleshPower	PowerVar<SleightOfFleshPower>	1	upgrade		triggerTurn
+card	Slice	Damage	DamageVar	1	upgrade		
+card	Slimed	Cards	CardsVar	1	type		
+relic	SlingOfCourage	StrengthPower	PowerVar<StrengthPower>	1	power (buff on self)		triggerConstant
+card	Sloth	SlothPower	PowerVar<SlothPower>	-1	power (debuff on self)		triggerConstant
+card	Smokestack	SmokestackPower	PowerVar<SmokestackPower>	1	upgrade		triggerConstant
+card	Snakebite	PoisonPower	PowerVar<PoisonPower>	1	upgrade		
+card	Snap	OstyDamage	OstyDamageVar	1	upgrade		
+card	Sneaky	SneakyPower	PowerVar<SneakyPower>	1	upgrade		triggerConstant
+relic	SneckoEye	Cards	CardsVar	1	type	persistentDraw	triggerTurn
+relic	SneckoSkull	PoisonPower	PowerVar<PoisonPower>	0	power (target unclear)		
+card	SolarStrike	Damage	DamageVar	1	upgrade		
+card	SolarStrike	Stars	StarsVar	1	upgrade		
+relic	SongBow	AimPower	PowerVar<AimPower>	1	power (buff on self)		triggerConstant
+card	SongPath	SongPathPower	PowerVar<SongPathPower>	1	upgrade		triggerConstant
+card	SorrowfulStrike	Damage	DamageVar	1	upgrade		
+card	SorrowfulStrike	Cards	CardsVar	1	type		
+card	Soul	Cards	CardsVar	1	upgrade		
+card	SoulStorm	CalculationBase	CalculationBaseVar	1	type		
+card	SoulStorm	ExtraDamage	ExtraDamageVar	1	upgrade		
+card	SoulStorm	CalculatedDamage	CalculatedDamageVar	0	derived		
+card	SovereignBlade	Damage	DamageVar	1	type		
+card	SovereignBlade	CalculationBase	CalculationBaseVar	1	type		
+card	SovereignBlade	CalculationExtra	CalculationExtraVar	1	type		
+card	SovereignBlade	CalculatedBlock	CalculatedBlockVar	0	derived		
+card	SovereignBlade	HitCount	HitCountVar	1	type		
+card	Sow	Damage	DamageVar	1	upgrade		
+relic	Sozu	Energy	EnergyVar	1	type	persistentEnergy	triggerTurn
+relic	SparklingRouge	StrengthPower	PowerVar<StrengthPower>	1	power (buff on self)		triggerConstant
+relic	SparklingRouge	DexterityPower	PowerVar<DexterityPower>	1	power (buff on self)		triggerConstant
+card	SpectrumShift	Cards	CardsVar	1	type		
+card	Speedster	SpeedsterPower	PowerVar<SpeedsterPower>	1	power (buff on self)		triggerConstant
+relic	SpikedGauntlets	Energy	EnergyVar	1	type	persistentEnergy	triggerTurn
+card	Spinner	SpinnerPower	PowerVar<SpinnerPower>	1	power (buff on self)		triggerTurn
+card	SpiritOfAsh	BlockOnExhaust	DynamicVar	1	upgrade		
+card	Spite	Damage	DamageVar	1	type		
+card	Spite	HitCount	HitCountVar	1	upgrade		
+card	SpoilsMap	Gold	GoldVar	1	type		
+card	SpoilsOfBattle	Forge	ForgeVar	1	upgrade		
+card	SpoilsOfBattle	Cards	CardsVar	1	type		
+card	Spur	Summon	SummonVar	1	upgrade		
+card	Spur	Heal	HealVar	1	upgrade		
+card	Squash	Damage	DamageVar	1	upgrade		
+card	Squash	VulnerablePower	PowerVar<VulnerablePower>	1	upgrade		
+card	Squeeze	CalculationBase	CalculationBaseVar	1	upgrade		
+card	Squeeze	ExtraDamage	ExtraDamageVar	1	upgrade		
+card	Squeeze	CalculatedDamage	CalculatedDamageVar	0	derived		
+card	Stack	CalculationBase	CalculationBaseVar	1	upgrade		
+card	Stack	CalculationExtra	CalculationExtraVar	1	type		
+card	Stack	CalculatedBlock	CalculatedBlockVar	0	derived		
+card	Stampede	Power	DynamicVar	0	unknown		
+card	Stardust	Damage	DamageVar	1	upgrade		
+card	SteadyCadence	Damage	DamageVar	1	upgrade		
+card	SteadyCadence	CalculationBase	CalculationBaseVar	1	type		
+card	SteadyCadence	CalculationExtra	CalculationExtraVar	1	type		
+card	SteadyCadence	CalculatedCards	CalculatedVar	0	unknown		
+card	Stomp	Damage	DamageVar	1	upgrade		
+card	StoneArmor	PlatingPower	PowerVar<PlatingPower>	1	upgrade		triggerTurn
+relic	StoneCalendar	Damage	DamageVar	1	type		triggerCombat
+relic	StoneCalendar	DamageTurn	DynamicVar	0	compared (threshold or limit?)		triggerCombat
+relic	StoneCracker	Cards	CardsVar	1	type		triggerRun
+relic	StoneHumidifier	MaxHp	MaxHpVar	1	type	permanentGrowth	triggerRun
+card	Storm	StormPower	PowerVar<StormPower>	1	upgrade		triggerConstant
+relic	Storyteller	AimPower	PowerVar<AimPower>	1	power (buff on self)		triggerConstant
+relic	Storyteller	EndOfTurnAim	PowerVar<AimPower>	1	power (buff on self)		triggerConstant
+card	Strangle	Damage	DamageVar	1	upgrade		
+card	Strangle	StranglePower	PowerVar<StranglePower>	1	upgrade		triggerConstant
+relic	Strawberry	MaxHp	MaxHpVar	0	only on pickup		
+card	Strength	StrengthPower	PowerVar<StrengthPower>	1	upgrade		triggerConstant
+card	StrikeDefect	Damage	DamageVar	1	upgrade		
+relic	StrikeDummy	ExtraDamage	DynamicVar	0	unknown		triggerConstant
+card	StrikeFool	Damage	DamageVar	1	upgrade		
+card	StrikeIronclad	Damage	DamageVar	1	upgrade		
+card	StrikeNecrobinder	Damage	DamageVar	1	upgrade		
+card	StrikeRegent	Damage	DamageVar	1	upgrade		
+card	StrikeSilent	Damage	DamageVar	1	upgrade		
+relic	SturdyClamp	Block	BlockVar	0	not read		
+card	SuckerPunch	Damage	DamageVar	1	upgrade		
+card	SuckerPunch	WeakPower	PowerVar<WeakPower>	1	upgrade		
+card	SummonForth	Forge	ForgeVar	1	upgrade		
+card	Sunder	Damage	DamageVar	1	upgrade		
+card	Sunder	Energy	EnergyVar	1	type		
+card	Supercritical	Energy	EnergyVar	1	upgrade		
+card	Supermassive	CalculationBase	CalculationBaseVar	1	type		
+card	Supermassive	ExtraDamage	ExtraDamageVar	1	upgrade		
+card	Supermassive	CalculatedDamage	CalculatedDamageVar	0	derived		
+card	Suppress	Damage	DamageVar	1	upgrade		
+card	Suppress	WeakPower	PowerVar<WeakPower>	1	upgrade		
+card	Survivor	Block	BlockVar	1	upgrade		
+card	SweepingBeam	Damage	DamageVar	1	upgrade		
+card	SweepingBeam	Cards	CardsVar	1	type		
+card	SweepingGaze	OstyDamage	OstyDamageVar	1	upgrade		
+card	SwordBoomerang	Damage	DamageVar	1	type		
+card	SwordBoomerang	HitCount	HitCountVar	1	upgrade		
+relic	SwordOfJade	StrengthPower	PowerVar<StrengthPower>	1	power (buff on self)		triggerConstant
+relic	SwordOfStone	Elites	DynamicVar	0	compared (threshold or limit?)		triggerCombat
+card	SwordSage	SwordSagePower	PowerVar<SwordSagePower>	1	power (buff on self)		triggerConstant
+relic	SymbioticVirus	Dark	DynamicVar	0	unknown		triggerCombat
+card	Synchronize	CalculationBase	CalculationBaseVar	1	type		
+card	Synchronize	CalculationExtra	CalculationExtraVar	1	upgrade		
+card	Synchronize	CalculatedFocus	CalculatedVar	0	unknown		
+card	Synthesis	Damage	DamageVar	1	upgrade		
+card	Tactician	Energy	EnergyVar	1	upgrade		
+card	TagTeam	Damage	DamageVar	1	upgrade		
+card	Tank	DamageIncrease	DynamicVar	0	not read		
+card	Tank	DamageDecrease	DynamicVar	0	not read		
+card	Taunt	Block	BlockVar	1	upgrade		
+card	Taunt	VulnerablePower	PowerVar<VulnerablePower>	1	upgrade		
+relic	TeaOfDiscourtesy	Heal	HealVar	0	not read		
+relic	TeaOfDiscourtesy	Combats	DynamicVar	0	unknown		
+relic	TeaOfDiscourtesy	DazedCount	DynamicVar	0	unknown		triggerCombat
+card	TearAsunder	Damage	DamageVar	1	upgrade		
+card	TearAsunder	Repeat	RepeatVar	0	not read		
+card	TearAsunder	CalculationBase	CalculationBaseVar	1	type		
+card	TearAsunder	CalculationExtra	CalculationExtraVar	1	type		
+card	TearAsunder	CalculatedHits	CalculatedHitCountVar	0	unknown		
+card	Temperance	Block	BlockVar	1	upgrade		
+card	Terraforming	VigorPower	PowerVar<VigorPower>	1	upgrade		triggerConstant
+card	TeslaCoil	Damage	DamageVar	1	upgrade		
+relic	TheAbacus	Block	BlockVar	1	type		triggerConstant
+card	TheBall	Damage	DamageVar	1	type		
+card	TheBall	Increase	DynamicVar	1	upgrade		
+card	TheBomb	Turns	DynamicVar	0	unknown		
+card	TheBomb	BombDamage	DynamicVar	1	upgrade		
+relic	TheBoot	DamageMinimum	DynamicVar	0	compared (threshold or limit?)		triggerTurn
+relic	TheBoot	DamageThreshold	DynamicVar	0	not read		
+card	TheChariot	Damage	DamageVar	1	upgrade		
+relic	TheCourier	Discount	DynamicVar	0	unknown		triggerRun
+card	TheEmperor	Energy	EnergyVar	1	upgrade		
+card	TheEmpress	Power	DynamicVar	1	upgrade		
+card	TheFool	Cards	CardsVar	1	upgrade		
+card	TheGambit	Block	BlockVar	1	upgrade		
+card	TheHangedMan	HpLoss	HpLossVar	-1	upgrade		
+card	TheHermit	Cards	CardsVar	1	upgrade		
+card	TheHierophant	Cards	CardsVar	1	upgrade		
+card	TheHighPriestess	Cards	CardsVar	1	upgrade		
+card	TheHunt	Damage	DamageVar	1	upgrade		
+card	TheMagician	Repeat	RepeatVar	1	upgrade		
+card	TheScythe	Damage	DamageVar	1	type		
+card	TheScythe	Increase	IntVar	1	upgrade		
+card	TheShot	Damage	DamageVar	1	upgrade		
+card	TheSmith	Forge	ForgeVar	1	upgrade		
+card	TheStar	Cards	CardsVar	1	upgrade		
+card	TheStar	Energy	EnergyVar	1	upgrade		
+card	TheSun	Cards	CardsVar	1	upgrade		
+card	TheSun	Energy	EnergyVar	1	upgrade		
+card	TheTower	CalculationBase	CalculationBaseVar	1	type		
+card	TheTower	ExtraDamage	ExtraDamageVar	1	upgrade		
+card	TheTower	CalculatedDamage	CalculatedDamageVar	0	derived		
+card	TheWorld	Cards	CardsVar	1	upgrade		
+card	ThinkingAhead	Cards	CardsVar	1	type		
+card	Thrash	Damage	DamageVar	1	upgrade		
+card	Thrash	HitCount	HitCountVar	1	type		
+card	ThrummingHatchet	Damage	DamageVar	1	upgrade		
+card	Thunder	ThunderPower	PowerVar<ThunderPower>	1	upgrade		triggerTurn
+card	Thunderclap	Damage	DamageVar	1	upgrade		
+card	Thunderclap	VulnerablePower	PowerVar<VulnerablePower>	1	power (debuff on enemy)		
+card	Timber	Damage	DamageVar	1	upgrade		
+card	Timber	OnKillDamage	DamageVar	1	upgrade		
+card	TimesUp	CalculationBase	CalculationBaseVar	1	type		
+card	TimesUp	ExtraDamage	ExtraDamageVar	1	type		
+card	TimesUp	CalculatedDamage	CalculatedDamageVar	0	derived		
+relic	Tingsha	Damage	DamageVar	1	type		triggerOccasional
+relic	ToastyMittens	StrengthPower	PowerVar<StrengthPower>	1	power (buff on self)		triggerConstant
+relic	Toolbox	Cards	CardsVar	1	type		triggerCombat
+card	ToricToughness	Turns	DynamicVar	0	unknown		
+card	ToricToughness	Block	BlockVar	1	upgrade		
+relic	TormentousCollar	WeakPower	PowerVar<WeakPower>	1	power (debuff on enemy)		
+relic	ToughBandages	Block	BlockVar	1	type		triggerOccasional
+card	Toxic	Damage	DamageVar	-1	hurts you		
+relic	ToyBox	Relics	DynamicVar	0	unknown		
+relic	ToyBox	Combats	DynamicVar	-1	every N / threshold		triggerCombat
+card	Transfigure	Energy	EnergyVar	0	not read		
+card	Tremble	VulnerablePower	PowerVar<VulnerablePower>	1	upgrade		
+relic	TriBoomerang	Cards	CardsVar	0	only on pickup		
+card	TrickShot	Damage	DamageVar	1	upgrade		
+card	TrickShot	Cards	CardsVar	1	upgrade		
+card	TrueGrit	Block	BlockVar	1	upgrade		
+card	Tune	Cards	CardsVar	1	upgrade		
+relic	TungstenRod	HpLossReduction	DynamicVar	0	subtracted (cost or discount?)		triggerTurn
+relic	TuningFork	Cards	CardsVar	-1	every N / threshold		
+relic	TuningFork	Block	BlockVar	1	type		triggerConstant
+card	Turbo	Energy	EnergyVar	1	upgrade		
+card	TwinShot	Damage	DamageVar	1	upgrade		
+card	TwinShot	HitCount	HitCountVar	1	type		
+card	TwinStrike	Damage	DamageVar	1	upgrade		
+card	TwinStrike	HitCount	HitCountVar	1	type		
+relic	Twine	Block	BlockVar	1	type		triggerTurn
+relic	TwistedFunnel	PoisonPower	PowerVar<PoisonPower>	1	power (debuff on enemy)		
+card	UltimateDefend	Block	BlockVar	1	upgrade		
+card	UltimateStrike	Damage	DamageVar	1	upgrade		
+card	Undeath	Block	BlockVar	1	upgrade		
+relic	UndyingSigil	DamageDecrease	DynamicVar	0	unknown		triggerConstant
+card	Unleash	CalculationBase	CalculationBaseVar	1	upgrade		
+card	Unleash	ExtraDamage	ExtraDamageVar	1	type		
+card	Unleash	CalculatedDamage	CalculatedDamageVar	0	derived		
+card	Unrelenting	Damage	DamageVar	1	upgrade		
+card	Untouchable	Block	BlockVar	1	upgrade		
+card	UpMySleeve	Cards	CardsVar	1	upgrade		
+card	Uppercut	Damage	DamageVar	1	type		
+card	Uppercut	Power	DynamicVar	1	upgrade		
+card	Uproar	Damage	DamageVar	1	upgrade		
+card	Uproar	HitCount	HitCountVar	1	type		
+card	Uproot	VulnerablePower	PowerVar<VulnerablePower>	1	upgrade		
+relic	Vajra	StrengthPower	PowerVar<StrengthPower>	1	power (buff on self)		triggerConstant
+card	Veilpiercer	Damage	DamageVar	1	upgrade		
+relic	VelvetChoker	Cards	CardsVar	0	compared (threshold or limit?)		
+relic	VelvetChoker	Energy	EnergyVar	1	type	persistentEnergy	triggerTurn
+relic	VenerableTeaSet	Energy	EnergyVar	1	type		triggerTurn
+card	Venerate	Stars	StarsVar	1	upgrade		
+relic	VeryHotCocoa	Energy	EnergyVar	1	type		triggerCombat
+card	Vicious	Cards	CardsVar	1	upgrade		
+card	ViolentChord	ViolentChordPower	PowerVar<ViolentChordPower>	1	upgrade		triggerConstant
+card	Vitriol	WeakPower	PowerVar<WeakPower>	1	upgrade		
+card	Vitriol	Cards	CardsVar	1	type		
+card	Void	Energy	EnergyVar	-1	hurts you		
+card	VoidForm	VoidFormPower	PowerVar<VoidFormPower>	1	power (buff on self)		triggerConstant
+card	Volley	Damage	DamageVar	1	upgrade		
+card	Voltaic	CalculationBase	CalculationBaseVar	1	type		
+card	Voltaic	CalculationExtra	CalculationExtraVar	1	type		
+card	Voltaic	CalculatedChannels	CalculatedVar	0	unknown		
+card	WahBlast	Damage	DamageVar	1	upgrade		
+card	WahCho	Damage	DamageVar	1	upgrade		
+card	WahCho	Block	BlockVar	1	upgrade		
+card	WahChoKi	Damage	DamageVar	1	upgrade		
+card	WahChoKi	Block	BlockVar	1	upgrade		
+card	WahChoKi	Cards	CardsVar	1	upgrade		
+card	WahHammer	Damage	DamageVar	1	upgrade		
+card	WahKi	Damage	DamageVar	1	upgrade		
+card	WahKi	HitCount	HitCountVar	1	type		
+card	WahSweep	Damage	DamageVar	1	upgrade		
+card	WahSymphony	CalculationBase	CalculationBaseVar	1	type		
+card	WahSymphony	ExtraDamage	ExtraDamageVar	1	upgrade		
+card	WahSymphony	CalculatedDamage	CalculatedDamageVar	0	derived		
+card	WahTouch	Damage	DamageVar	1	upgrade		
+card	WahTouch	VulnerablePower	PowerVar<VulnerablePower>	1	upgrade		
+relic	WarHammer	Cards	CardsVar	1	type		triggerCombat
+relic	WarPaint	Cards	CardsVar	0	only on pickup		
+card	WasteAway	WasteAwayPower	PowerVar<WasteAwayPower>	-1	power (debuff on self)		triggerTurn
+card	WheelOfFortune	Cards	CardsVar	1	upgrade		
+relic	Whetstone	Cards	CardsVar	0	only on pickup		
+card	Whirlwind	Damage	DamageVar	1	upgrade		
+relic	WhisperingEarring	Energy	EnergyVar	1	type	persistentEnergy	triggerTurn
+card	Whistle	Damage	DamageVar	1	upgrade		
+card	WhistlingArrows	Block	BlockVar	1	upgrade		
+relic	WhittlingKnife	AimPower	PowerVar<AimPower>	1	power (buff on self)		triggerConstant
+relic	WingCharm	SwiftAmount	DynamicVar	0	unknown		triggerRun
+relic	WingedBoots	Rooms	DynamicVar	0	unknown		
+card	Wisp	Energy	EnergyVar	1	type		
+card	Wither	Damage	DamageVar	-1	hurts you		
+relic	WongosMysteryTicket	Repeat	RepeatVar	1	type		triggerRun
+relic	WongosMysteryTicket	RemainingCombats	DynamicVar	0	unknown		triggerCombat
+card	WraithForm	IntangiblePower	PowerVar<IntangiblePower>	1	upgrade		
+card	WraithForm	WraithFormPower	PowerVar<WraithFormPower>	-1	power (debuff on self)		triggerTurn
+card	Wrest	Cards	CardsVar	1	upgrade		
+card	WroughtInWar	Damage	DamageVar	1	upgrade		
+card	WroughtInWar	Forge	ForgeVar	1	upgrade		
+relic	Wuppy	MaxHp	MaxHpVar	1	type		
+relic	Wuppy	CurrentHp	DynamicVar	0	unknown		
+card	Yah	Energy	EnergyVar	1	upgrade		
+card	Yoga	StretchPower	PowerVar<StretchPower>	1	upgrade		triggerConstant
+relic	YummyCookie	Cards	CardsVar	0	only on pickup		

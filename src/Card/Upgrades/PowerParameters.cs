@@ -29,7 +29,7 @@ internal static class PowerParameters
 	{
 		private static void Postfix(AbstractModel __instance, AbstractModel __result)
 		{
-			if (!(__instance is PowerModel key) || !(__result is PowerModel key2) || !Store.TryGetValue(key, out var value))
+			if (!(__instance is PowerModel key) || !(__result is PowerModel powerModel) || !Store.TryGetValue(key, out var value))
 			{
 				return;
 			}
@@ -38,8 +38,8 @@ internal static class PowerParameters
 			{
 				parameters.Values.Add(value2.Key, value2.Value);
 			}
-			Store.Remove(key2);
-			Store.Add(key2, parameters);
+			Store.Remove(powerModel);
+			Store.Add(powerModel, parameters);
 		}
 	}
 
@@ -211,54 +211,54 @@ internal static class PowerParameters
 			select e)
 		{
 			int num = Value(power, item.Attribute, (!(item.Target == "DemesnePower")) ? item.Native : 0);
-			int num2 = CardAttributes.CurrentValue(card, item.Attribute);
+			int currentValue = CardAttributes.CurrentValue(card, item.Attribute);
 			int value2;
 			if (item.Target == "DemesnePower")
 			{
-				num2 = (orCreateValue.Values.TryGetValue(item.Attribute, out var value) ? value : 0) + (CardStateStore.Get(card)?.RawDelta(item.Attribute) ?? 0);
+				currentValue = (orCreateValue.Values.TryGetValue(item.Attribute, out var value) ? value : 0) + (CardStateStore.Get(card)?.RawDelta(item.Attribute) ?? 0);
 			}
 			else if (orCreateValue.Values.TryGetValue(item.Attribute, out value2))
 			{
-				num2 = ((AttributeDirection.SignOf(item.Attribute) < 0) ? Math.Min(value2, num2) : Math.Max(value2, num2));
+				currentValue = ((AttributeDirection.SignOf(item.Attribute) < 0) ? Math.Min(value2, currentValue) : Math.Max(value2, currentValue));
 			}
-			orCreateValue.Values[item.Attribute] = num2;
+			orCreateValue.Values[item.Attribute] = currentValue;
 			if (item.Target == "OutbreakPower" && power.DynamicVars.ContainsKey("Repeat"))
 			{
-				power.DynamicVars["Repeat"].BaseValue = num2;
+				power.DynamicVars["Repeat"].BaseValue = currentValue;
 			}
-			if (num2 != num)
+			if (currentValue != num)
 			{
 				if (item.Target == "RollingBoulderPower")
 				{
-					power.DynamicVars.Damage.BaseValue = num2;
+					power.DynamicVars.Damage.BaseValue = currentValue;
 				}
 				if (item.Target == "DanseMacabrePower")
 				{
-					power.DynamicVars.Energy.BaseValue = num2;
+					power.DynamicVars.Energy.BaseValue = currentValue;
 				}
 				if (item.Target == "PaleBlueDotPower")
 				{
-					power.DynamicVars["CardPlay"].BaseValue = num2;
+					power.DynamicVars["CardPlay"].BaseValue = currentValue;
 				}
 				if (item.Target == "OrbitPower")
 				{
-					power.DynamicVars.Energy.BaseValue = num2;
+					power.DynamicVars.Energy.BaseValue = currentValue;
 				}
 				if (item.Target == "PanachePower")
 				{
-					power.DynamicVars["CardsLeft"].BaseValue = Math.Max(1, power.DynamicVars["CardsLeft"].IntValue + num2 - num);
+					power.DynamicVars["CardsLeft"].BaseValue = Math.Max(1, power.DynamicVars["CardsLeft"].IntValue + currentValue - num);
 				}
 				if (item.Target == "CacophonyPower")
 				{
-					power.DynamicVars.Cards.BaseValue = Math.Max(1, power.DynamicVars.Cards.IntValue + num2 - num);
+					power.DynamicVars.Cards.BaseValue = Math.Max(1, power.DynamicVars.Cards.IntValue + currentValue - num);
 				}
 				if (item.Target == "AutomationPower")
 				{
-					power.DynamicVars["BaseCards"].BaseValue = num2;
+					power.DynamicVars["BaseCards"].BaseValue = currentValue;
 					Type nestedType = power.GetType().GetNestedType("Data", BindingFlags.NonPublic);
-					object obj = AccessTools.Method(typeof(PowerModel), "GetInternalData").MakeGenericMethod(nestedType).Invoke(power, null);
+					object genericMethod = AccessTools.Method(typeof(PowerModel), "GetInternalData").MakeGenericMethod(nestedType).Invoke(power, null);
 					FieldInfo fieldInfo = AccessTools.Field(nestedType, "cardsLeft");
-					fieldInfo.SetValue(obj, Math.Max(1, (int)fieldInfo.GetValue(obj) + num2 - num));
+					fieldInfo.SetValue(genericMethod, Math.Max(1, (int)fieldInfo.GetValue(genericMethod) + currentValue - num));
 				}
 			}
 		}
@@ -364,18 +364,18 @@ internal static class PowerParameters
 	internal static IEnumerable<CodeInstruction> Transpile(IEnumerable<CodeInstruction> instructions, MethodBase __originalMethod)
 	{
 		List<CodeInstruction> list = instructions.ToList();
-		List<CodeInstruction> list2 = new List<CodeInstruction>();
+		List<CodeInstruction> list3 = new List<CodeInstruction>();
 		FieldInfo fieldInfo = __originalMethod.DeclaringType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).FirstOrDefault((FieldInfo f) => f.Name == "<>4__this" && typeof(PowerModel).IsAssignableFrom(f.FieldType));
 		string name = (fieldInfo?.FieldType ?? __originalMethod.DeclaringType).Name;
 		int num = 0;
 		if (name == "ReflectPower")
 		{
 			Dictionary<int, List<CodeInstruction>> dictionary = new Dictionary<int, List<CodeInstruction>>();
-			for (int num2 = 0; num2 < list.Count; num2++)
+			for (int i = 0; i < list.Count; i++)
 			{
-				if (list[num2].operand is MethodInfo methodInfo && methodInfo.DeclaringType == typeof(CreatureCmd) && methodInfo.Name == "Damage")
+				if (list[i].operand is MethodInfo methodInfo && methodInfo.DeclaringType == typeof(CreatureCmd) && methodInfo.Name == "Damage")
 				{
-					int key = ExpandedEffectPatches.ArgumentEnd(list, num2, methodInfo, 2) + 1;
+					int key = ExpandedEffectPatches.ArgumentEnd(list, i, methodInfo, 2) + 1;
 					dictionary.Add(key, new List<CodeInstruction>
 					{
 						new CodeInstruction(OpCodes.Ldarg_0),
@@ -389,64 +389,64 @@ internal static class PowerParameters
 			{
 				throw new InvalidOperationException("Unexpected Reflect signature: " + num);
 			}
-			for (int num3 = 0; num3 <= list.Count; num3++)
+			for (int j = 0; j <= list.Count; j++)
 			{
-				if (dictionary.TryGetValue(num3, out var value))
+				if (dictionary.TryGetValue(j, out var value))
 				{
-					list2.AddRange(value);
+					list3.AddRange(value);
 				}
-				if (num3 < list.Count)
+				if (j < list.Count)
 				{
-					list2.Add(list[num3]);
+					list3.Add(list[j]);
 				}
 			}
-			return list2;
+			return list3;
 		}
-		for (int num4 = 0; num4 < list.Count; num4++)
+		for (int k = 0; k < list.Count; k++)
 		{
-			CodeInstruction codeInstruction = list[num4];
-			if (name == "BeaconOfHopePower" && codeInstruction.operand is MethodInfo methodInfo2 && methodInfo2.DeclaringType == typeof(decimal) && methodInfo2.Name == "op_Multiply")
+			CodeInstruction codeInstruction = list[k];
+			if (name == "BeaconOfHopePower" && codeInstruction.operand is MethodInfo methodInfo6 && methodInfo6.DeclaringType == typeof(decimal) && methodInfo6.Name == "op_Multiply")
 			{
-				list2.Add(codeInstruction);
-				list2.Add(new CodeInstruction(OpCodes.Ldarg_0));
-				list2.Add(new CodeInstruction(OpCodes.Ldfld, fieldInfo));
-				list2.Add(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PowerParameters), "SharedBlock")));
+				list3.Add(codeInstruction);
+				list3.Add(new CodeInstruction(OpCodes.Ldarg_0));
+				list3.Add(new CodeInstruction(OpCodes.Ldfld, fieldInfo));
+				list3.Add(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PowerParameters), "SharedBlock")));
 				num++;
 				continue;
 			}
 			bool flag = (name == "OrbitPower" && codeInstruction.LoadsConstant(4L)) || (name == "PanachePower" && codeInstruction.LoadsConstant(5L)) || (name == "AutomationPower" && codeInstruction.LoadsConstant(10L)) || (name == "JugglingPower" && codeInstruction.LoadsConstant(3L)) || (name == "CacophonyPower" && codeInstruction.LoadsConstant(33L));
-			if (name == "LethalityPower" && codeInstruction.opcode == OpCodes.Ldloc_1 && num4 + 1 < list.Count && (list[num4 + 1].opcode == OpCodes.Ble || list[num4 + 1].opcode == OpCodes.Ble_S))
+			if (name == "LethalityPower" && codeInstruction.opcode == OpCodes.Ldloc_1 && k + 1 < list.Count && (list[k + 1].opcode == OpCodes.Ble || list[k + 1].opcode == OpCodes.Ble_S))
 			{
-				list2.Add(codeInstruction);
-				list2.Add(new CodeInstruction(OpCodes.Ldarg_0));
-				list2.Add(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PowerParameters), "AttackCoverage")));
+				list3.Add(codeInstruction);
+				list3.Add(new CodeInstruction(OpCodes.Ldarg_0));
+				list3.Add(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PowerParameters), "AttackCoverage")));
 				num++;
 				continue;
 			}
-			bool flag2 = ((name == "IterationPower" && codeInstruction.LoadsConstant(1L)) || (name == "PhantomBladesPower" && codeInstruction.LoadsConstant(0L))) && num4 + 1 < list.Count && (list[num4 + 1].opcode == OpCodes.Ble || list[num4 + 1].opcode == OpCodes.Ble_S);
-			bool flag3 = name == "LightningRodPower" && codeInstruction.operand is MethodInfo methodInfo3 && methodInfo3.DeclaringType == typeof(OrbCmd) && methodInfo3.Name == "Channel";
-			bool flag4 = name == "HellraiserPower" && codeInstruction.operand is MethodInfo methodInfo4 && methodInfo4.DeclaringType == typeof(CardCmd) && methodInfo4.Name == "AutoPlay";
+			bool flag2 = ((name == "IterationPower" && codeInstruction.LoadsConstant(1L)) || (name == "PhantomBladesPower" && codeInstruction.LoadsConstant(0L))) && k + 1 < list.Count && (list[k + 1].opcode == OpCodes.Ble || list[k + 1].opcode == OpCodes.Ble_S);
+			bool flag3 = name == "LightningRodPower" && codeInstruction.operand is MethodInfo methodInfo7 && methodInfo7.DeclaringType == typeof(OrbCmd) && methodInfo7.Name == "Channel";
+			bool flag4 = name == "HellraiserPower" && codeInstruction.operand is MethodInfo methodInfo8 && methodInfo8.DeclaringType == typeof(CardCmd) && methodInfo8.Name == "AutoPlay";
 			if (flag || flag2 || flag3 || flag4)
 			{
-				CodeInstruction codeInstruction2 = new CodeInstruction(OpCodes.Ldarg_0);
-				codeInstruction2.labels.AddRange(codeInstruction.labels);
-				codeInstruction2.blocks.AddRange(codeInstruction.blocks);
-				list2.Add(codeInstruction2);
+				CodeInstruction codeInstruction3 = new CodeInstruction(OpCodes.Ldarg_0);
+				codeInstruction3.labels.AddRange(codeInstruction.labels);
+				codeInstruction3.blocks.AddRange(codeInstruction.blocks);
+				list3.Add(codeInstruction3);
 				if (fieldInfo != null)
 				{
-					list2.Add(new CodeInstruction(OpCodes.Ldfld, fieldInfo));
+					list3.Add(new CodeInstruction(OpCodes.Ldfld, fieldInfo));
 				}
-				MethodInfo methodInfo5 = AccessTools.Method(typeof(PowerParameters), flag4 ? "AutoPlay" : (flag3 ? "Channel" : (flag2 ? "Coverage" : "Threshold")));
+				MethodInfo method = AccessTools.Method(typeof(PowerParameters), flag4 ? "AutoPlay" : (flag3 ? "Channel" : (flag2 ? "Coverage" : "Threshold")));
 				if (flag3)
 				{
-					methodInfo5 = methodInfo5.MakeGenericMethod(((MethodInfo)codeInstruction.operand).GetGenericArguments());
+					method = method.MakeGenericMethod(((MethodInfo)codeInstruction.operand).GetGenericArguments());
 				}
-				list2.Add(new CodeInstruction(OpCodes.Call, methodInfo5));
+				list3.Add(new CodeInstruction(OpCodes.Call, method));
 				num++;
 			}
 			else
 			{
-				list2.Add(codeInstruction);
+				list3.Add(codeInstruction);
 			}
 		}
 		int num5 = ((!(name == "OrbitPower") || !(__originalMethod.Name == "get_DisplayAmount")) ? 1 : 2);
@@ -454,7 +454,7 @@ internal static class PowerParameters
 		{
 			throw new InvalidOperationException($"Unexpected parameter signature in {name}: {num}/{num5}");
 		}
-		return list2;
+		return list3;
 	}
 
 	private static int Threshold(PowerModel p)

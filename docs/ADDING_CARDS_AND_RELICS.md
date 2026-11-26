@@ -71,20 +71,35 @@ wins:
 4. **upgrade**: the game's own `OnUpgrade` raises (+1) or lowers (−1) it.
 5. **every N / threshold**: it divides something (`x % N`, `x / N`) or is a `…Threshold` property: −1.
 6. **hurts you**: named `Lose…`, passed to `PlayerCmd.Lose…`, or the amount of damage dealt to the owner: −1.
-7. **subtracted** (`x − N`) or **compared** (`x >= N`, not a loop bound): not upgradable, a cost and a
+7. **name** (mods only): a plain `DynamicVar`'s name. Used as a power's amount, it's decided like a power
+   (rule 10). Otherwise requirements (`…Needed`, `…Threshold`, `…Interval`, `…Lost`, a `…Cost`): −1; rewards
+   (`…Percent`, `…Multiplier`, `…Count`, `Heal…`, `Cards…`, …): +1; `…Reduction…`, `Min…`, `…Scale…` and HP
+   thresholds can't be told. The game's own plain values were reviewed by hand instead (overrides).
+8. **subtracted** (`x − N`) or **compared** (`x >= N`, not a loop bound): not upgradable, a cost and a
    limit look the same.
-8. **type**: Damage, Block, Cards, Energy, Heal, Gold, Max HP, Stars, Forge, Summon, hits: +1; HpLoss: −1.
-9. **power**: a buff on yourself or a debuff on enemies: +1; the reverse: −1.
+9. **type**: Damage, Block, Cards, Energy, Heal, Gold, Max HP, Stars, Forge, Summon, hits: +1; HpLoss: −1.
+10. **power**: a buff on yourself or a debuff on enemies: +1; the reverse: −1. The power is applied with
+    `PowerCmd.Apply<P>`, a mod's wrapper of it (any `…PowerCmd…` class's `Apply<P>`), or a generic helper of the
+    item's own that applies its type parameter.
+
+**Mods.** For a mod's card or relic the engine also reads its base classes from the same mod (mods often keep
+the logic there), maps a mod's `…Compat` hook wrappers to the game's hooks for trigger tiers, and a mod
+relic's fractional values (a ×1.2 multiplier) are bought in steps of 0.01 without an override. The Hextech
+Runes mod is checked by the tests too (`tools/tests/data/rules_hextech.tsv`, when the mod is installed).
 
 So a new card or relic is usually covered with no change. Check it in the game (Step 3), and add an
 **override** only when the engine is wrong or can't tell.
 
-To see what the engine decides for every value without starting the game, run the **rulecheck** tool (it
-also compares with `tools/divergence.py`):
+To see what the engine decides for every value without starting the game, run the **rulecheck** tool from the
+repository root (it lists the values whose result differs from the tests' baseline, and writes them all to
+`out.tsv`):
 
 ```
-dotnet run --project tools/rulecheck -c Release -- "<game>/data_sts2_windows_x86_64/sts2.dll" "C:/Users/Sean/Documents/StS2ModSource/_sts2_full" tools/coverage out.tsv
+dotnet run --project tools/rulecheck -c Release -- "<game>/data_sts2_windows_x86_64/sts2.dll" out.tsv
 ```
+
+`dotnet test tools/tests` checks the same thing against `tools/tests/data/rules.tsv`; after an override that
+changes a value on purpose, accept it with `TINKER_UPDATE_BASELINE=1 dotnet test tools/tests`.
 
 In the game, put an empty file named `rules_dump` in `mods/tinker/`: opening the Workshop then writes the
 engine's verdicts to `mods/tinker/rules_dump.tsv`.

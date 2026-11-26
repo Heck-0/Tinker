@@ -132,18 +132,18 @@ internal static class AdvancedEnchantmentUpgrades
 
 	private static bool Grow(EnchantmentModel __instance, CardPlay cardPlay, ref Task __result)
 	{
-		int num = Delta(__instance, "enchanteffect:goopyGrowth");
-		if (num == 0 || cardPlay.Card != __instance.Card)
+		int delta = Delta(__instance, "enchanteffect:goopyGrowth");
+		if (delta == 0 || cardPlay.Card != __instance.Card)
 		{
 			return true;
 		}
 		checked
 		{
-			__instance.Amount = (int)Amount.GetValue(__instance) + 1 + num;
+			__instance.Amount = (int)Amount.GetValue(__instance) + 1 + delta;
 			EnchantmentModel enchantmentModel = __instance.Card.DeckVersion?.Enchantment;
 			if (enchantmentModel != null)
 			{
-				enchantmentModel.Amount = (int)Amount.GetValue(enchantmentModel) + 1 + num;
+				enchantmentModel.Amount = (int)Amount.GetValue(enchantmentModel) + 1 + delta;
 			}
 			__result = Task.CompletedTask;
 			return false;
@@ -153,7 +153,7 @@ internal static class AdvancedEnchantmentUpgrades
 	internal static IEnumerable<CodeInstruction> Transpile(IEnumerable<CodeInstruction> instructions, MethodBase __originalMethod)
 	{
 		List<CodeInstruction> list = instructions.ToList();
-		List<CodeInstruction> list2 = new List<CodeInstruction>();
+		List<CodeInstruction> list3 = new List<CodeInstruction>();
 		FieldInfo fieldInfo = __originalMethod.DeclaringType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).FirstOrDefault((FieldInfo f) => f.Name == "<>4__this" && typeof(EnchantmentModel).IsAssignableFrom(f.FieldType));
 		if (fieldInfo?.FieldType.Name == "Imbued")
 		{
@@ -165,62 +165,49 @@ internal static class AdvancedEnchantmentUpgrades
 					CodeInstruction codeInstruction = new CodeInstruction(OpCodes.Ldarg_0);
 					codeInstruction.labels.AddRange(item.labels);
 					codeInstruction.blocks.AddRange(item.blocks);
-					list2.Add(codeInstruction);
-					list2.Add(new CodeInstruction(OpCodes.Ldfld, fieldInfo));
-					list2.Add(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(AdvancedEnchantmentUpgrades), "ImbuedPlay")));
+					list3.Add(codeInstruction);
+					list3.Add(new CodeInstruction(OpCodes.Ldfld, fieldInfo));
+					list3.Add(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(AdvancedEnchantmentUpgrades), "ImbuedPlay")));
 					num++;
 				}
 				else
 				{
-					list2.Add(item);
+					list3.Add(item);
 				}
 			}
 			if (num != 1)
 			{
 				throw new InvalidOperationException("Unexpected Imbued auto-play signature: " + num);
 			}
-			return list2;
+			return list3;
 		}
-		bool flag = __originalMethod.DeclaringType.Name == "Slither";
-		int num2 = 0;
-		for (int num3 = 0; num3 < list.Count; num3++)
+		// Slither: the random cost's upper bound (NextInt(4)); Slumbering Essence: the -1 cost per turn
+		// (AddUntilPlayed(-1, 0)). Each is replaced by a call that adds the card's upgrades.
+		bool slither = __originalMethod.DeclaringType.Name == "Slither";
+		int replaced = 0;
+		for (int i = 0; i < list.Count; i++)
 		{
-			CodeInstruction codeInstruction2 = list[num3];
-			bool num4;
-			if (!flag)
+			CodeInstruction instruction = list[i];
+			bool match = slither
+				? instruction.LoadsConstant(4L) && i + 1 < list.Count && list[i + 1].operand is MethodInfo next && next.Name == "NextInt"
+				: instruction.LoadsConstant(-1L) && i + 2 < list.Count && list[i + 1].LoadsConstant(0L) && list[i + 2].operand is MethodInfo call && call.Name == "AddUntilPlayed";
+			if (match)
 			{
-				if (codeInstruction2.LoadsConstant(-1L) && num3 + 2 < list.Count && list[num3 + 1].LoadsConstant(0L) && list[num3 + 2].operand is MethodInfo methodInfo2)
-				{
-					num4 = methodInfo2.Name == "AddUntilPlayed";
-					goto IL_0244;
-				}
-			}
-			else if (codeInstruction2.LoadsConstant(4L) && num3 + 1 < list.Count && list[num3 + 1].operand is MethodInfo methodInfo3)
-			{
-				num4 = methodInfo3.Name == "NextInt";
-				goto IL_0244;
-			}
-			goto IL_0246;
-			IL_0244:
-			if (num4)
-			{
-				CodeInstruction codeInstruction3 = new CodeInstruction(OpCodes.Ldarg_0);
-				codeInstruction3.labels.AddRange(codeInstruction2.labels);
-				codeInstruction3.blocks.AddRange(codeInstruction2.blocks);
-				list2.Add(codeInstruction3);
-				list2.Add(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(AdvancedEnchantmentUpgrades), flag ? "Bound" : "Discount")));
-				num2++;
+				CodeInstruction self = new CodeInstruction(OpCodes.Ldarg_0);
+				self.labels.AddRange(instruction.labels);
+				self.blocks.AddRange(instruction.blocks);
+				list3.Add(self);
+				list3.Add(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(AdvancedEnchantmentUpgrades), slither ? "Bound" : "Discount")));
+				replaced++;
 				continue;
 			}
-			goto IL_0246;
-			IL_0246:
-			list2.Add(codeInstruction2);
+			list3.Add(instruction);
 		}
-		if (num2 != 1)
+		if (replaced != 1)
 		{
-			throw new InvalidOperationException("Unexpected enchantment cost signature: " + num2);
+			throw new InvalidOperationException("Unexpected enchantment cost signature: " + replaced);
 		}
-		return list2;
+		return list3;
 	}
 
 	private static int Bound(EnchantmentModel e)
@@ -248,15 +235,15 @@ internal static class AdvancedEnchantmentUpgrades
 			}
 			if (item.Attribute == "enchanteffect:goopyGrowth")
 			{
-				string text2 = ExpandedEffectText.RewriteLine(text, "Goopy", item.Attribute, "enchantmentText", Value(card, item.Attribute));
-				if (text2 != null)
+				string rewritten = ExpandedEffectText.RewriteLine(text, "Goopy", item.Attribute, "enchantmentText", Value(card, item.Attribute));
+				if (rewritten != null)
 				{
-					text = text2;
+					text = rewritten;
 					continue;
 				}
 			}
-			string text3 = Lang.T(item.English);
-			text = text + "\n" + text3 + ": " + Value(card, item.Attribute) + ((item.Family == "percentage") ? "%" : "") + ".";
+			string t = Lang.T(item.English);
+			text = text + "\n" + t + ": " + Value(card, item.Attribute) + ((item.Family == "percentage") ? "%" : "") + ".";
 		}
 		return text;
 	}

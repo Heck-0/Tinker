@@ -4,8 +4,6 @@ namespace Tinker.Common;
 
 public static class EnchantmentEffects
 {
-	public const string Prefix = "enchant:";
-
 	public static bool Supported(string name)
 	{
 		switch (name)
@@ -25,23 +23,17 @@ public static class EnchantmentEffects
 		}
 	}
 
-	public static string Key(string name)
-	{
-		return "enchant:" + name;
-	}
+	public static string Key(string name) => UpgradeKey.Of(UpgradeKey.Kinds.Enchant, name);
 
 	public static bool Known(string key)
 	{
-		if (key != null && key.StartsWith("enchant:", StringComparison.Ordinal))
-		{
-			return Supported(key.Substring("enchant:".Length));
-		}
-		return false;
+		UpgradeKey parsed = UpgradeKey.Parse(key);
+		return parsed.Kind == UpgradeKey.Kinds.Enchant && Supported(parsed.Name);
 	}
 
 	public static string Family(string key)
 	{
-		switch (key.Substring("enchant:".Length))
+		switch (UpgradeKey.Parse(key).Name)
 		{
 		case "Sown":
 			return "energy";

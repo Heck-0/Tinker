@@ -12,7 +12,7 @@ namespace Tinker.Card;
 /// The rule engine decides from the card's own code (<see cref="GameRules"/>); <see cref="Overrides"/> holds the
 /// values where the mod knows better: the rules can't tell (unknown, a cost vs. a limit), get it wrong (a cap
 /// that looks like a debuff), or the value is upgraded through the mod's own effect code.
-/// tools/divergence.py and the rulecheck tool compare the engine with these.
+/// tools/tests checks the engine's results (tools/tests/data/rules.tsv); tools/rulecheck shows them.
 /// </summary>
 internal static class VarDirections
 {
@@ -93,7 +93,6 @@ internal static class VarDirections
 		["Thrash"] = 2,
 		["TwinStrike"] = 2,
 		["Uproar"] = 2,
-		["RapidShot"] = -1,
 		["WahKi"] = -1
 	};
 

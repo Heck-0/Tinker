@@ -36,8 +36,6 @@ internal static class PageButtonLayout
 		}
 	}
 
-	private const string PositionKey = "card_upgrader_local_position";
-
 	public static void Bind(NButton button, Vector2 position)
 	{
 		button.SetMeta("card_upgrader_local_position", position);

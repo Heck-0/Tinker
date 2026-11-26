@@ -6,26 +6,6 @@ namespace Tinker.Common;
 
 public static class FixedEffects
 {
-	public const string Prefix = "effect:";
-
-	public const string Lightning = "effect:lightning";
-
-	public const string Frost = "effect:frost";
-
-	public const string Dark = "effect:dark";
-
-	public const string Plasma = "effect:plasma";
-
-	public const string FrostPerEnemy = "effect:frostPerEnemy";
-
-	public const string Evokes = "effect:evokes";
-
-	public const string ExtraEvokes = "effect:extraEvokes";
-
-	public const string ExtraLightning = "effect:extraLightning";
-
-	public const string Glass = "effect:glass";
-
 	public static bool Known(string attribute)
 	{
 		switch (attribute)
@@ -44,170 +24,42 @@ public static class FixedEffects
 		}
 	}
 
+	/// <summary>The orb and evoke effects a card offers, as attribute keys.</summary>
 	public static IEnumerable<string> For(string card)
 	{
-		if (card == null)
+		switch (card)
 		{
-			yield break;
-		}
-		switch (card.Length)
-		{
+		case "Zap":
+		case "BallLightning":
+			return new[] { "effect:lightning" };
+		case "Coolheaded":
+		case "ColdSnap":
+		case "Glacier":
+			return new[] { "effect:frost" };
+		case "Darkness":
+		case "Null":
+		case "ShadowShield":
+			return new[] { "effect:dark" };
+		case "Fusion":
+		case "Ignition":
+		case "MeteorStrike":
+			return new[] { "effect:plasma" };
+		case "Rainbow":
+			return new[] { "effect:lightning", "effect:frost", "effect:dark" };
+		case "Chill":
+			return new[] { "effect:frostPerEnemy" };
+		case "Tempest":
+			return new[] { "effect:extraLightning" };
+		case "Glasswork":
+			return new[] { "effect:glass" };
+		case "MultiCast":
+			return new[] { "effect:extraEvokes" };
+		case "Dualcast":
+		case "Shatter":
+			return new[] { "effect:evokes" };
 		default:
-			yield break;
-		case 8:
-		{
-			char c = card[1];
-			if ((uint)c <= 103u)
-			{
-				if (c != 'a')
-				{
-					if (c != 'g' || !(card == "Ignition"))
-					{
-						yield break;
-					}
-					goto IL_030c;
-				}
-				if (!(card == "Darkness"))
-				{
-					yield break;
-				}
-				goto IL_02ec;
-			}
-			if (c != 'o')
-			{
-				if (c != 'u' || !(card == "Dualcast"))
-				{
-					yield break;
-				}
-				break;
-			}
-			if (!(card == "ColdSnap"))
-			{
-				yield break;
-			}
-			goto IL_02cc;
+			return Array.Empty<string>();
 		}
-		case 7:
-			switch (card[0])
-			{
-			default:
-				yield break;
-			case 'G':
-				break;
-			case 'R':
-				if (card == "Rainbow")
-				{
-					yield return "effect:lightning";
-					yield return "effect:frost";
-					yield return "effect:dark";
-				}
-				yield break;
-			case 'S':
-				goto IL_01ef;
-			case 'T':
-				if (card == "Tempest")
-				{
-					yield return "effect:extraLightning";
-				}
-				yield break;
-			}
-			if (!(card == "Glacier"))
-			{
-				yield break;
-			}
-			goto IL_02cc;
-		case 12:
-		{
-			char c = card[0];
-			if (c != 'M')
-			{
-				if (c != 'S' || !(card == "ShadowShield"))
-				{
-					yield break;
-				}
-				goto IL_02ec;
-			}
-			if (!(card == "MeteorStrike"))
-			{
-				yield break;
-			}
-			goto IL_030c;
-		}
-		case 9:
-			switch (card[0])
-			{
-			case 'G':
-				if (card == "Glasswork")
-				{
-					yield return "effect:glass";
-				}
-				break;
-			case 'M':
-				if (card == "MultiCast")
-				{
-					yield return "effect:extraEvokes";
-				}
-				break;
-			}
-			yield break;
-		case 3:
-			if (!(card == "Zap"))
-			{
-				yield break;
-			}
-			goto IL_02ac;
-		case 13:
-			if (!(card == "BallLightning"))
-			{
-				yield break;
-			}
-			goto IL_02ac;
-		case 10:
-			if (!(card == "Coolheaded"))
-			{
-				yield break;
-			}
-			goto IL_02cc;
-		case 4:
-			if (!(card == "Null"))
-			{
-				yield break;
-			}
-			goto IL_02ec;
-		case 6:
-			if (!(card == "Fusion"))
-			{
-				yield break;
-			}
-			goto IL_030c;
-		case 5:
-			{
-				if (card == "Chill")
-				{
-					yield return "effect:frostPerEnemy";
-				}
-				yield break;
-			}
-			IL_02cc:
-			yield return "effect:frost";
-			yield break;
-			IL_02ac:
-			yield return "effect:lightning";
-			yield break;
-			IL_02ec:
-			yield return "effect:dark";
-			yield break;
-			IL_030c:
-			yield return "effect:plasma";
-			yield break;
-			IL_01ef:
-			if (!(card == "Shatter"))
-			{
-				yield break;
-			}
-			break;
-		}
-		yield return "effect:evokes";
 	}
 
 	public static bool Supports(string card, string attribute)

@@ -5,22 +5,6 @@ namespace Tinker.Common;
 
 public static class AdvancedEnchantmentEffects
 {
-	public const string GoopyBlock = "enchanteffect:goopyBlock";
-
-	public const string GoopyGrowth = "enchanteffect:goopyGrowth";
-
-	public const string Instinct = "enchanteffect:instinctDamage";
-
-	public const string Corrupted = "enchanteffect:corruptedDamage";
-
-	public const string Slumbering = "enchanteffect:slumberingDiscount";
-
-	public const string Slither = "enchantdown:slitherMaximum";
-
-	public const string Ember = "enchanteffect:emberDamage";
-
-	public const string Imbued = "enchanteffect:imbuedReplays";
-
 	public static readonly IReadOnlyList<AdvancedEnchantmentEffect> Entries = new AdvancedEnchantmentEffect[8]
 	{
 		E("Goopy", "enchanteffect:goopyBlock", 0, "block", "Accumulated Block"),

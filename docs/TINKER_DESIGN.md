@@ -70,7 +70,7 @@ removed in 1.8.0).
 | Royally Approved | 240 | Innate and Retain | Attacks, Skills |
 | Nimble 3 | 240 | +3 Block per play | cards that gain Block |
 | Sharp 2 | 240 | +2 damage per play | Attacks |
-| Clone | 240 | copied at rest sites | only while you have Pael's Growth |
+| Clone | 240 | copied at rest sites | any |
 | Swift 2 | 200 | first play each combat: draw 2 | any |
 | Soul's Power | 200 | removes Exhaust | cards that Exhaust |
 | Corrupted | 200 | ×1.5 damage, you take 2 per play | Attacks |

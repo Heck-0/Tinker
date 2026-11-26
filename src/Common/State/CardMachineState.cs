@@ -92,7 +92,17 @@ public sealed class CardMachineState
 		{
 			throw new ArgumentException("Empty attribute.", "attribute");
 		}
-		if (!(attribute == "cost") && !FixedEffects.Known(attribute) && !ExpandedEffects.Known(attribute) && !EnchantmentEffects.Known(attribute) && !AdvancedEnchantmentEffects.Known(attribute) && !AttributeKeys.IsVar(attribute) && (!attribute.StartsWith("self:", StringComparison.Ordinal) || attribute.Length <= "self:".Length) && (!attribute.StartsWith("kw+:", StringComparison.Ordinal) || attribute.Length <= "kw+:".Length))
+		UpgradeKey key = UpgradeKey.Parse(attribute);
+		bool known = key.Kind switch
+		{
+			UpgradeKey.Kinds.Cost or UpgradeKey.Kinds.Var or UpgradeKey.Kinds.VarDown or UpgradeKey.Kinds.SelfPower or UpgradeKey.Kinds.AddedKeyword => true,
+			UpgradeKey.Kinds.Effect => FixedEffects.Known(attribute),
+			UpgradeKey.Kinds.Enchant => EnchantmentEffects.Known(attribute),
+			UpgradeKey.Kinds.EnchantEffect or UpgradeKey.Kinds.EnchantDown => AdvancedEnchantmentEffects.Known(attribute),
+			UpgradeKey.Kinds.Extra or UpgradeKey.Kinds.ExtraDown => ExpandedEffects.Known(attribute),
+			_ => false,
+		};
+		if (!known)
 		{
 			throw new ArgumentException("Unknown machine attribute.", "attribute");
 		}
@@ -140,15 +150,15 @@ public sealed class CardMachineState
 	{
 		try
 		{
-			JsonObject jsonObject = (JsonNode.Parse(json) as JsonObject) ?? throw new FormatException("empty machine state");
-			int version = (int)(jsonObject["v"] ?? throw new FormatException("missing version"));
+			JsonObject root = (JsonNode.Parse(json) as JsonObject) ?? throw new FormatException("empty machine state");
+			int version = (int)(root["v"] ?? throw new FormatException("missing version"));
 			if (version != FormatVersion)
 			{
 				throw new FormatException("unsupported state version: " + version);
 			}
-			JsonObject obj = (jsonObject["a"] as JsonObject) ?? throw new FormatException("missing attributes");
+			JsonObject ledgers = (root["a"] as JsonObject) ?? throw new FormatException("missing attributes");
 			CardMachineState cardMachineState = new CardMachineState();
-			foreach (KeyValuePair<string, JsonNode> item in obj)
+			foreach (KeyValuePair<string, JsonNode> item in ledgers)
 			{
 				ValidateAttribute(item.Key);
 				int gain = (int)(item.Value ?? throw new FormatException("malformed attribute: " + item.Key));

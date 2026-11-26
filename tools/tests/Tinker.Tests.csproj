@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Tinker's tests. Run from the repository root:
+
+      dotnet test tools/tests
+
+    They compile the mod's game-independent code (src/Common, except the Harmony / game adapters) straight into
+    this project, with small stand-ins for the game types it touches (Stubs.cs). The rule-engine test reads the
+    installed game's compiled code with Mono.Cecil; it is skipped if the game isn't found (set STS2_DIR to the
+    game folder if it isn't in the default Steam location).
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <NoWarn>$(NoWarn);CS8632;CS0168;CS0219;CS0162;CS0164;CS0649;CS0414;CS0169;CS1998</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageReference Include="Xunit.SkippableFact" Version="1.4.13" />
+    <PackageReference Include="Mono.Cecil" Version="0.11.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="../../src/Common/**/*.cs" Exclude="../../src/Common/Patching.cs;../../src/Common/Rules/GameRules.cs;../../src/Common/Text/LanguageHooks.cs" LinkBase="Mod" />
+    <Compile Include="../rulecheck/CecilCode.cs" Link="Tools/CecilCode.cs" />
+    <EmbeddedResource Include="../../content/balance.jsonc" LogicalName="Tinker.balance.jsonc" />
+    <None Include="data/**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

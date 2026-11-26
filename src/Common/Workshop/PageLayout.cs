@@ -4,10 +4,6 @@ namespace Tinker.Common;
 
 public readonly struct PageLayout
 {
-	public const float Width = 1920f;
-
-	public const float Height = 1080f;
-
 	public float Scale { get; }
 
 	public float X { get; }

@@ -56,9 +56,18 @@ public static class Catalog
 					list.Add(set);
 					continue;
 				}
-				// A fraction (a multiplier) needs a step size, which only an override gives.
-				if (relic.DynamicVars[v.Name].BaseValue % 1m != 0m)
+				// A fraction (a multiplier) needs a step size: an override gives it; a mod's relic gets 0.01 steps.
+				decimal value = relic.DynamicVars[v.Name].BaseValue;
+				if (value % 1m != 0m)
 				{
+					if (type.Assembly != typeof(RelicModel).Assembly)
+					{
+						Verdict fraction = GameRules.Decide(relic, v.Name);
+						if (fraction.Sign != 0)
+						{
+							list.Add(Fraction(v.Name, fraction.Sign, value));
+						}
+					}
 					continue;
 				}
 				Verdict verdict = GameRules.Decide(relic, v.Name);
@@ -88,12 +97,32 @@ public static class Catalog
 		return family ?? DefaultFamily(v, verdict);
 	}
 
-	/// <summary>The cost category for a value the rules decided (tools/relic_overrides.py uses the same mapping).</summary>
+	/// <summary>
+	/// A mod relic's fractional value (Hextech Runes: DamageMultiplier 1.2), bought in steps of 0.01 like the
+	/// Stepped overrides. A multiplier of 1 or more counts its price from ×1 (no effect), other fractions from 0.
+	/// </summary>
+	private static RelicAttribute Fraction(string key, int direction, decimal value)
+	{
+		decimal neutral = (value >= 1m && key.Contains("Multiplier")) ? 1m : 0m;
+		return new RelicAttribute(key, "percentage", direction, Math.Max(10m, value * 10m))
+		{
+			Step = 0.01m,
+			Neutral = neutral,
+			Minimum = (direction > 0) ? neutral : 0m
+		};
+	}
+
+	/// <summary>The cost category for a value the rules decided.</summary>
 	public static string DefaultFamily(VarInfo v, Verdict verdict)
 	{
 		if (verdict.Sign < 0)
 		{
 			return (verdict.Why == "every N / threshold") ? "threshold" : "drawback";
+		}
+		// A mod's plain "...Percent" value: priced in percentage points.
+		if (v.Class == "DynamicVar" && v.Name.EndsWith("Percent", StringComparison.Ordinal))
+		{
+			return "percentage";
 		}
 		switch (v.Name)
 		{

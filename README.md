@@ -37,11 +37,14 @@ Needs the .NET 8 SDK, the game, and BaseLib (Workshop). Paths are set at the top
 - [docs/ADDING_CARDS_AND_RELICS.md](docs/ADDING_CARDS_AND_RELICS.md) - how to make more cards and relics upgradable, in VS Code.
 - [docs/COVERAGE_GAPS.md](docs/COVERAGE_GAPS.md) - what the current game has that isn't covered yet.
 - [docs/MODIFICATIONS.md](docs/MODIFICATIONS.md) - every upgrade the mod can make, by how many cards it fits.
+- `tools/tests` - the tests: `dotnet test tools/tests`. They check the rule engine on the installed game against
+  a baseline (`tools/tests/data/rules.tsv`: direction, rule, cost category and trigger tier for 1,269 card and
+  relic values), the Chinese and Spanish tables against the code, `balance.jsonc`, saves and settings, and that no
+  Spanish is left in the code. After an intended rule change (or a game update that moves values on purpose),
+  accept the new results with `TINKER_UPDATE_BASELINE=1 dotnet test tools/tests`.
+- `tools/rulecheck` - prints what the rule engine decides on the game's compiled code, or the IL it sees for an
+  item (usage at the top of its `Program.cs`).
 - `tools/coverage.ps1` - regenerates the coverage lists (VS Code task *Coverage report*).
-- `tools/divergence.py` - the generic upgrade rules on the decompiled game source, compared with the mod's
-  overrides; writes `tools/coverage/DIVERGENCE.md` (VS Code task *Divergence report*).
-- `tools/rulecheck` - runs the mod's own rule engine on the game's compiled code (Mono.Cecil) and compares
-  it with `divergence.py` (`dotnet run --project tools/rulecheck`, arguments in its project file).
 
 ## Layout
 
@@ -49,17 +52,20 @@ Needs the .NET 8 SDK, the game, and BaseLib (Workshop). Paths are set at the top
 - `src/Config.cs`, `src/Settings.cs`, `src/Text.cs` - the settings menu (`Tinker.cfg`), the values shared by
   both halves, and the menu's labels.
 - `src/HostSettingsMessages.cs` - co-op: the host's settings, sent to the other players.
-- `src/Card/Workshop/` - the Workshop: page (`WorkshopScreen`), purchases (`WorkshopFlow`), prices
-  (`WorkshopOptions`, `CardCost`), co-op message, the Dial click and handing out the Dial.
+- `src/Card/Workshop/` - the Workshop: page (`WorkshopScreen`: state and flow, `.Layout`, `.Paper` for the
+  painted look, `.Enchantments` for the right-hand panel), purchases (`WorkshopFlow`), prices (`WorkshopOptions`,
+  `CardCost`), the enchantments for sale (`ShopEnchantments`), co-op message, the Dial click and handing out the
+  Dial.
 - `src/Common/Rules/` - the rule engine: which card and relic values can be upgraded, and which way, read from
   the game's compiled code at run time (`RuleEngine` = the rules, `GameRules` = reading the game through Harmony).
 - `src/Card/` (`Tinker.Card`) - card upgrades: how values change (`Upgrades/`; direction overrides in
-  `VarDirections.cs`, fractional values in `SteppedValues.cs`), card state saves, card texts.
+  `VarDirections.cs`, fractional values in `SteppedValues.cs`; the expanded effects' IL patch in
+  `ExpandedEffectPatches` with `.Transpiler`, `.Calls` and `.Text`), card state saves, card texts.
 - `src/Relic/` (`Tinker.Relic`) - relic upgrades (`Upgrades/Catalog.cs`: engine + overrides, cost categories,
   fractional `Stepped` values; `PaperRelics.cs`), relic state saves, relic settings and texts.
-- `src/Common/` (`Tinker.Common`) - shared rules: price curve (`Upgrades/RiskCurve.cs`, `UpgradeCost.cs`), balance
-  (`BalanceConfig`, loaded from `content/balance.jsonc`), the Workshop price, card state, text system,
-  `Patching`.
+- `src/Common/` (`Tinker.Common`) - shared rules: upgrade keys (`Upgrades/UpgradeKey.cs`: "var:Damage",
+  "extra:hits"...), price curve (`Upgrades/RiskCurve.cs`, `UpgradeCost.cs`), balance (`BalanceConfig`, loaded from
+  `content/balance.jsonc`), the Workshop price, card state, text system, `Patching`.
 - `content/` - `balance.jsonc`: built into the DLL as the defaults, and also copied next to it, where edits
   override the defaults without a rebuild (the next install overwrites that copy).
 
@@ -80,9 +86,22 @@ removes no code.
 
 - **1.8.0** - Enchantments replace traits and boons. The Workshop's right-hand panel sells all 22 of the
   game's enchantments for cards, one per card, only on the cards each fits, each with its own price and amount
-  (`enchantments` in `content/balance.jsonc`, the same on every preset). Clone is offered only with Pael's Growth (its rest-site copy needs that relic). The mod's card traits (Inexhaustible, Echo, Awakening, Legacy, Venomous,
+  (`enchantments` in `content/balance.jsonc`, the same on every preset). The mod's card traits (Inexhaustible, Echo, Awakening, Legacy, Venomous,
   Lifesteal) and relic boons are gone, with their settings. Saves: upgrades load as before; a trait or boon
   bought earlier is dropped. Enchantments are saved by the game itself. Every co-op player needs 1.8.0.
+  Also: a test project (`tools/tests`), and cleanup checked against it and against the compiled code: dead code
+  and the old settings-label copies removed, the two largest files split into parts, the decompiler's `goto`s
+  rewritten (`FixedEffects`, `ExpandedEffectText`, `CardAttributes`, `FixedEffectPatches`,
+  `AdvancedEnchantmentUpgrades`), its `num2` / `text3` names replaced in most files, one `UpgradeKey` type for the
+  key format, 72 missing Chinese strings added, and the last Spanish (messages, shader comments) translated.
+  Mod support: the rule engine now reads a mod's base classes, its own power-apply wrappers and generic power
+  helpers, and a mod's plain named values (by name), and a mod relic's fractions are bought in 0.01 steps. For
+  the Hextech Runes mod that takes upgradable values from 114 to 300 of 401 (208 of its relics, 16 of 17 cards);
+  the tests check it against `tools/tests/data/rules_hextech.tsv`. Game v0.114 (now the minimum): Florescence no longer
+  powers up The Shot per exhausted card, so its Workshop upgrade (`extra:shotDamage`) is gone; Recall's "put
+  extra cards on top" upgrade moved to Wah Ki, which now does that; Blot Out the Sky's extra cards come from
+  the Fool's pool like the card's own; Clone no longer needs Pael's Growth; stale Rapid Shot and Tune
+  entries and the co-op registration that never ran removed.
 - **1.7.0** - The rule engine: which values are upgradable, and which way, now comes from the game's own
   compiled code at run time (a port of `tools/divergence.py`'s rules to IL, with three new rules: not read,
   only on pickup, loop bounds aren't limits). The hand-written tables shrank to overrides: cards from
@@ -107,10 +126,10 @@ removes no code.
   the test tools, and the menu sections for all of these. About 9,000 lines of code went; a reachability
   check on the compiled DLL confirms nothing unreachable is left. Fixed five cards whose own downside was
   upgraded upwards (Biased Cognition, Wraith Form, Neurosurge, Mind Rot, Disintegration), found by
-  `tools/divergence.py`.
+  `tools/divergence.py` (the rule engine's Python prototype, removed in 1.8.0).
 - **1.4.0** - Renamed to Tinker: mod id `tinker`, namespaces `Tinker.Card` / `Tinker.Relic` /
   `Tinker.Common`, settings file `Tinker.cfg` (copied from `UpgraderCombined.cfg`).
-- **1.3.0** - The Fool's 90 cards and 6 relics ([docs/FOOL_CANDIDATES.md](docs/FOOL_CANDIDATES.md)); no
+- **1.3.0** - The Fool's 90 cards and 6 relics (now covered by the rule engine and its overrides); no
   upgrade-size or value caps (percentages top out at 100 %); card looks and telemetry removed; Inexhaustible
   no longer on Powers; one odds engine and one text system for both halves.
 - **1.2.1** - Hit counts: the game renamed `Repeat` to `HitCount`; ten multi-hit cards had lost that

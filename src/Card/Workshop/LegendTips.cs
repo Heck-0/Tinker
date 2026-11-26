@@ -13,9 +13,9 @@ internal static class LegendTips
 
 	public static IHoverTip Make(string title, string description, Texture2D icon = null, bool debuff = false)
 	{
-		object obj = new HoverTip(new LocString("card_selection", "TO_TINKER"), description, icon);
-		TitleProperty?.SetValue(obj, title);
-		return Tinker.GameCompat113.WithIdentity((HoverTip)obj, "Ruleta:" + title, debuff);
+		object hoverTip = new HoverTip(new LocString("card_selection", "TO_TINKER"), description, icon);
+		TitleProperty?.SetValue(hoverTip, title);
+		return Tinker.GameCompat113.WithIdentity((HoverTip)hoverTip, "Ruleta:" + title, debuff);
 	}
 
 	public static void Attach(Control owner, Func<IHoverTip> tip, HoverTipAlignment alignment = HoverTipAlignment.Left)

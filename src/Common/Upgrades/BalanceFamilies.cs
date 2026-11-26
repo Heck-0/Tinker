@@ -4,36 +4,6 @@ namespace Tinker.Common;
 
 public static class BalanceFamilies
 {
-	public const string Damage = "damage";
-
-	public const string Block = "block";
-
-	public const string Draw = "draw";
-
-	public const string Energy = "energy";
-
-	public const string Repeat = "repeat";
-
-	public const string Orb = "orb";
-
-	public const string Plasma = "plasma";
-
-	public const string OrbRepeat = "orbRepeat";
-
-	public const string Multiplier = "multiplier";
-
-	public const string Scaling = "scaling";
-
-	public const string Power = "power";
-
-	public const string Resource = "resource";
-
-	public const string Drawback = "drawback";
-
-	public const string Cost = "cost";
-
-
-	public const string Generic = "generic";
 
 	public static string Of(string attribute)
 	{
@@ -61,12 +31,12 @@ public static class BalanceFamilies
 			{
 				return "orb";
 			}
-			if (attribute == "cost")
+			UpgradeKey parsed = UpgradeKey.Parse(attribute);
+			if (parsed.Kind == UpgradeKey.Kinds.Cost)
 			{
 				return "cost";
 			}
-
-			if (attribute.StartsWith("vardown:", StringComparison.Ordinal))
+			if (parsed.Kind == UpgradeKey.Kinds.VarDown)
 			{
 				return "drawback";
 			}

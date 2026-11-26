@@ -13,7 +13,7 @@ internal static class BalanceFile
 
 	public static BalanceConfig Current { get; private set; } = new BalanceConfig();
 
-	public static string Path => System.IO.Path.Combine(System.IO.Path.GetDirectoryName(typeof(BalanceFile).Assembly.Location) ?? ".", "balance.jsonc");
+	public static string Path => System.IO.Path.Combine(System.IO.Path.GetDirectoryName(typeof(BalanceFile).Assembly.Location) ?? ".", FileName);
 
 	public static BalanceConfig Fresh()
 	{

@@ -1,13 +1,13 @@
 {
   "id": "tinker",
   "name": "Tinker",
-  "author": "Card Upgrader + Relic Upgrader (combined local build)",
-  "description": "Tinker (formerly Upgrader Combined): Card Upgrader 0.9.2 and Relic Upgrader 0.5.1 in one mod, rebuilt for game v0.113.0. Disable the separate Card Upgrader, Relic Upgrader and Upgrader Combined mods while this is enabled.",
+  "author": "Tinker (based on Card Upgrader and Relic Upgrader)",
+  "description": "Upgrade your cards and relics with gold, and buy the game's enchantments, in the Workshop (click Tinkerer's Dial outside combat). Based on Card Upgrader 0.9.2 and Relic Upgrader 0.5.1; disable those mods while this one is enabled.",
   "version": "1.8.0",
   "has_dll": true,
   "has_pck": false,
   "affects_gameplay": true,
-  "min_game_version": "0.113.0",
+  "min_game_version": "0.114.0",
   "dependencies": [
     { "id": "BaseLib", "min_version": "v3.4.7" }
   ]

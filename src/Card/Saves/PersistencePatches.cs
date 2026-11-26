@@ -50,8 +50,8 @@ public static class PersistencePatches
 				{
 					savedProperties.strings = new List<SavedProperties.SavedProperty<string>>();
 				}
-				__result.Props.strings.RemoveAll((SavedProperties.SavedProperty<string> p) => p.name == "CardUpgraderState");
-				__result.Props.strings.Add(new SavedProperties.SavedProperty<string>("CardUpgraderState", cardMachineState.ToJson()));
+				__result.Props.strings.RemoveAll((SavedProperties.SavedProperty<string> p) => p.name == PropName);
+				__result.Props.strings.Add(new SavedProperties.SavedProperty<string>(PropName, cardMachineState.ToJson()));
 			}
 		}
 	}
@@ -61,7 +61,7 @@ public static class PersistencePatches
 	{
 		public static void Postfix(SerializableCard save, CardModel __result)
 		{
-			string text = save?.Props?.strings?.FirstOrDefault((SavedProperties.SavedProperty<string> p) => p.name == "CardUpgraderState").value;
+			string text = save?.Props?.strings?.FirstOrDefault((SavedProperties.SavedProperty<string> p) => p.name == PropName).value;
 			if (string.IsNullOrEmpty(text) || __result == null)
 			{
 				return;
@@ -84,12 +84,12 @@ public static class PersistencePatches
 	{
 		public static void Postfix(AbstractModel __instance, AbstractModel __result)
 		{
-			if (__instance is CardModel card && __result is CardModel card2)
+			if (__instance is CardModel card && __result is CardModel cardModel)
 			{
 				CardMachineState cardMachineState = CardStateStore.Get(card);
 				if (cardMachineState != null)
 				{
-					CardStateStore.Set(card2, cardMachineState.Clone());
+					CardStateStore.Set(cardModel, cardMachineState.Clone());
 				}
 			}
 		}
@@ -119,7 +119,7 @@ public static class PersistencePatches
 			{
 				try
 				{
-					GameCompat.NetIdForPropertyName("CardUpgraderState");
+					GameCompat.NetIdForPropertyName(PropName);
 					_hasNetId = true;
 				}
 				catch (Exception ex) when (ex is ArgumentException || ex is InvalidOperationException)
@@ -134,10 +134,10 @@ public static class PersistencePatches
 		public static void Prefix(SavedProperties __instance, out List<SavedProperties.SavedProperty<string>> __state)
 		{
 			__state = null;
-			if (!HasNetId() && __instance.strings != null && !__instance.strings.All<SavedProperties.SavedProperty<string>>((SavedProperties.SavedProperty<string> p) => p.name != "CardUpgraderState"))
+			if (!HasNetId() && __instance.strings != null && !__instance.strings.All<SavedProperties.SavedProperty<string>>((SavedProperties.SavedProperty<string> p) => p.name != PropName))
 			{
 				__state = __instance.strings;
-				List<SavedProperties.SavedProperty<string>> list = __state.Where((SavedProperties.SavedProperty<string> p) => p.name != "CardUpgraderState").ToList();
+				List<SavedProperties.SavedProperty<string>> list = __state.Where((SavedProperties.SavedProperty<string> p) => p.name != PropName).ToList();
 				__instance.strings = ((list.Count > 0) ? list : null);
 			}
 		}

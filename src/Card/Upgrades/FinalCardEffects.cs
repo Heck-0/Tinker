@@ -31,10 +31,6 @@ internal static class FinalCardEffects
 
 	internal static readonly bool PlansUseSelectedRetain = new WellLaidPlans().DynamicVars.ContainsKey("RetainAmount");
 
-	private const string BoostTurns = "shadow:boostTurns";
-
-	private const string ShadowMultiplier = "extra:shadowMultiplier";
-
 	internal static int Delta(CardModel card, string key)
 	{
 		return CardStateStore.Get(card)?.RawDelta(key) ?? 0;
@@ -75,10 +71,10 @@ internal static class FinalCardEffects
 	internal static void AfterPlay(CardModel __instance, PlayerChoiceContext choiceContext, PlaySnapshot __state, ref Task __result)
 	{
 		string key = ((__instance is Apotheosis) ? "extra:permanentUpgrades" : ((__instance is CalculatedGamble) ? "extra:gambleDraw" : ((__instance is Anointed) ? "extra:rareDiscount" : "extra:initialSly")));
-		int num = Delta(__instance, key);
-		if (num > 0)
+		int delta = Delta(__instance, key);
+		if (delta > 0)
 		{
-			__result = FinishPlay(__result, __instance, choiceContext, __state, num);
+			__result = FinishPlay(__result, __instance, choiceContext, __state, delta);
 		}
 	}
 
@@ -123,12 +119,12 @@ internal static class FinalCardEffects
 				return;
 			}
 		}
-		int num2 = source.Owner.Deck.Cards.Count((CardModel c) => c.IsUpgradable);
-		if (num2 == 0)
+		int cards = source.Owner.Deck.Cards.Count((CardModel c) => c.IsUpgradable);
+		if (cards == 0)
 		{
 			return;
 		}
-		CardSelectorPrefs upgradePrefs = new CardSelectorPrefs(new LocString("card_selection", "UPGRADER_PERMANENT_UPGRADE"), 0, Math.Min(count, num2))
+		CardSelectorPrefs upgradePrefs = new CardSelectorPrefs(new LocString("card_selection", "UPGRADER_PERMANENT_UPGRADE"), 0, Math.Min(count, cards))
 		{
 			Cancelable = true,
 			RequireManualConfirmation = true
@@ -144,9 +140,9 @@ internal static class FinalCardEffects
 			CardModel[] array = (from c in (await CardSelectCmd.FromDeckForUpgrade(source.Owner, upgradePrefs)).Distinct()
 				where source.Owner.Deck.Cards.Contains(c) && c.IsUpgradable
 				select c).Take(count).ToArray();
-			for (int num = 0; num < array.Length; num++)
+			for (int i = 0; i < array.Length; i++)
 			{
-				CardCmd.Upgrade(array[num]);
+				CardCmd.Upgrade(array[i]);
 			}
 		}
 		finally
@@ -166,14 +162,14 @@ internal static class FinalCardEffects
 	internal static CardModel BuffGenerated(CardModel generated, CardModel source)
 	{
 		string key = ((source is Guards) ? "extra:generatedBlock" : "extra:generatedDamage");
-		int num = Delta(source, key);
-		if (num <= 0)
+		int delta = Delta(source, key);
+		if (delta <= 0)
 		{
 			return generated;
 		}
 		string dynamicVarName = ((source is Guards) ? "Block" : "Damage");
 		CardMachineState cardMachineState = CardStateStore.Get(generated)?.Clone() ?? new CardMachineState();
-		int raw = cardMachineState.ApplySuccess(AttributeKeys.Var(dynamicVarName), num);
+		int raw = cardMachineState.ApplySuccess(AttributeKeys.Var(dynamicVarName), delta);
 		CardAttributes.ApplyRaw(generated, AttributeKeys.Var(dynamicVarName), raw);
 		CardStateStore.Set(generated, cardMachineState);
 		return generated;
@@ -188,12 +184,12 @@ internal static class FinalCardEffects
 			return drawn;
 		}
 		HashSet<CardModel> candidates = new HashSet<CardModel>(drawn);
-		int num = PileType.Hand.GetPile(player).Cards.Count(Eligible);
-		if (num == 0)
+		int cards = PileType.Hand.GetPile(player).Cards.Count(Eligible);
+		if (cards == 0)
 		{
 			return drawn;
 		}
-		CardSelectorPrefs prefs = new CardSelectorPrefs(new LocString("card_selection", "UPGRADER_REDRAW"), 0, Math.Min(maximum, num));
+		CardSelectorPrefs prefs = new CardSelectorPrefs(new LocString("card_selection", "UPGRADER_REDRAW"), 0, Math.Min(maximum, cards));
 		CardModel[] array = (await CardSelectCmd.FromHand(context, player, prefs, Eligible, source)).Distinct().Take(maximum).ToArray();
 		if (array.Length != 0)
 		{
@@ -265,11 +261,11 @@ internal static class FinalCardEffects
 		bool flag = fieldInfo.FieldType.Name == "HammerTimePower";
 		int num = 0;
 		Dictionary<int, List<CodeInstruction>> insertions = new Dictionary<int, List<CodeInstruction>>();
-		for (int num2 = 0; num2 < code.Count; num2++)
+		for (int i = 0; i < code.Count; i++)
 		{
-			if (flag && code[num2].operand is MethodInfo methodInfo && methodInfo.DeclaringType.Name == "ForgeCmd" && methodInfo.Name == "Forge")
+			if (flag && code[i].operand is MethodInfo methodInfo && methodInfo.DeclaringType.Name == "ForgeCmd" && methodInfo.Name == "Forge")
 			{
-				int key = ExpandedEffectPatches.ArgumentEnd(code, num2, methodInfo, 0) + 1;
+				int key = ExpandedEffectPatches.ArgumentEnd(code, i, methodInfo, 0) + 1;
 				insertions.Add(key, new List<CodeInstruction>
 				{
 					new CodeInstruction(OpCodes.Ldarg_0),
@@ -278,13 +274,13 @@ internal static class FinalCardEffects
 				});
 				num++;
 			}
-			if (!flag && code[num2].LoadsConstant(3L))
+			if (!flag && code[i].LoadsConstant(3L))
 			{
 				CodeInstruction codeInstruction = new CodeInstruction(OpCodes.Ldarg_0);
-				codeInstruction.labels.AddRange(code[num2].labels);
-				codeInstruction.blocks.AddRange(code[num2].blocks);
-				code[num2] = codeInstruction;
-				insertions.Add(num2 + 1, new List<CodeInstruction>
+				codeInstruction.labels.AddRange(code[i].labels);
+				codeInstruction.blocks.AddRange(code[i].blocks);
+				code[i] = codeInstruction;
+				insertions.Add(i + 1, new List<CodeInstruction>
 				{
 					new CodeInstruction(OpCodes.Ldfld, fieldInfo),
 					new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(FinalCardEffects), "PoisonThreshold"))
@@ -346,10 +342,10 @@ internal static class FinalCardEffects
 			if (!creature.IsDead && !CombatManager.Instance.IsOverOrEnding)
 			{
 				PowerModel power = creature.Powers.FirstOrDefault((PowerModel p) => p.GetType().Name == "BarricadePower");
-				decimal num = GrowthAmount(creature.Block, PowerParameters.Value(power, "extra:blockGrowth", 0));
-				if (num > 0m)
+				decimal growthAmount = GrowthAmount(creature.Block, PowerParameters.Value(power, "extra:blockGrowth", 0));
+				if (growthAmount > 0m)
 				{
-					await CreatureCmd.GainBlock(creature, num, ValueProp.Unpowered, null);
+					await CreatureCmd.GainBlock(creature, growthAmount, ValueProp.Unpowered, null);
 				}
 			}
 		}

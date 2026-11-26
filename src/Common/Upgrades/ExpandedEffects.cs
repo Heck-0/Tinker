@@ -6,32 +6,6 @@ namespace Tinker.Common;
 
 public static class ExpandedEffects
 {
-	public const string Hits = "extra:hits";
-
-	public const string X = "extra:x";
-
-	public const string Power = "extra:power";
-
-	public const string Draw = "extra:draw";
-
-	public const string Options = "extra:options";
-
-	public const string Multiplier = "extra:multiplier";
-
-	public const string Passive = "extra:passive";
-
-	public const string Selection = "extra:selection";
-
-	public const string Generation = "extra:generation";
-
-	public const string Replays = "extra:replays";
-
-	public const string Threshold = "extradown:threshold";
-
-	public const string Channels = "extra:channels";
-
-	public const string Coverage = "extra:coverage";
-
 	public static readonly IReadOnlyList<ExpandedEffect> Entries = Build().ToArray();
 
 	private static ExpandedEffect E(string card, string key, string kind, string target, int native, string family, string en, string extraEn, int upgraded = -1, int sites = 1, string method = "OnPlay")
@@ -265,10 +239,9 @@ public static class ExpandedEffects
 		yield return E("Malaise", "extra:x", "x", null, 0, "power", "Additional Weak and Strength loss to X", "Apply {0} additional Weak and reduce Strength by {0} more.");
 		// Combined build: the Fool's cards that hard-code their amounts.
 		yield return E("LockedIn", "extra:selection", "retrieve", null, 1, "selection", "Shoot cards retrieved", "Retrieve {0} additional Shoot cards.");
-		yield return E("Recall", "extra:selection", "retrieveTop", null, 1, "selection", "Cards put on top of your draw pile", "Put {0} additional cards on top of your draw pile.");
+		yield return E("WahKi", "extra:selection", "retrieveTop", null, 1, "selection", "Cards put on top of your draw pile", "Put {0} additional cards on top of your draw pile.");
 		yield return E("BlotOutTheSky", "extra:generation", "generate", null, 1, "generation", "Shoot cards created", "Create {0} additional free Shoot cards.");
 		yield return E("MythicForm", "extra:power", "power", "MythicFormPower", 1, "persistentGeneration", "Cards per turn", "Add {0} additional cards each turn.");
-		yield return E("Florescence", "extra:shotDamage", "shotDamage", null, 10, "damage", "Damage per exhausted card", "The Shot deals {0} additional damage per exhausted card.", 13);
 		yield return E("DaggerThrow", "extra:draw", "draw", null, 1, "draw", "Draw", "Draw {0} additional cards.");
 		yield return E("EscapePlan", "extra:draw", "draw", null, 1, "draw", "Draw", "Draw {0} additional cards; only check the first.");
 		yield return E("Havoc", "extra:power", "autoPlay", null, 1, "autoPlay", "Cards played", "Play and Exhaust {0} additional cards.");
@@ -322,7 +295,7 @@ public static class ExpandedEffects
 
 	public static bool Known(string key)
 	{
-		if (key != null && (key.StartsWith("extra:", StringComparison.Ordinal) || key.StartsWith("extradown:", StringComparison.Ordinal)))
+		if (UpgradeKey.Parse(key).Kind is UpgradeKey.Kinds.Extra or UpgradeKey.Kinds.ExtraDown)
 		{
 			if (!Entries.Any((ExpandedEffect e) => e.Attribute == key))
 			{

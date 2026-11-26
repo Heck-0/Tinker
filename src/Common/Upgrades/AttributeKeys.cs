@@ -2,60 +2,24 @@ using System;
 
 namespace Tinker.Common;
 
+/// <summary>Shorthands for the most used upgrade keys; the format itself is <see cref="UpgradeKey"/>.</summary>
 public static class AttributeKeys
 {
-	public const string VarPrefix = "var:";
+	public const string Cost = UpgradeKey.CostText;
 
-	public const string VarDownPrefix = "vardown:";
+	/// <summary>"var:" + the card's value name.</summary>
+	public static string Var(string dynamicVarName) => UpgradeKey.Of(UpgradeKey.Kinds.Var, dynamicVarName);
 
-	public const string Cost = "cost";
+	/// <summary>"vardown:" + the card's value name (lower is better).</summary>
+	public static string VarDown(string dynamicVarName) => UpgradeKey.Of(UpgradeKey.Kinds.VarDown, dynamicVarName);
 
-	public const string SelfPowerPrefix = "self:";
+	/// <summary>A key for one of the card's own values (var: or vardown:).</summary>
+	public static bool IsVar(string attribute) => UpgradeKey.Parse(attribute).IsVar;
 
-	public const string AddedKeywordPrefix = "kw+:";
-
-
-	public static string Var(string dynamicVarName)
-	{
-		return "var:" + dynamicVarName;
-	}
-
-	public static string VarDown(string dynamicVarName)
-	{
-		return "vardown:" + dynamicVarName;
-	}
-
-	public static bool IsVar(string attribute)
-	{
-		if (attribute != null)
-		{
-			if (!attribute.StartsWith("var:", StringComparison.Ordinal) || attribute.Length <= "var:".Length)
-			{
-				if (attribute.StartsWith("vardown:", StringComparison.Ordinal))
-				{
-					return attribute.Length > "vardown:".Length;
-				}
-				return false;
-			}
-			return true;
-		}
-		return false;
-	}
-
+	/// <summary>The card value's name in a var: / vardown: key, else null.</summary>
 	public static string VarName(string attribute)
 	{
-		if (attribute == null)
-		{
-			return null;
-		}
-		if (attribute.StartsWith("var:", StringComparison.Ordinal))
-		{
-			return attribute.Substring("var:".Length);
-		}
-		if (attribute.StartsWith("vardown:", StringComparison.Ordinal))
-		{
-			return attribute.Substring("vardown:".Length);
-		}
-		return null;
+		UpgradeKey key = UpgradeKey.Parse(attribute);
+		return key.IsVar ? key.Name : null;
 	}
 }

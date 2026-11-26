@@ -7,10 +7,9 @@ using MegaCrit.Sts2.Core.Localization;
 namespace Tinker;
 
 /// <summary>
-/// Labels for the combined settings menu. BaseLib looks them up in the "settings_ui" table under the
-/// menu's prefix (TINKER-). Most are the halves' existing labels (RULETA-..., RELICUPGRADER-...)
-/// copied across, so every language they already had keeps working; section titles that changed
-/// meaning in the merged layout get their own text.
+/// The settings menu's labels. BaseLib looks them up in the "settings_ui" table under the menu's prefix
+/// (TINKER-) and the slug of each setting's name; <see cref="Labels"/> lists them all in English, translated
+/// for the game's language when installed.
 /// </summary>
 internal static class Text
 {
@@ -26,13 +25,7 @@ internal static class Text
         try
         {
             Dictionary<string, string> labels = new Dictionary<string, string>();
-            // Card labels first, so shared settings and the shared items use Card Upgrader's wording.
-            if (Tinker.Card.Loc.TablesFor(manager.Language).TryGetValue("settings_ui", out Dictionary<string, string> card))
-            {
-                Copy(card, "RULETA-", labels);
-            }
-            Copy(Lang.T(Tinker.Relic.ConfigText.Values(), manager.Language), "RELICUPGRADER-", labels);
-            foreach (KeyValuePair<string, string> pair in Lang.T(Own(), manager.Language))
+            foreach (KeyValuePair<string, string> pair in Lang.T(Labels(), manager.Language))
             {
                 labels[Prefix + pair.Key] = pair.Value;
             }
@@ -44,25 +37,21 @@ internal static class Text
         }
     }
 
-    private static void Copy(Dictionary<string, string> source, string fromPrefix, Dictionary<string, string> into)
-    {
-        foreach (KeyValuePair<string, string> pair in source)
-        {
-            if (pair.Key.StartsWith(fromPrefix, StringComparison.Ordinal))
-            {
-                string key = Prefix + pair.Key.Substring(fromPrefix.Length);
-                into.TryAdd(key, pair.Value);
-            }
-        }
-    }
-
     private static string Slug(string name) => StringHelper.Slugify(name);
 
-    /// <summary>Titles for sections and settings that are new in the merged layout.</summary>
-    private static Dictionary<string, string> Own()
+    /// <summary>Every label in the settings menu (English; translated by language when installed).</summary>
+    private static Dictionary<string, string> Labels()
     {
         return new Dictionary<string, string>
         {
+            [Slug("SectionGeneral") + ".title"] = "General",
+            [Slug("Preset") + ".title"] = "Preset",
+            [Slug("Preset") + ".hover.title"] = "Preset",
+            [Slug("Preset") + ".hover.desc"] = "Normal is the mod as designed. Easy and Hard change several values at once. Touch anything and it becomes Custom. In co-op, the host's settings are used.",
+            [Slug("Preset") + ".Normal"] = "Normal",
+            [Slug("Preset") + ".Easy"] = "Easy",
+            [Slug("Preset") + ".Hard"] = "Hard",
+            [Slug("Preset") + ".Custom"] = "Custom",
             [Slug("SectionPrices") + ".title"] = "Prices",
             [Slug("SectionWorkshop") + ".title"] = "Workshop",
             [Slug("WorkshopGoldRate") + ".title"] = "Gold per upgrade",
@@ -73,6 +62,7 @@ internal static class Text
             [Slug("EnchantmentsEnabled") + ".hover.title"] = "Enchantments in the Workshop",
             [Slug("EnchantmentsEnabled") + ".hover.desc"] = "The Workshop sells the game's enchantments for cards, each at its own price (balance.jsonc). Turn them off and it doesn't.",
             [Slug("Difficulty") + ".title"] = "Upgrade difficulty",
+            [Slug("Difficulty") + ".hover.desc"] = "How much bigger upgrades, and upgrades on already-upgraded cards or relics, cost. Higher values raise Workshop prices.",
         };
     }
 

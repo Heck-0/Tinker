@@ -9,11 +9,7 @@ namespace Tinker.Card;
 
 public static class ModEntry
 {
-	public const string ModId = "cardupgrader";
-
 	public const string Version = "0.9.2";
-
-	public const string LogPrefix = "[Tinker Card] ";
 
 	public static void Initialize()
 	{
@@ -26,7 +22,6 @@ public static class ModEntry
 			PowerParameters.Install(Patching.Harmony);
 			ExpandedEffectPatches.Install(Patching.Harmony);
 			AdvancedEnchantmentUpgrades.Install(Patching.Harmony);
-			RegisterNetwork();
 			RegisterConfig();
 			BalanceFile.Reload();
 			Log.Info("[Tinker Card] active, version 0.9.2.");
@@ -38,34 +33,13 @@ public static class ModEntry
 	}
 
 
-	private static void RegisterNetwork()
-	{
-		if (Environment.GetEnvironmentVariable("CARDUPGRADER_SELFTEST_NOREG") == "1")
-		{
-			Warn("Network registration skipped (control test).");
-			return;
-		}
-		try
-		{
-			if (GameCompat.RegisterNetworkProperties(typeof(TinkerersDial)))
-			{
-				GameCompat.NetIdForPropertyName("CardUpgraderState");
-				Info("Card state registered for co-op.");
-			}
-		}
-		catch (Exception ex)
-		{
-			Error("Could not register card state for co-op: " + ex.GetBaseException().Message);
-		}
-	}
-
 	private static void RegisterConfig()
 	{
 		try
 		{
 			// Combined build: the settings menu is Tinker.Config, registered by the combined entry.
 			Settings.LocalChanged();
-			Info($"Ajustes cargados (preajuste {Settings.Local.Preset}).");
+			Info($"Settings loaded (preset {Settings.Local.Preset}).");
 		}
 		catch (Exception ex)
 		{

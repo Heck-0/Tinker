@@ -23,7 +23,7 @@ public static class Evolution
 			return false;
 		}
 		RelicState relicState = Store.For(old);
-		RelicState relicState2 = Store.For(next).Copy();
+		RelicState copy = Store.For(next).Copy();
 		string key;
 		foreach (KeyValuePair<string, UpgradeLedger> upgrade in relicState.Upgrades)
 		{
@@ -36,7 +36,7 @@ public static class Evolution
 			{
 				throw new InvalidOperationException("Unmapped relic evolution attribute " + text);
 			}
-			relicState2.Upgrades[target] = new UpgradeLedger
+			copy.Upgrades[target] = new UpgradeLedger
 			{
 				Reference = next.DynamicVars[target].BaseValue,
 				Gain = upgradeLedger.Gain,
@@ -44,7 +44,7 @@ public static class Evolution
 				Family = relicAttribute.Family
 			};
 		}
-		Store.Restore(next, relicState2.ToJson());
+		Store.Restore(next, copy.ToJson());
 		return true;
 	}
 }

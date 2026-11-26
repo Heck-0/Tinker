@@ -16,18 +16,6 @@ public static class Loc
 				["TINKERERS_DIAL.description"] = "Click to open the [gold]Workshop[/gold]: buy upgrades for your cards and relics with gold. Not during combat.",
 				["TINKERERS_DIAL.flavor"] = "Nobody remembers who calibrated it. Nobody dares to do it again."
 			},
-			["settings_ui"] = new Dictionary<string, string>
-			{
-				["RULETA-SECTION_GENERAL.title"] = "General",
-				["RULETA-PRESET.title"] = "Preset",
-				["RULETA-PRESET.hover.title"] = "Preset",
-				["RULETA-PRESET.hover.desc"] = "Normal is the mod as designed. Easy and Hard change several values at once. Touch anything and it becomes Custom. In co-op, the host's settings are used.",
-				["RULETA-SECTION_PRICES.title"] = "Prices",
-				["RULETA-PRESET.Normal"] = "Normal",
-				["RULETA-PRESET.Easy"] = "Easy",
-				["RULETA-PRESET.Hard"] = "Hard",
-				["RULETA-PRESET.Custom"] = "Custom",
-			},
 			["card_selection"] = new Dictionary<string, string>
 			{
 				["TO_TINKER"] = "Choose a card to [gold]Tinker[/gold] with.",
@@ -39,9 +27,9 @@ public static class Loc
 
 	internal static Dictionary<string, Dictionary<string, string>> TablesFor(string language)
 	{
-		Dictionary<string, Dictionary<string, string>> obj = English();
-		FinalCardEffects.AddTexts(obj);
-		return Lang.T(obj, language);
+		Dictionary<string, Dictionary<string, string>> english = English();
+		FinalCardEffects.AddTexts(english);
+		return Lang.T(english, language);
 	}
 
 	public static void Install()

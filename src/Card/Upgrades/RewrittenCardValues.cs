@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.CompilerServices;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
@@ -9,13 +8,6 @@ namespace Tinker.Card;
 
 internal static class RewrittenCardValues
 {
-	private sealed class TemporaryGrowth
-	{
-		internal WeakReference<object> Combat;
-
-		internal int Amount;
-	}
-
 	[HarmonyPatch(typeof(CardModel), "get_DynamicVars")]
 	internal static class Values
 	{
@@ -58,25 +50,6 @@ internal static class RewrittenCardValues
 		}
 	}
 
-	[HarmonyPatch(typeof(AbstractModel), "MutableClone")]
-	internal static class CloneGrowth
-	{
-		private static void Postfix(AbstractModel __instance, AbstractModel __result)
-		{
-			if (__instance is CardModel key && __result is CardModel key2 && Growth.TryGetValue(key, out var value))
-			{
-				Growth.Remove(key2);
-				Growth.Add(key2, new TemporaryGrowth
-				{
-					Combat = value.Combat,
-					Amount = value.Amount
-				});
-			}
-		}
-	}
-
-	private static readonly ConditionalWeakTable<CardModel, TemporaryGrowth> Growth = new ConditionalWeakTable<CardModel, TemporaryGrowth>();
-
 	internal static bool Owns(CardModel card, string attribute)
 	{
 		if (!(card is GeneticAlgorithm) || !(attribute == AttributeKeys.Var("Block")))
@@ -99,37 +72,9 @@ internal static class RewrittenCardValues
 		return geneticAlgorithm.CurrentBlock;
 	}
 
-	internal static bool AddTemporaryGrowth(CardModel card, string variable, int amount)
-	{
-		if (!Owns(card, AttributeKeys.Var(variable)))
-		{
-			return false;
-		}
-		TemporaryGrowth orCreateValue = Growth.GetOrCreateValue(card);
-		object combatState = card.CombatState;
-		if (orCreateValue.Combat == null || !orCreateValue.Combat.TryGetTarget(out var target) || target != combatState)
-		{
-			orCreateValue.Combat = new WeakReference<object>(combatState);
-			orCreateValue.Amount = 0;
-		}
-		checked
-		{
-			orCreateValue.Amount += amount;
-			return true;
-		}
-	}
-
+	/// <summary>Units bought for the value the card rewrites itself.</summary>
 	private static int Bonus(CardModel card, string variable)
 	{
-		CardMachineState cardMachineState = CardStateStore.Get(card);
-		int num = cardMachineState?.RawDelta(AttributeKeys.Var(variable)) ?? 0;
-		checked
-		{
-			if (Growth.TryGetValue(card, out var value) && value.Combat != null && value.Combat.TryGetTarget(out var target) && target == card.CombatState)
-			{
-				num += value.Amount;
-			}
-			return num;
-		}
+		return CardStateStore.Get(card)?.RawDelta(AttributeKeys.Var(variable)) ?? 0;
 	}
 }

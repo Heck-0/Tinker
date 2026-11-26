@@ -111,6 +111,7 @@ public static class GameRules
 				{
 					ItemCode item = new ItemCode { Name = powerName };
 					AddMethods(power.GetType(), null, item.Methods);
+					AddModBases(power.GetType(), item);
 					family = RuleEngine.PowerTriggerFamily(item);
 				}
 			}
@@ -179,6 +180,7 @@ public static class GameRules
 		}
 		item = new ItemCode { Name = type.Name };
 		AddMethods(type, null, item.Methods);
+		AddModBases(type, item);
 		DynamicVarSet vars = (model as CardModel)?.DynamicVars ?? (model as RelicModel)?.DynamicVars;
 		if (vars != null)
 		{
@@ -221,6 +223,24 @@ public static class GameRules
 	{
 		int i = name.IndexOf('`');
 		return (i < 0) ? name : name.Substring(0, i);
+	}
+
+	/// <summary>
+	/// A mod's card, relic or power: marks it as modded and adds the code of its base classes from the same mod
+	/// (up to the game's own types, which aren't read: the game's classes keep their logic in themselves).
+	/// </summary>
+	private static void AddModBases(Type type, ItemCode item)
+	{
+		Assembly game = typeof(AbstractModel).Assembly;
+		if (type.Assembly == game)
+		{
+			return;
+		}
+		item.Modded = true;
+		for (Type b = type.BaseType; b != null && b.Assembly == type.Assembly; b = b.BaseType)
+		{
+			AddMethods(b.IsGenericType ? b.GetGenericTypeDefinition() : b, null, item.Methods);
+		}
 	}
 
 	private static void AddMethods(Type type, string owner, List<MethodCode> into)

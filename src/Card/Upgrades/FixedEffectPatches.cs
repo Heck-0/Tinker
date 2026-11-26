@@ -133,72 +133,72 @@ internal static class FixedEffectPatches
 
 	internal static IEnumerable<CodeInstruction> Transpile(IEnumerable<CodeInstruction> instructions, MethodBase __originalMethod)
 	{
-		List<CodeInstruction> list = instructions.ToList();
-		FieldInfo fieldInfo = __originalMethod.DeclaringType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Single((FieldInfo f) => typeof(CardModel).IsAssignableFrom(f.FieldType));
-		string name = fieldInfo.FieldType.Name;
-		int num = 0;
-		List<CodeInstruction> list2 = new List<CodeInstruction>();
-		for (int num2 = 0; num2 < list.Count; num2++)
+		List<CodeInstruction> code = instructions.ToList();
+		FieldInfo cardField = __originalMethod.DeclaringType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Single((FieldInfo f) => typeof(CardModel).IsAssignableFrom(f.FieldType));
+		string cardName = cardField.FieldType.Name;
+		int replaced = 0;
+		List<CodeInstruction> output = new List<CodeInstruction>();
+		for (int i = 0; i < code.Count; i++)
 		{
-			CodeInstruction codeInstruction = list[num2];
-			MethodInfo methodInfo = codeInstruction.operand as MethodInfo;
-			bool flag = name != "Glacier" && name != "MeteorStrike" && name != "Tempest" && methodInfo?.DeclaringType == typeof(OrbCmd) && methodInfo.Name == "Channel" && methodInfo.IsGenericMethod && methodInfo.GetParameters().Length == 2;
-			bool flag2 = (name == "Dualcast" || name == "Shatter") && methodInfo?.DeclaringType == typeof(OrbCmd) && methodInfo.Name == "EvokeNext";
-			bool flag3 = (name == "MultiCast" || name == "Tempest") && methodInfo?.Name == "ResolveEnergyXValue";
-			bool flag4 = name == "Glacier" && codeInstruction.opcode == OpCodes.Ldc_I4_2 && num2 + 1 < list.Count && (list[num2 + 1].opcode == OpCodes.Blt || list[num2 + 1].opcode == OpCodes.Blt_S);
-			bool flag5 = name == "MeteorStrike" && codeInstruction.opcode == OpCodes.Ldc_I4_3 && num2 + 1 < list.Count && (list[num2 + 1].opcode == OpCodes.Blt || list[num2 + 1].opcode == OpCodes.Blt_S);
-			if (flag || flag2 || flag4 || flag5)
+			CodeInstruction instruction = code[i];
+			MethodInfo called = instruction.operand as MethodInfo;
+			bool isChannel = cardName != "Glacier" && cardName != "MeteorStrike" && cardName != "Tempest" && called?.DeclaringType == typeof(OrbCmd) && called.Name == "Channel" && called.IsGenericMethod && called.GetParameters().Length == 2;
+			bool isEvoke = (cardName == "Dualcast" || cardName == "Shatter") && called?.DeclaringType == typeof(OrbCmd) && called.Name == "EvokeNext";
+			bool isXValue = (cardName == "MultiCast" || cardName == "Tempest") && called?.Name == "ResolveEnergyXValue";
+			bool isGlacierCount = cardName == "Glacier" && instruction.opcode == OpCodes.Ldc_I4_2 && i + 1 < code.Count && (code[i + 1].opcode == OpCodes.Blt || code[i + 1].opcode == OpCodes.Blt_S);
+			bool isMeteorCount = cardName == "MeteorStrike" && instruction.opcode == OpCodes.Ldc_I4_3 && i + 1 < code.Count && (code[i + 1].opcode == OpCodes.Blt || code[i + 1].opcode == OpCodes.Blt_S);
+			if (isChannel || isEvoke || isGlacierCount || isMeteorCount)
 			{
-				CodeInstruction codeInstruction2 = new CodeInstruction(OpCodes.Ldarg_0);
-				codeInstruction2.labels.AddRange(codeInstruction.labels);
-				codeInstruction2.blocks.AddRange(codeInstruction.blocks);
-				list2.Add(codeInstruction2);
-				list2.Add(new CodeInstruction(OpCodes.Ldfld, fieldInfo));
-				MethodInfo methodInfo2 = AccessTools.Method(typeof(FixedEffectPatches), flag ? "Channel" : (flag2 ? "Evoke" : (flag5 ? "MeteorCount" : "GlacierCount")));
-				if (flag)
+				CodeInstruction self = new CodeInstruction(OpCodes.Ldarg_0);
+				self.labels.AddRange(instruction.labels);
+				self.blocks.AddRange(instruction.blocks);
+				output.Add(self);
+				output.Add(new CodeInstruction(OpCodes.Ldfld, cardField));
+				MethodInfo method = AccessTools.Method(typeof(FixedEffectPatches), isChannel ? "Channel" : (isEvoke ? "Evoke" : (isMeteorCount ? "MeteorCount" : "GlacierCount")));
+				if (isChannel)
 				{
-					Type type = methodInfo.GetGenericArguments()[0];
-					if (!FixedEffects.Supports(name, ChannelEffect(name, type.Name)))
+					Type orbType = called.GetGenericArguments()[0];
+					if (!FixedEffects.Supports(cardName, ChannelEffect(cardName, orbType.Name)))
 					{
-						throw new InvalidOperationException("Unexpected orb type in " + name);
+						throw new InvalidOperationException("Unexpected orb type in " + cardName);
 					}
-					methodInfo2 = methodInfo2.MakeGenericMethod(type);
+					method = method.MakeGenericMethod(orbType);
 				}
-				list2.Add(new CodeInstruction(OpCodes.Call, methodInfo2));
-				num++;
+				output.Add(new CodeInstruction(OpCodes.Call, method));
+				replaced++;
 			}
 			else
 			{
-				list2.Add(codeInstruction);
-				if (flag3)
+				output.Add(instruction);
+				if (isXValue)
 				{
-					list2.Add(new CodeInstruction(OpCodes.Ldarg_0));
-					list2.Add(new CodeInstruction(OpCodes.Ldfld, fieldInfo));
-					list2.Add(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(FixedEffectPatches), (name == "Tempest") ? "AddExtraLightning" : "AddExtraEvokes")));
-					num++;
+					output.Add(new CodeInstruction(OpCodes.Ldarg_0));
+					output.Add(new CodeInstruction(OpCodes.Ldfld, cardField));
+					output.Add(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(FixedEffectPatches), (cardName == "Tempest") ? "AddExtraLightning" : "AddExtraEvokes")));
+					replaced++;
 				}
 			}
 		}
-		int num3;
-		switch (name)
+		int expectedSites;
+		switch (cardName)
 		{
 		default:
-			num3 = 1;
+			expectedSites = 1;
 			break;
 		case "Dualcast":
 		case "Shatter":
-			num3 = 2;
+			expectedSites = 2;
 			break;
 		case "Rainbow":
-			num3 = 3;
+			expectedSites = 3;
 			break;
 		}
-		int num4 = num3;
-		if (num != num4)
+		int expected = expectedSites;
+		if (replaced != expected)
 		{
-			throw new InvalidOperationException($"Unexpected IL signature in {name}: {num}/{num4}");
+			throw new InvalidOperationException($"Unexpected IL signature in {cardName}: {replaced}/{expected}");
 		}
-		return list2;
+		return output;
 	}
 
 	private static int Value(CardModel card, string effect)
@@ -285,45 +285,28 @@ internal static class FixedEffectPatches
 		return text;
 	}
 
+	/// <summary>Rewrites the number in the card's English text for one orb / evoke effect.</summary>
 	internal static string RewriteLine(string text, string effect, int value, bool upgraded)
 	{
-		string replacement;
-		object obj;
-		string text2;
-		string pattern;
+		TimeSpan timeout = TimeSpan.FromMilliseconds(50L);
 		switch (effect)
 		{
 		case "effect:evokes":
-			pattern = "twice";
-			replacement = value + " times";
-			break;
+			return Regex.Replace(text, "twice", value + " times", RegexOptions.None, timeout);
 		case "effect:extraEvokes":
 		case "effect:extraLightning":
-			pattern = "\\bX(?:\\+\\d+)?";
-			replacement = "X+" + (value + (upgraded ? 1 : 0));
-			break;
-		default:
-			obj = "Frost";
-			goto IL_00e9;
-		case "effect:glass":
-			obj = "(?:Glass|Cristal)";
-			goto IL_00e9;
-		case "effect:plasma":
-			obj = "Plasma";
-			goto IL_00e9;
-		case "effect:dark":
-			obj = "Dark";
-			goto IL_00e9;
-		case "effect:lightning":
-			{
-				obj = "Lightning";
-				goto IL_00e9;
-			}
-			IL_00e9:
-			text2 = (string)obj;
-			pattern = "((?:\\[gold\\])?Channel(?:\\[/gold\\])?\\s+)\\d+(\\s+(?:\\[gold\\])?" + text2 + "\\b)";
-			return Regex.Replace(text, pattern, (Match m) => m.Groups[1].Value + value + m.Groups[2].Value, RegexOptions.None, TimeSpan.FromMilliseconds(50L, 0L));
+			return Regex.Replace(text, "\\bX(?:\\+\\d+)?", "X+" + (value + (upgraded ? 1 : 0)), RegexOptions.None, timeout);
 		}
-		return Regex.Replace(text, pattern, replacement, RegexOptions.None, TimeSpan.FromMilliseconds(50L, 0L));
+		string orb = effect switch
+		{
+			"effect:glass" => "Glass",
+			"effect:plasma" => "Plasma",
+			"effect:dark" => "Dark",
+			"effect:lightning" => "Lightning",
+			_ => "Frost",
+		};
+		// "Channel 2 Frost" -> "Channel <value> Frost", keeping any [gold] markup.
+		string pattern = "((?:\\[gold\\])?Channel(?:\\[/gold\\])?\\s+)\\d+(\\s+(?:\\[gold\\])?" + orb + "\\b)";
+		return Regex.Replace(text, pattern, (Match m) => m.Groups[1].Value + value + m.Groups[2].Value, RegexOptions.None, timeout);
 	}
 }

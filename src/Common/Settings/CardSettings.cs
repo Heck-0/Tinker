@@ -35,13 +35,13 @@ public sealed class CardSettings
 
 	public void CopyFrom(CardSettings other)
 	{
-		CardSettings obj = other.Clone();
+		CardSettings cardSettings = other.Clone();
 		PropertyInfo[] properties = typeof(CardSettings).GetProperties();
 		foreach (PropertyInfo propertyInfo in properties)
 		{
 			if (propertyInfo.CanRead && propertyInfo.CanWrite)
 			{
-				propertyInfo.SetValue(this, propertyInfo.GetValue(obj));
+				propertyInfo.SetValue(this, propertyInfo.GetValue(cardSettings));
 			}
 		}
 	}

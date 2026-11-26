@@ -20,11 +20,12 @@
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "Divergence report",
+      "label": "Tests",
       "type": "process",
-      "command": "python",
-      "args": ["${workspaceFolder}/tools/divergence.py"],
-      "problemMatcher": []
+      "command": "dotnet",
+      "args": ["test", "tools/tests", "-nologo"],
+      "group": "test",
+      "problemMatcher": "$msCompile"
     },
     {
       "label": "Coverage report",

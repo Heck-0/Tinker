@@ -1,0 +1,417 @@
+kind	item	value	type	sign	why	category	tier
+relic	AdamantRune	Block	BlockVar	1	type		
+relic	AdaptiveCapacitorRune	OrbSlots	DynamicVar	1	name		triggerTurn
+relic	AdvanceToRetreatRune	Block	BlockVar	1	type		triggerConstant
+relic	AllForYouRune	SustainPercent	DynamicVar	0	not read		
+relic	AncientWineRune	HealPercent	DynamicVar	1	name		triggerConstant
+relic	AnthonyBiasRune	PercentPerCard	DynamicVar	1	name		
+relic	ArcanePunchRune	AttacksPerEnergy	DynamicVar	-1	name		
+relic	ArcanePunchRune	Energy	EnergyVar	1	type		
+relic	ArchmageRune	ChancePercent	DynamicVar	1	name		
+relic	ArtifactForge	ArtifactPower	PowerVar<ArtifactPower>	1	power (buff on self)		
+relic	AstralBodyRune	MaxHpPercent	DynamicVar	1	name		
+relic	AstralBodyRune	DamageMultiplier	DynamicVar	1	name		triggerConstant
+relic	AstralBodyRune	DamageReductionPercent	DynamicVar	0	not read		
+relic	AttackDefenseUnityRune	Cards	CardsVar	0	not read		
+relic	AttackForge	DamageMultiplier	DynamicVar	1	name		
+relic	AttackForge	DamageBonusPercent	DynamicVar	0	not read		
+relic	AutoPatrolRune	OstyHpPerCard	DynamicVar	-1	every N / threshold		triggerTurn
+relic	AutoPatrolRune	Cards	CardsVar	1	type	generation	triggerTurn
+relic	AutomationUpgradeRune	Cards	CardsVar	1	type		
+relic	BadTasteRune	Heal	HealVar	1	type		
+relic	BadgeBrothersRune	FreeAttackPower	PowerVar<FreeAttackPower>	1	power (buff on self)		
+relic	BadgeBrothersRune	FreeSkillPower	PowerVar<FreeSkillPower>	1	power (buff on self)		
+relic	BeginningAndEndRune	LethalityPower	PowerVar<LethalityPower>	1	power (buff on self)		triggerConstant
+relic	BeginningAndEndRune	CountdownPower	PowerVar<CountdownPower>	1	power (buff on self)		triggerTurn
+relic	BerserkRune	VulnerablePower	PowerVar<VulnerablePower>	-1	power (debuff on self)		
+relic	BerserkRune	Energy	EnergyVar	1	type		triggerTurn
+relic	BigHammerRune	ForgeBonusPercent	DynamicVar	1	name		
+relic	BigHandsRune	SummonBonusPercent	DynamicVar	0	not read		
+relic	BigStrengthRune	DamageMultiplier	DynamicVar	1	name		triggerConstant
+relic	BigStrengthRune	DamageBonusPercent	DynamicVar	0	not read		
+relic	BittersweetRune	Cards	CardsVar	1	type		triggerConstant
+card	BladeWaltzCard	Damage	DamageVar	1	type		
+card	BladeWaltzCard	Hits	DynamicVar	1	name		
+card	BladeWaltzCard	IntangiblePower	PowerVar<IntangiblePower>	1	power (buff on self)		
+relic	BladeWaltzRune	Cards	CardsVar	0	only on pickup		
+relic	BlockForge	Block	BlockVar	1	type		
+relic	BloodArmorRune	PlatingPower	PowerVar<PlatingPower>	1	power (buff on self)		triggerTurn
+relic	BloodIdolRune	Heal	HealVar	1	type		triggerRun
+relic	BloodPactRune	StrengthPower	PowerVar<StrengthPower>	1	power (buff on self)		triggerConstant
+relic	BloodthirstRune	HealPercent	DynamicVar	1	name		triggerConstant
+relic	BlossomBladeRune	HealPercent	DynamicVar	1	name		triggerConstant
+relic	BoneGuardRune	BlockMultiplier	DynamicVar	1	name		
+relic	BoneGuardRune	BlockPercent	DynamicVar	0	not read		
+relic	BrandUpgradeRune	DamagePercentPerBrand	DynamicVar	1	name		triggerConstant
+relic	BreadAndButterRune	Replays	DynamicVar	1	name		triggerConstant
+relic	BreadAndCheeseRune	Replays	DynamicVar	1	name		triggerConstant
+relic	BreadAndJamRune	Replays	DynamicVar	1	name		triggerConstant
+relic	BreadSandwichRune	Replays	DynamicVar	1	name		triggerConstant
+relic	BrokenGoldenCrownRune	RewardOptionsLost	DynamicVar	-1	name		triggerRun
+relic	BrokenGoldenCrownRune	Energy	EnergyVar	1	type		triggerTurn
+relic	BrutalForceRune	Cards	CardsVar	1	type	persistentDraw	triggerTurn
+relic	BrutalForceRune	StrengthPower	PowerVar<StrengthPower>	1	power (buff on self)		triggerConstant
+relic	BrutalityRune	HpLoss	DynamicVar	-1	name		
+relic	BrutalityRune	Cards	CardsVar	1	type		
+relic	BufferForge	BufferPower	PowerVar<BufferPower>	1	power (buff on self)		
+relic	BurningInterestRune	HextechBurnPower	PowerVar<HextechBurnPower>	0	power (target unclear)		
+relic	BurningInterestRune	CountPerDamage	DynamicVar	1	name		triggerTurn
+relic	ByproductRune	Cards	CardsVar	1	type		triggerConstant
+relic	CantTouchThisRune	MinCost	DynamicVar	-1	name		triggerConstant
+relic	CantTouchThisRune	BufferPower	PowerVar<BufferPower>	1	power (buff on self)		
+relic	CarefulSelectionRune	Cards	CardsVar	1	type		triggerRun
+card	CatalystCard	PoisonMultiplier	DynamicVar	1	upgrade		
+relic	CatalystRune	Cards	CardsVar	0	only on pickup		
+relic	CerberusRune	FreeAttacks	DynamicVar	0	compared (threshold or limit?)		triggerConstant
+relic	ChainInSleeveRune	ShivsNeeded	DynamicVar	-1	name		
+relic	ChainInSleeveRune	Cards	CardsVar	1	type		
+card	ChemtechDragonSoulCard	PotionCount	DynamicVar	1	power amount (HextechChemtechDragonSoulPower on self)		
+card	CloudDragonSoulCard	Cards	CardsVar	1	type		
+relic	CloudPiercerRune	VulnerablePower	PowerVar<VulnerablePower>	0	power (target unclear)		
+relic	ClownCollegeRune	Cards	CardsVar	0	only on pickup		
+relic	CollectorRune	ExecutePercent	DynamicVar	1	name		triggerConstant
+relic	CollectorRune	CountPerExecute	DynamicVar	1	name		
+relic	ColorDiscoveryRune	Cards	CardsVar	0	compared (threshold or limit?)		
+relic	ColorDiscoveryRune	Selection	DynamicVar	0	not read		
+relic	CondensedRadianceRune	Stars	StarsVar	1	type		triggerConstant
+relic	ConstitutionForge	StrengthPower	PowerVar<StrengthPower>	1	power (buff on self)		triggerConstant
+relic	ConstitutionForge	DexterityPower	PowerVar<DexterityPower>	1	power (buff on self)		triggerConstant
+relic	CoreOverloadRune	FocusPower	PowerVar<FocusPower>	1	power (buff on self)		triggerTurn
+relic	CorrosionRune	SlowPower	PowerVar<HextechPlayerSlowPower>	0	power (type unclear)		triggerConstant
+relic	CorruptedBranchRune	Cards	CardsVar	0	not read		
+relic	CourageOfColossusRune	Plating	DynamicVar	1	name		
+relic	CrossOrbRune	CommonReductionPercent	DynamicVar	0	unknown		
+relic	CrystalBallRune	Cards	CardsVar	1	type		
+relic	CurtainCallRune	Cards	CardsVar	0	only on pickup		
+relic	CuttingEdgeAlchemistRune	RarePotionCount	DynamicVar	1	name		
+relic	CuttingEdgeAlchemistRune	UncommonPotionCount	DynamicVar	1	name		
+relic	DawnbringersResolveRune	ThresholdPercent	DynamicVar	0	not read		
+relic	DeadeyeRune	AimMultiplier	DynamicVar	1	name		triggerConstant
+relic	DeathHarvestRune	HealPercent	DynamicVar	1	name		triggerConstant
+relic	DeathWarrantRune	CardsNeeded	DynamicVar	-1	name		
+relic	DecayRune	StrengthPower	PowerVar<StrengthPower>	0	power (target unclear)		triggerConstant
+relic	DevilsDanceRune	AttacksPerMaxHp	DynamicVar	-1	name		triggerConstant
+relic	DevilsDanceRune	MaxHp	MaxHpVar	1	type	permanentGrowth	
+relic	DexterityForge	DexterityPower	PowerVar<DexterityPower>	1	power (buff on self)		triggerConstant
+relic	DexterityStrengthToFocusRune	FocusPower	PowerVar<FocusPower>	0	power (target unclear)		triggerTurn
+relic	DexterityToStrengthRune	StrengthPower	PowerVar<StrengthPower>	0	power (target unclear)		triggerConstant
+relic	DieForYouRune	Summon	SummonVar	1	type		triggerTurn
+relic	DieForYouRune	Cards	CardsVar	0	not read		
+relic	DisasterForge	WeakPower	PowerVar<WeakPower>	1	power (debuff on enemy)		
+relic	DisasterForge	VulnerablePower	PowerVar<VulnerablePower>	1	power (debuff on enemy)		
+relic	DiveBomberRune	MaxHpPercent	DynamicVar	1	name		triggerOccasional
+relic	DivineInterventionRune	TurnsNeeded	DynamicVar	-1	name		triggerCombat
+relic	DivineInterventionRune	IntangiblePower	PowerVar<IntangiblePower>	0	power (target unclear)		
+relic	DizzySpinningRune	Cards	CardsVar	1	type	persistentDraw	triggerTurn
+relic	DonationRune	Gold	GoldVar	0	only on pickup		
+relic	DoomsdayRune	DoomPercent	DynamicVar	1	name		triggerTurn
+relic	DoomsdayRune	MinimumDoom	DynamicVar	0	unknown		triggerTurn
+relic	DrawForge	Cards	CardsVar	1	type	persistentDraw	triggerTurn
+relic	DrawYourSwordRune	FocusPower	PowerVar<FocusPower>	0	power (target unclear)		triggerTurn
+relic	DuffsVintageRune	CostReduction	DynamicVar	1	name		
+relic	EarthAwakensRune	CardsNeeded	DynamicVar	-1	name		
+relic	EarthAwakensRune	RollingBoulderPower	PowerVar<RollingBoulderPower>	1	power (buff on self)		triggerTurn
+relic	EasyDoesItRune	MayhemPower	PowerVar<MayhemPower>	1	power (buff on self)		triggerTurn
+relic	EightPennyGateRune	Replays	DynamicVar	1	name		triggerConstant
+relic	ElectricSurgeRune	OrbCount	DynamicVar	1	name		triggerTurn
+relic	ElectrodynamicsRune	OrbCount	DynamicVar	1	name		triggerTurn
+relic	EmergenceRune	OrbCount	DynamicVar	1	name		triggerCombat
+relic	EnergyForge	Energy	EnergyVar	1	type		triggerTurn
+relic	EscapePlanRune	ThresholdPercent	DynamicVar	0	not read		
+relic	EscapePlanRune	BlockPercent	DynamicVar	0	not read		
+relic	EurekaRune	RelicsNeeded	DynamicVar	-1	every N / threshold		triggerTurn
+relic	EurekaRune	Energy	EnergyVar	0	not read		
+relic	ExplosionArtRune	TurnStartCards	DynamicVar	1	name		triggerTurn
+relic	ExtremeSpeedRune	MaxHpLoss	DynamicVar	0	only on pickup		
+relic	FallingStarUpgradeRune	StunTurns	DynamicVar	0	not read		
+relic	FanTheHammerRune	Replays	DynamicVar	1	name		triggerConstant
+relic	FanTheHammerRune	DamageMultiplier	DynamicVar	1	name		triggerConstant
+relic	FanTheHammerRune	DamagePercent	DynamicVar	0	not read		
+card	FeelTheBurnCard	HextechBurnPower	PowerVar<HextechBurnPower>	1	upgrade		
+relic	FeelTheBurnRune	Cards	CardsVar	0	only on pickup		
+relic	FinalFormRune	MinCost	DynamicVar	-1	name		triggerConstant
+relic	FinalFormRune	PlatingPercent	DynamicVar	1	name		triggerConstant
+relic	FinalFormRune	Cards	CardsVar	1	type		triggerConstant
+relic	FinalFormRune	PlatingDisplayPercent	DynamicVar	0	not read		
+relic	FireworksForge	Damage	DamageVar	1	type		triggerCombat
+relic	FlawlessRune	Block	BlockVar	1	type		triggerConstant
+relic	FleshAndBoneRune	HpLoss	DynamicVar	-1	name		triggerCombat
+relic	FleshAndBoneRune	Summon	SummonVar	1	type		triggerCombat
+relic	FleshAndBoneRune	OstyMaxHpPerHeal	DynamicVar	-1	every N / threshold		triggerCombat
+relic	FleshAndBoneRune	OstyHeal	DynamicVar	1	name		triggerCombat
+relic	FleshForge	SleightOfFleshPower	PowerVar<SleightOfFleshPower>	1	power (buff on self)		triggerTurn
+relic	FlyingKickRune	BaseExecutePercent	DynamicVar	1	name		
+relic	FlyingKickRune	OwnerMaxHpToExecutePercent	DynamicVar	1	name		
+relic	FlyingKickRune	ExecutePercent	DynamicVar	1	name		
+relic	FlyingKickRune	Heal	HealVar	1	type		
+relic	FocusForge	FocusPower	PowerVar<FocusPower>	1	power (buff on self)		triggerTurn
+relic	ForbiddenGrimoireRune	ForbiddenGrimoirePower	PowerVar<ForbiddenGrimoirePower>	1	power (buff on self)		triggerCombat
+relic	ForgingForge	ForgeAmount	ForgeVar	1	type		triggerTurn
+relic	FortuneForge	Gold	GoldVar	1	type		
+relic	FrostWraithRune	TurnsNeeded	DynamicVar	-1	name		triggerCombat
+relic	FrostWraithRune	SlowPower	PowerVar<HextechPlayerSlowPower>	0	power (type unclear)		triggerConstant
+relic	FullQuiverRune	Arrows	DynamicVar	1	name		triggerCombat
+relic	FuriousGlareRune	VulnerablePower	PowerVar<VulnerablePower>	0	not read		
+relic	FuriousGlareRune	StrengthPower	PowerVar<StrengthPower>	1	power (buff on self)		triggerConstant
+relic	GalacticGiftRune	StarsSpent	StarsVar	1	type		triggerTurn
+relic	GalacticGiftRune	Stars	StarsVar	1	type		triggerTurn
+relic	GhostFormRune	IntangiblePower	PowerVar<IntangiblePower>	1	power (buff on self)		
+relic	GhostFormRune	NoBlockPower	PowerVar<NoBlockPower>	-1	power (debuff on self)		
+relic	GiantSerpentsFangRune	BlockReductionPercent	DynamicVar	0	unknown		triggerConstant
+relic	GiantSlayerRune	Cards	CardsVar	1	type	persistentDraw	triggerTurn
+relic	GiantSlayerRune	EnemyMaxHpPerPercent	DynamicVar	-1	name		triggerConstant
+relic	GiantSlayerRune	DamagePerStepPercent	DynamicVar	1	name		triggerConstant
+relic	GiantSlayerRune	MaxBonusPercent	DynamicVar	1	name		triggerConstant
+relic	GiantSlayerRune	Scale	DynamicVar	0	unknown		
+relic	GiantSlayerRune	DamagePerStepDisplayPercent	DynamicVar	0	not read		
+relic	GiantSlayerRune	MaxBonusDisplayPercent	DynamicVar	0	not read		
+relic	GlassCannonRune	DamageMultiplier	DynamicVar	1	name		triggerConstant
+relic	GlassCannonRune	HealCapPercent	DynamicVar	1	name		
+relic	GoldAttackForge	DamageMultiplier	DynamicVar	1	name		
+relic	GoldAttackForge	DamageBonusPercent	DynamicVar	0	not read		
+relic	GoldFocusForge	FocusPower	PowerVar<FocusPower>	1	power (buff on self)		triggerTurn
+relic	GoldHpForge	MaxHpPercent	DynamicVar	1	name		
+relic	GoldLifeForge	MaxHp	MaxHpVar	0	only on pickup		
+relic	GoldProtectionForge	SustainMultiplier	DynamicVar	1	name		
+relic	GoldProtectionForge	SustainBonusPercent	DynamicVar	0	not read		
+relic	GoldScissorsForge	Cards	CardsVar	0	only on pickup		
+relic	GoldUpgradeForge	Cards	CardsVar	0	only on pickup		
+relic	GoldenSpatulaRune	StackBonusPercent	DynamicVar	1	name		
+relic	GoldenSpatulaRune	StackOverloadThreshold	DynamicVar	-1	name		
+relic	GoldrendRune	CountPerHit	DynamicVar	1	name		triggerConstant
+relic	GoliathRune	DamageMultiplier	DynamicVar	1	name		triggerConstant
+relic	GoliathRune	SustainMultiplier	DynamicVar	1	name		triggerConstant
+relic	GoliathRune	Scale	DynamicVar	0	unknown		
+relic	HailToTheKingRune	InitialForgeCount	DynamicVar	1	name		
+relic	HailToTheKingRune	EliteForgeCount	DynamicVar	1	name		
+relic	HailToTheKingRune	BossForgeCount	DynamicVar	1	name		
+relic	HandOfBaronRune	DamageMultiplier	DynamicVar	1	name		triggerConstant
+relic	HandOfBaronRune	Shrink	DynamicVar	1	power amount (ShrinkPower on enemy)		triggerTurn
+relic	HandOfBaronRune	DamageBonusPercent	DynamicVar	0	not read		
+relic	HappyAccidentRune	OrbCount	DynamicVar	1	name		triggerCombat
+relic	HardBonesRune	CalcifyPower	PowerVar<CalcifyPower>	1	power (buff on self)		triggerConstant
+relic	HextechBlackBloodPlus	Heal	HealVar	1	type		triggerCombat
+relic	HextechDivineDestinyPlus	Stars	StarsVar	0	subtracted (cost or discount?)		triggerCombat
+card	HextechDragonSoulCard	Energy	EnergyVar	1	type		
+relic	HextechDragonSoulRune	Cards	CardsVar	1	type		
+relic	HextechInfusedCorePlus	Lightning	DynamicVar	1	name		triggerCombat
+relic	HextechInfusedCorePlus	ExtraDamage	DynamicVar	1	name		triggerTurn
+relic	HextechPhylacteryUnboundPlus	StartOfCombat	SummonVar	1	type		triggerCombat
+relic	HextechPhylacteryUnboundPlus	StartOfTurn	SummonVar	1	type		triggerTurn
+relic	HextechRingOfTheDrakePlus	Cards	CardsVar	1	type		triggerCombat
+relic	HextechRingOfTheDrakePlus	Turns	DynamicVar	0	compared (threshold or limit?)		triggerCombat
+relic	HourglassForge	Damage	DamageVar	1	type		
+relic	HubrisRune	StacksPerBonus	DynamicVar	-1	every N / threshold		
+relic	HubrisRune	StrengthPower	PowerVar<StrengthPower>	1	power (buff on self)		triggerConstant
+relic	HubrisRune	Cards	CardsVar	1	type	persistentDraw	triggerTurn
+relic	HundredRefinementsRune	BodyForges	DynamicVar	-1	every N / threshold		
+relic	HundredRefinementsRune	ForgeCount	DynamicVar	1	name		
+relic	ImmortalBoneRune	HealPercent	DynamicVar	1	name		triggerTurn
+card	InfernalDragonSoulCard	BurnPower	DynamicVar	1	power amount (HextechInfernalDragonSoulPower on self)		
+relic	InfernalDragonSoulRune	Cards	CardsVar	1	type		
+relic	InfiniteLoopRune	Energy	EnergyVar	1	type	persistentEnergy	triggerTurn
+relic	InfiniteLoopRune	StacksPerEnergy	DynamicVar	-1	every N / threshold		triggerTurn
+relic	JudicatorRune	DamageMultiplier	DynamicVar	1	name		triggerConstant
+relic	JudicatorRune	DamageBonusPercent	DynamicVar	0	not read		
+relic	KeystoneHunterRune	ToolsOfTheTradePower	PowerVar<ToolsOfTheTradePower>	1	power (buff on self)		triggerTurn
+relic	KeystoneHunterRune	MasterPlannerPower	PowerVar<MasterPlannerPower>	1	power (buff on self)		
+relic	KillerHunterRune	TemporaryStatLoss	DynamicVar	1	power amount (HextechTemporaryStrengthLossPower on enemy)		triggerConstant
+relic	LethalTempoRune	StrengthPower	PowerVar<StrengthPower>	0	power (target unclear)		triggerConstant
+relic	LifeFlowRune	HealPercent	DynamicVar	1	name		triggerOccasional
+relic	LifeFlowRune	MaxProcsPerTurn	DynamicVar	0	unknown		triggerOccasional
+relic	LifeForge	MaxHp	MaxHpVar	0	only on pickup		
+relic	LightEmUpRune	Attacks	DynamicVar	0	not read		
+relic	LightEmUpRune	Missiles	DynamicVar	0	not read		
+relic	LimberUpRune	StretchPower	DynamicVar	0	unknown		triggerTurn
+relic	LoopRune	Energy	EnergyVar	1	type	persistentEnergy	triggerTurn
+relic	MadScientistRune	OrbSlots	DynamicVar	1	name		triggerTurn
+relic	MagicMissileRune	Missiles	DynamicVar	0	not read		
+relic	MagicMissileRune	MaxHpDamagePercent	DynamicVar	1	name		triggerConstant
+relic	MakeItMineRune	Summon	SummonVar	1	type		triggerCombat
+relic	MasterOfDualityRune	StrengthPower	PowerVar<StrengthPower>	1	power (buff on self)		triggerConstant
+relic	MasterOfDualityRune	DexterityPower	PowerVar<DexterityPower>	1	power (buff on self)		triggerConstant
+relic	MentalShieldRune	Block	BlockVar	1	type		
+card	MikaelsBlessingCard	HealPercent	DynamicVar	1	upgrade		
+relic	MikaelsBlessingRune	Cards	CardsVar	0	only on pickup		
+relic	MindOverMatterRune	Cards	CardsVar	0	not read		
+relic	MindToMatterRune	MaxHp	MaxHpVar	1	type	permanentGrowth	triggerConstant
+relic	MirageRune	Block	BlockVar	1	type		triggerTurn
+relic	MiserableFateRune	Block	BlockVar	1	type		triggerTurn
+relic	MiseryRune	StrengthPower	PowerVar<StrengthPower>	0	power (target unclear)		triggerConstant
+relic	MiseryRune	DexterityPower	PowerVar<DexterityPower>	0	power (target unclear)		triggerConstant
+relic	MixedFeelingsRune	Cards	CardsVar	1	type		triggerConstant
+relic	MonarchsGazeRune	MonarchsGazePower	PowerVar<MonarchsGazePower>	1	power (buff on self)		triggerConstant
+relic	MoreTheMerrierRune	PercentPerRelic	DynamicVar	1	name		
+relic	MoreUniversalScopeRune	ChancePercent	DynamicVar	1	name		
+relic	MostUniversalScopeRune	ChancePercent	DynamicVar	1	name		
+card	MountainDragonSoulCard	PlatingPower	PowerVar<PlatingPower>	0	power (target unclear)		triggerTurn
+relic	MysteryRune	MayhemPower	PowerVar<MayhemPower>	1	power (buff on self)		triggerTurn
+relic	MysteryRune	EntropyPower	PowerVar<EntropyPower>	1	power (buff on self)		triggerTurn
+relic	NearDeathFeastRune	StrengthPerNegativeHp	DynamicVar	1	name		
+relic	NecrobinderForge	Summon	SummonVar	1	type		triggerTurn
+relic	NeowsGrudgeRune	Cards	CardsVar	0	not read		
+relic	NeutralizeUpgradeRune	Repeats	DynamicVar	1	name		triggerOccasional
+relic	NightstalkingRune	CardsNeeded	DynamicVar	-1	name		
+relic	NightstalkingRune	IntangiblePower	PowerVar<IntangiblePower>	1	power (buff on self)		
+relic	NimbleRune	Cards	CardsVar	1	type	persistentDraw	triggerTurn
+relic	NineDragonPowerRune	RegenPower	PowerVar<RegenPower>	1	power (buff on self)		triggerTurn
+relic	NineDragonPowerRune	StackBonusPercent	DynamicVar	1	name		
+card	OceanDragonSoulCard	Heal	HealVar	1	type		
+relic	OceanDragonSoulRune	Cards	CardsVar	1	type		
+card	OkBoomerangCard	Damage	DamageVar	1	upgrade		
+card	OkBoomerangCard	Hits	DynamicVar	0	not read		
+relic	OkBoomerangRune	Cards	CardsVar	0	only on pickup		
+relic	OmegaRune	StartTurn	DynamicVar	0	compared (threshold or limit?)		
+relic	OmegaRune	Damage	DynamicVar	1	name		
+relic	OmniDragonSoulRune	Cards	CardsVar	1	type		triggerCombat
+relic	OrbSlotForge	OrbSlots	DynamicVar	1	name		triggerTurn
+relic	OrbSymbiosisRune	OrbCount	DynamicVar	1	name		triggerTurn
+card	OstyWishCard	Block	BlockVar	1	type		
+card	OstyWishCard	Damage	DamageVar	1	type		
+relic	OverflowRune	Energy	EnergyVar	1	type	persistentEnergy	triggerTurn
+relic	OverlordBloodArmorRune	MaxHpPerStrength	DynamicVar	-1	every N / threshold		triggerCombat
+relic	OverlordBloodArmorRune	StrengthPower	PowerVar<StrengthPower>	1	power (buff on self)		triggerConstant
+relic	OvertoneRune	Energy	EnergyVar	1	type		
+relic	PactsEndUpgradeRune	DamagePerExhaust	DynamicVar	1	name		triggerConstant
+relic	ParticleWallUpgradeRune	Stars	StarsVar	1	type		triggerConstant
+relic	PiercingThreadRune	PiercingPercent	DynamicVar	0	not read		
+relic	PiggyBankRune	Gold	GoldVar	0	only on pickup		
+relic	PiggyBankRune	CounterGain	DynamicVar	1	name		triggerTurn
+relic	PlateletRune	Block	BlockVar	1	type		triggerTurn
+relic	PlatingForge	PlatingPower	PowerVar<PlatingPower>	1	power (buff on self)		triggerTurn
+relic	PluckRune	Cards	CardsVar	1	type		triggerTurn
+relic	PocketForge	PotionSlots	DynamicVar	0	only on pickup		
+relic	PorcupineRune	BlockPerThorn	DynamicVar	-1	every N / threshold		
+relic	PrecisionCognitionRune	FocusPower	PowerVar<FocusPower>	1	power (buff on self)		triggerTurn
+relic	PreparedForge	Cards	CardsVar	1	type	persistentDraw	triggerTurn
+relic	PrismaticArtifactForge	ArtifactPower	PowerVar<ArtifactPower>	1	power (buff on self)		
+relic	PrismaticLifeForge	MaxHpPercent	DynamicVar	1	name		
+relic	ProtectionForge	SustainMultiplier	DynamicVar	1	name		
+relic	ProtectionForge	SustainBonusPercent	DynamicVar	0	not read		
+relic	ProtectiveVeilRune	ArtifactPower	PowerVar<ArtifactPower>	1	power (buff on self)		
+relic	ProteinShakeRune	MaxHpPerStep	DynamicVar	-1	every N / threshold		
+relic	ProteinShakeRune	SustainPercentPerStep	DynamicVar	1	name		
+card	QuantumComputingCard	DamagePercent	DynamicVar	1	name		
+card	QuantumComputingCard	HealPercent	DynamicVar	1	upgrade		
+relic	QuantumComputingRune	Cards	CardsVar	0	only on pickup		
+relic	QueenRune	WeakPower	PowerVar<WeakPower>	0	power (target unclear)		
+relic	QueenRune	VulnerablePower	PowerVar<VulnerablePower>	0	power (target unclear)		
+relic	RandomForgeShopRelic	Price	DynamicVar	0	unknown		
+relic	RecoveryForge	Heal	HealVar	1	type		
+relic	RegenForge	RegenPower	PowerVar<RegenPower>	1	power (buff on self)		triggerTurn
+relic	RekindleRune	Cards	CardsVar	0	subtracted (cost or discount?)		triggerOccasional
+relic	RekindleRune	Energy	EnergyVar	1	type		triggerOccasional
+relic	RenewalRune	Cards	CardsVar	1	type		triggerOccasional
+card	ReprogramCard	FocusPower	PowerVar<FocusPower>	1	upgrade		triggerTurn
+card	ReprogramCard	StrengthPower	PowerVar<StrengthPower>	1	upgrade		triggerConstant
+card	ReprogramCard	DexterityPower	PowerVar<DexterityPower>	1	upgrade		triggerConstant
+relic	RepulsorRune	SlipperyPower	PowerVar<SlipperyPower>	1	power (buff on self)		
+relic	RibbitRune	Cards	CardsVar	0	only on pickup		
+relic	RitualForge	RitualPower	PowerVar<RitualPower>	1	power (buff on self)		triggerTurn
+relic	RoyalCommandRune	ForgeAmount	ForgeVar	1	type		
+relic	RoyalTrialRune	Cards	CardsVar	1	type		triggerConstant
+relic	SacrificeRune	CountPerEnemy	DynamicVar	1	name		triggerTurn
+relic	SacrificeRune	SustainMultiplier	DynamicVar	1	name		
+relic	SacrificeRune	SustainBonusPercent	DynamicVar	0	not read		
+relic	ScissorsForge	Cards	CardsVar	0	only on pickup		
+card	SearingAttackCard	Damage	DamageVar	1	type		
+relic	SearingAttackRune	Cards	CardsVar	0	only on pickup		
+relic	SendThemInRune	Cards	CardsVar	0	not read		
+relic	SerpentsFangRune	PoisonPerHit	DynamicVar	0	unknown		triggerConstant
+relic	ServantMasterRune	NecroMasteryPower	PowerVar<NecroMasteryPower>	1	power (buff on self)		triggerTurn
+relic	ServantMasterRune	Summon	SummonVar	1	type		triggerTurn
+relic	ShriekUpgradeRune	StrengthPower	PowerVar<StrengthPower>	0	power (target unclear)		triggerConstant
+relic	ShrinkForge	ShrinkPower	PowerVar<ShrinkPower>	1	power (debuff on enemy)		
+relic	ShrinkRayRune	ShrinkPower	PowerVar<ShrinkPower>	0	power (target unclear)		
+relic	SilverAttackForge	DamageMultiplier	DynamicVar	1	name		
+relic	SilverAttackForge	DamageBonusPercent	DynamicVar	0	not read		
+relic	SilverHpForge	MaxHpPercent	DynamicVar	1	name		
+relic	SilverOrbForge	OrbCount	DynamicVar	1	name		triggerCombat
+relic	SilverPlatingForge	PlatingPower	PowerVar<PlatingPower>	1	power (buff on self)		triggerTurn
+relic	SilverProtectionForge	SustainMultiplier	DynamicVar	1	name		
+relic	SilverProtectionForge	SustainBonusPercent	DynamicVar	0	not read		
+relic	SilverRecoveryForge	Heal	HealVar	1	type		triggerCombat
+relic	SilverStarsForge	Stars	StarsVar	1	type		triggerTurn
+relic	SingularityAIRune	Cards	CardsVar	0	not read		
+relic	SkyDrillUpgradeRune	XThreshold	DynamicVar	-1	name		triggerConstant
+relic	SkyDrillUpgradeRune	XMultiplier	DynamicVar	1	name		triggerConstant
+relic	SlapRune	StrengthPower	PowerVar<StrengthPower>	0	power (target unclear)		triggerConstant
+relic	SlipperyForge	SlipperyPower	PowerVar<SlipperyPower>	1	power (buff on self)		
+relic	SlowCookRune	BurnPercent	DynamicVar	1	name		triggerTurn
+relic	SnakebiteRune	Cards	CardsVar	0	not read		
+relic	SnakebiteUpgradeRune	Replays	DynamicVar	1	name		
+relic	SomethingForNothingRune	Cards	CardsVar	1	type		triggerConstant
+relic	SomethingForNothingRune	Energy	EnergyVar	1	type		triggerConstant
+relic	SomethingFromNothingRune	Cards	CardsVar	1	type		triggerConstant
+relic	SonataRune	Cards	CardsVar	1	type		
+relic	SonataRune	Heal	HealVar	1	type		
+relic	SonataRune	Block	BlockVar	1	type		
+relic	SoulCallingRune	Cards	CardsVar	1	type		
+relic	SoulEaterRune	MaxHpGainPercent	DynamicVar	1	name		triggerOccasional
+relic	SoulEaterRune	MaxHpGainDisplayPercent	DynamicVar	0	not read		
+relic	SoulUpgradeRune	Energy	EnergyVar	1	type		triggerConstant
+relic	StarlightSplendorRune	Stars	StarsVar	1	type		triggerCombat
+relic	StarsForge	Stars	StarsVar	1	type		
+relic	StartupRoutineRune	Block	BlockVar	1	type		triggerCombat
+relic	StatsOnStatsOnStatsRune	ForgeCount	DynamicVar	1	name		
+relic	StatsOnStatsRune	ForgeCount	DynamicVar	1	name		
+relic	StatsRune	ForgeCount	DynamicVar	1	name		
+relic	StrengthForge	StrengthPower	PowerVar<StrengthPower>	1	power (buff on self)		triggerConstant
+relic	StrengthToDexterityRune	DexterityPower	PowerVar<DexterityPower>	0	power (target unclear)		triggerConstant
+relic	SturdyRune	HealPercent	DynamicVar	1	name		triggerTurn
+relic	SturdyRune	LowHpThresholdPercent	DynamicVar	0	unknown		triggerTurn
+relic	SturdyRune	LowHpHealPercent	DynamicVar	1	name		triggerTurn
+relic	SummonForge	Summon	SummonVar	1	type		triggerTurn
+relic	SummonForthRune	ForgeAmount	ForgeVar	1	type		triggerCombat
+relic	SureShotRune	Cards	CardsVar	1	type		triggerTurn
+relic	SwiftAndSafeRune	CardsNeeded	DynamicVar	-1	name		
+relic	SwiftAndSafeRune	ArtifactPower	PowerVar<ArtifactPower>	1	power (buff on self)		
+relic	SwordsmanshipRune	ParryPower	PowerVar<ParryPower>	1	power (buff on self)		
+relic	SymphonyOfWarRune	SerpentFormPower	PowerVar<SerpentFormPower>	1	power (buff on self)		triggerConstant
+relic	SymphonyOfWarRune	DemonFormPower	PowerVar<DemonFormPower>	1	power (buff on self)		triggerTurn
+relic	TankEngineRune	HpGainPercent	DynamicVar	1	name		
+relic	TankEngineRune	ScalePercent	DynamicVar	0	unknown		
+relic	TankEngineRune	MaxHpGainDisplayPercent	DynamicVar	0	not read		
+relic	TanksShieldRune	Block	BlockVar	1	type		triggerConstant
+relic	TarotClothRune	Cards	CardsVar	1	type		triggerCombat
+relic	TarotClothRune	Replays	DynamicVar	1	name		triggerConstant
+relic	TauntRune	Cards	CardsVar	1	type		triggerTurn
+relic	TezcatarasMercyRune	Relics	DynamicVar	0	not read		
+relic	TezcatarasMercyRune	CombatInterval	DynamicVar	-1	name		
+relic	ThornmailRune	MaxHpPerThorns	DynamicVar	1	name		triggerRun
+relic	ThornmailRune	ThornsPower	PowerVar<ThornsPower>	0	not read		triggerTurn
+relic	ThornsForge	ThornsPower	PowerVar<ThornsPower>	1	power (buff on self)		triggerTurn
+relic	ThoughtOverwriteRune	Replays	DynamicVar	1	name		triggerConstant
+relic	TranscendentEvilRune	StacksPerBonus	DynamicVar	-1	every N / threshold		triggerCombat
+relic	TranscendentEvilRune	FocusPower	PowerVar<FocusPower>	1	power (buff on self)		triggerTurn
+relic	TranscendentEvilRune	OrbSlots	DynamicVar	1	name		triggerCombat
+card	TrickMagicCard	Cards	CardsVar	1	type		
+card	TrickMagicCard	BufferPower	PowerVar<BufferPower>	1	upgrade		
+card	TrickMagicCard	Replays	DynamicVar	1	power amount (HextechAttackReplayPower on self)		
+relic	TrinityRune	Stars	StarsVar	1	type		triggerTurn
+relic	TrinityRune	ForgeAmount	ForgeVar	1	type		triggerTurn
+relic	TrioRune	Replays	DynamicVar	1	name		triggerConstant
+relic	TwinFlamesRune	Missiles	DynamicVar	0	not read		
+relic	UltimateUnstoppableRune	MinCost	DynamicVar	-1	name		triggerConstant
+relic	UltimateUnstoppableRune	ArtifactPower	PowerVar<ArtifactPower>	1	power (buff on self)		
+relic	UniversalScopeRune	ChancePercent	DynamicVar	1	name		
+relic	UnmovableMountainRune	BarricadePower	PowerVar<BarricadePower>	1	power (buff on self)		
+relic	UnmovableMountainRune	AfterimagePower	PowerVar<AfterimagePower>	1	power (buff on self)		triggerConstant
+relic	UnsealedThroneRune	Energy	EnergyVar	1	type		
+relic	UpgradeForge	Cards	CardsVar	0	only on pickup		
+relic	VakuuMockeryRune	Relics	DynamicVar	0	only on pickup		
+relic	VenomForge	EnvenomPower	PowerVar<EnvenomPower>	1	power (buff on self)		triggerConstant
+relic	VigorForge	VigorPower	PowerVar<VigorPower>	1	power (buff on self)		triggerConstant
+relic	ViolenceRune	Cards	CardsVar	0	not read		
+relic	VitalitySurgeRune	HpPerCard	DynamicVar	-1	every N / threshold		triggerTurn
+relic	VitalitySurgeRune	HpPerEnergy	DynamicVar	-1	every N / threshold		triggerTurn
+relic	VoidForge	VoidFormPower	PowerVar<VoidFormPower>	1	power (buff on self)		triggerConstant
+relic	WarmogsSpiritRune	CardsNeeded	DynamicVar	-1	name		
+relic	WarmogsSpiritRune	PlatingPower	PowerVar<PlatingPower>	1	power (buff on self)		triggerTurn
+card	WhiteHoleCard	Energy	EnergyVar	1	upgrade		
+card	WhiteHoleCard	Cards	CardsVar	1	type		
+relic	WhiteHoleRune	Cards	CardsVar	0	only on pickup		
+relic	WraithRune	Cards	CardsVar	1	type	generation	triggerTurn
+relic	WraithRune	DamagePercentPerSoul	DynamicVar	1	name		triggerConstant
+relic	ZealotRune	RelicsNeeded	DynamicVar	-1	every N / threshold		triggerTurn
+relic	ZealotRune	Cards	CardsVar	0	not read		
